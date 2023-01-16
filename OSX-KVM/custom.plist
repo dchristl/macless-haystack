@@ -1,7 +1,7 @@
 <!-- This file is modified by @sickcodes from https://github.com/kholia/OSX-KVM/tree/master/OpenCore-Catalina -->
-<!-- The modifications are placeholders for: iMacPro1,1, C02XFNZ6HX87, C02838401J9JG361H, 431CCAAC-C00C-4185-92BD-78EB02D3E3C2, cc660a78724d, 1024, 1080 -->
+<!-- The modifications are placeholders for: {{DEVICE_MODEL}}, {{SERIAL}}, {{BOARD_SERIAL}}, {{UUID}}, {{ROM}}, {{WIDTH}}, {{HEIGHT}} -->
 <!-- All credit for this file https://github.com/kholia/OSX-KVM/blob/master/CREDITS.md -->
-<!-- Scan policy generator: https://oc-scanpolicy.vercel.app/ -->
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -1262,21 +1262,21 @@
                 <key>MaxBIOSVersion</key>
                 <false/>
                 <key>MLB</key>
-                <string>C02838401J9JG361H</string>
+                <string>{{BOARD_SERIAL}}</string>
                 <key>ProcessorType</key>
                 <integer>0</integer>
                 <key>ROM</key>
-                <string>cc660a78724d</string>
+                <string>{{ROM}}</string>
                 <key>SpoofVendor</key>
                 <true/>
                 <key>SystemMemoryStatus</key>
                 <string>Auto</string>
                 <key>SystemProductName</key>
-                <string>iMacPro1,1</string>
+                <string>{{DEVICE_MODEL}}</string>
                 <key>SystemSerialNumber</key>
-                <string>C02XFNZ6HX87</string>
+                <string>{{SERIAL}}</string>
                 <key>SystemUUID</key>
-                <string>431CCAAC-C00C-4185-92BD-78EB02D3E3C2</string>
+                <string>{{UUID}}</string>
             </dict>
             <key>UpdateDataHub</key>
             <true/>
@@ -1571,7 +1571,7 @@
                 <key>ReplaceTabWithSpace</key>
                 <false/>
                 <key>Resolution</key>
-                <string>1024x768@32</string>
+                <string>{{WIDTH}}x{{HEIGHT}}@32</string>
                 <key>SanitiseClearScreen</key>
                 <false/>
                 <key>TextRenderer</key>
