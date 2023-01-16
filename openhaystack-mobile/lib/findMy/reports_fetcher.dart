@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ReportsFetcher {
+  // static const _seemooEndpoint = "https://add-your-proxy-server-here/getLocationReports"
   static const _seemooEndpoint = "http://ubuntu:56176/getLocationReports";
 
   /// Fetches the location reports corresponding to the given hashed advertisement
