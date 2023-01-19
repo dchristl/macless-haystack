@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:openhaystack_mobile/findMy/models.dart';
 import 'package:provider/provider.dart';
 import 'package:openhaystack_mobile/accessory/accessory_dto.dart';
 import 'package:openhaystack_mobile/accessory/accessory_icon_model.dart';
@@ -15,7 +16,7 @@ class ItemFileImport extends StatefulWidget {
   final String filePath;
 
   /// Lets the user select which accessories to import from a file.
-  /// 
+  ///
   /// Displays the accessories contained in the import file.
   /// The user can then select the accessories to import.
   const ItemFileImport({
@@ -30,13 +31,16 @@ class ItemFileImport extends StatefulWidget {
 class _ItemFileImportState extends State<ItemFileImport> {
   /// The accessory information stored in the file
   List<AccessoryDTO>? accessories;
+
   /// Stores which accessories are selected.
   List<bool>? selected;
+
   /// Stores which accessory details are expanded
   List<bool>? expanded;
 
   /// Flag if the passed file can not be imported.
   bool hasError = false;
+
   /// Stores the reason for the error condition.
   String? errorText;
 
@@ -55,7 +59,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
         hasError = true;
         errorText = 'Invalid file path. Please select another file.';
       });
-      
+
       return;
     }
 
@@ -71,7 +75,8 @@ class _ItemFileImportState extends State<ItemFileImport> {
     } catch (e) {
       setState(() {
         hasError = true;
-        errorText = 'Could not parse JSON file. Please check if the file is formatted correctly.';
+        errorText =
+            'Could not parse JSON file. Please check if the file is formatted correctly.';
       });
     }
   }
@@ -93,9 +98,8 @@ class _ItemFileImportState extends State<ItemFileImport> {
     String encodedContent = await file.readAsString();
 
     List<dynamic> content = jsonDecode(encodedContent);
-    var accessoryDTOs = content
-      .map((json) => AccessoryDTO.fromJson(json))
-      .toList();
+    var accessoryDTOs =
+        content.map((json) => AccessoryDTO.fromJson(json)).toList();
 
     return accessoryDTOs;
   }
@@ -117,20 +121,26 @@ class _ItemFileImportState extends State<ItemFileImport> {
       }
     }
 
-    var nrOfImports = selected?.fold<int>(0, 
-      (previousValue, element) => element ? previousValue + 1 : previousValue) ?? 0;
+    var nrOfImports = selected?.fold<int>(
+            0,
+            (previousValue, element) =>
+                element ? previousValue + 1 : previousValue) ??
+        0;
     if (nrOfImports > 0) {
       var snackbar = SnackBar(
-        content: Text('Successfully imported ${nrOfImports.toString()} accessories.'),
+        content: Text(
+            'Successfully imported ${nrOfImports.toString()} accessories.'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackbar);
     }
   }
 
   /// Import a specific [accessory] by converting the DTO to the internal representation.
-  Future<void> _importAccessory(AccessoryRegistry registry, AccessoryDTO accessoryDTO) async {
+  Future<void> _importAccessory(
+      AccessoryRegistry registry, AccessoryDTO accessoryDTO) async {
     Color color = Colors.grey;
-    if (accessoryDTO.colorSpaceName == 'kCGColorSpaceSRGB' && accessoryDTO.colorComponents.length == 4) {
+    if (accessoryDTO.colorSpaceName == 'kCGColorSpaceSRGB' &&
+        accessoryDTO.colorComponents.length == 4) {
       var colors = accessoryDTO.colorComponents;
       int red = (colors[0] * 255).round();
       int green = (colors[1] * 255).round();
@@ -143,6 +153,12 @@ class _ItemFileImportState extends State<ItemFileImport> {
     if (AccessoryIconModel.icons.contains(accessoryDTO.icon)) {
       icon = accessoryDTO.icon;
     }
+
+    List<String> additionalPublicKeys = await Stream.fromIterable(
+            accessoryDTO.additionalKeys as List)
+        .asyncMap((addPrivKey) => FindMyController.importKeyPair(addPrivKey))
+        .map((event) => event.hashedPublicKey)
+        .toList();
 
     var keyPair = await FindMyController.importKeyPair(accessoryDTO.privateKey);
 
@@ -161,6 +177,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
       updateInterval: accessoryDTO.updateInterval,
       usesDerivation: accessoryDTO.usesDerivation,
       oldestRelevantSymmetricKey: accessoryDTO.oldestRelevantSymmetricKey,
+      additionalKeys: additionalPublicKeys
     );
 
     registry.addAccessory(newAccessory);
@@ -179,7 +196,8 @@ class _ItemFileImportState extends State<ItemFileImport> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Text(errorText ?? 'An unknown error occured. Please try again.'),
+              child: Text(
+                  errorText ?? 'An unknown error occured. Please try again.'),
             ),
           ],
         ),
@@ -198,41 +216,59 @@ class _ItemFileImportState extends State<ItemFileImport> {
               expanded?[index] = !isExpanded;
             });
           },
-          children: accessories?.asMap().map((idx, accessory) => MapEntry(idx, ExpansionPanel(
-            headerBuilder: (BuildContext context, bool isExpanded)
-                => ListTile(
-                  leading: Checkbox(
-                    value: selected?[idx] ?? false,
-                    onChanged: (newState) {
-                      if (newState != null) {
-                        setState(() {
-                          selected?[idx] = newState;
-                        });
-                      }
-                    }),
-                  title: Text(accessory.name),
-                ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                child: Column(
-                  children: [
-                    _buildProperty('ID', accessory.id.toString()),
-                    _buildProperty('Name', accessory.name),
-                    _buildProperty('Color', accessory.colorComponents.toString()),
-                    _buildProperty('Icon', accessory.icon),
-                    _buildProperty('privateKey', accessory.privateKey.replaceRange(
-                      4,
-                      accessory.privateKey.length - 4,
-                      '*'*(accessory.privateKey.length - 8),
-                    )),
-                    _buildProperty('isActive', accessory.isActive.toString()),
-                    _buildProperty('isDeployed', accessory.isDeployed.toString()),
-                    _buildProperty('usesDerivation', accessory.usesDerivation.toString()),
-                  ],
-                ),
-              ),
-              isExpanded: expanded?[idx] ?? false,
-          ))).values.toList() ?? [],
+          children: accessories
+                  ?.asMap()
+                  .map((idx, accessory) => MapEntry(
+                      idx,
+                      ExpansionPanel(
+                        headerBuilder:
+                            (BuildContext context, bool isExpanded) => ListTile(
+                          leading: Checkbox(
+                              value: selected?[idx] ?? false,
+                              onChanged: (newState) {
+                                if (newState != null) {
+                                  setState(() {
+                                    selected?[idx] = newState;
+                                  });
+                                }
+                              }),
+                          title: Text(accessory.name),
+                        ),
+                        body: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0, vertical: 8.0),
+                          child: Column(
+                            children: [
+                              _buildProperty('ID', accessory.id.toString()),
+                              _buildProperty('Name', accessory.name),
+                              _buildProperty('Color',
+                                  accessory.colorComponents.toString()),
+                              _buildProperty('Icon', accessory.icon),
+                              _buildProperty(
+                                  'privateKey',
+                                  accessory.privateKey.replaceRange(
+                                    4,
+                                    accessory.privateKey.length - 4,
+                                    '*' * (accessory.privateKey.length - 8),
+                                  )),
+                              _buildProperty(
+                                  'isActive', accessory.isActive.toString()),
+                              _buildProperty('isDeployed',
+                                  accessory.isDeployed.toString()),
+                              _buildProperty('usesDerivation',
+                                  accessory.usesDerivation.toString()),
+                              _buildProperty(
+                                  'additionalKeys',
+                                  accessory.additionalKeys?.length.toString() ??
+                                      '0'),
+                            ],
+                          ),
+                        ),
+                        isExpanded: expanded?[idx] ?? false,
+                      )))
+                  .values
+                  .toList() ??
+              [],
         ),
       ),
     );

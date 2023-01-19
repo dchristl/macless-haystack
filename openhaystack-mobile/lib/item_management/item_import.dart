@@ -23,7 +23,7 @@ class _AccessoryImportState extends State<AccessoryImport> {
   /// Stores the properties of the accessory to import.
   Accessory newAccessory = Accessory(
     id: '',
-    name: '',
+    name: '',    
     hashedPublicKey: '',
     datePublished: DateTime.now(),
   );

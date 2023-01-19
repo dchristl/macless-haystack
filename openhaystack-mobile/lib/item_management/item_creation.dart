@@ -24,7 +24,7 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
   /// Stores the properties of the new accessory.
   Accessory newAccessory = Accessory(
     id: '',
-    name: '',
+    name: '',   
     hashedPublicKey: '',
     datePublished: DateTime.now(),
   );

@@ -11,8 +11,10 @@ import 'package:openhaystack_mobile/item_management/item_file_import.dart';
 import 'package:openhaystack_mobile/location/location_model.dart';
 import 'package:openhaystack_mobile/preferences/user_preferences_model.dart';
 import 'package:openhaystack_mobile/splashscreen.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 void main() {
+  Settings.init();
   runApp(const MyApp());
 }
 
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         darkTheme: ThemeData.dark(),
-        home:  const AppLayout(),
+        home: const AppLayout(),
       ),
     );
   }
@@ -54,15 +56,15 @@ class _AppLayoutState extends State<AppLayout> {
     super.initState();
 
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
-      .listen(handleFileSharingIntent, onError: print);
-    ReceiveSharingIntent.getInitialMedia()
-      .then(handleFileSharingIntent);
+        .listen(handleFileSharingIntent, onError: print);
+    ReceiveSharingIntent.getInitialMedia().then(handleFileSharingIntent);
 
-    var accessoryRegistry = Provider.of<AccessoryRegistry>(context, listen: false);
+    var accessoryRegistry =
+        Provider.of<AccessoryRegistry>(context, listen: false);
     accessoryRegistry.loadAccessories();
   }
 
-   Future<void>  handleFileSharingIntent(List<SharedMediaFile> files) async {
+  Future<void> handleFileSharingIntent(List<SharedMediaFile> files) async {
     // Received a sharing intent with a number of files.
     // Import the accessories for each device in sequence.
     // If no files are shared do nothing
@@ -70,11 +72,13 @@ class _AppLayoutState extends State<AppLayout> {
       if (file.type == SharedMediaType.FILE) {
         // On iOS the file:// prefix has to be stripped to access the file path
         String path = Platform.isIOS
-          ? Uri.decodeComponent(file.path.replaceFirst('file://', ''))
-          : file.path;
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => ItemFileImport(filePath: path),
-        ));
+            ? Uri.decodeComponent(file.path.replaceFirst('file://', ''))
+            : file.path;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemFileImport(filePath: path),
+            ));
       }
     }
   }
@@ -91,7 +95,6 @@ class _AppLayoutState extends State<AppLayout> {
     precacheImage(const AssetImage('assets/OpenHaystackIcon.png'), context);
     super.didChangeDependencies();
   }
-
 
   @override
   Widget build(BuildContext context) {

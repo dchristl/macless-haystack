@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 import 'package:openhaystack_mobile/accessory/accessory_icon.dart';
 import 'package:openhaystack_mobile/accessory/accessory_model.dart';
 import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
 import 'package:openhaystack_mobile/location/location_model.dart';
+import 'package:provider/provider.dart';
 
 class AccessoryMap extends StatefulWidget {
   final MapController? mapController;

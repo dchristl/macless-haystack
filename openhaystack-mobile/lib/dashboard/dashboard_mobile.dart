@@ -69,7 +69,7 @@ class _DashboardMobileState extends State<DashboardMobile> {
         SnackBar(
           backgroundColor: Theme.of(context).colorScheme.error,
           content: Text(
-            'Could not find location reports. Try again later.',
+            'Could not find location reports. Try again later.' ,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onError,
             ),
