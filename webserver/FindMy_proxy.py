@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python 
 import os,glob
 import datetime, time
 import getpass
@@ -11,11 +11,9 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
 from cryptography.hazmat.backends import default_backend
 import objc; from Foundation import NSBundle, NSClassFromString, NSData, NSPropertyListSerialization
-import socketserver,httplib,urllib
-import SimpleHTTPServer
-import SocketServer
+import urllib,six, ssl, sys
 
-pwd = 'alpine' # Keychain password, can be hardcoded
+pwd = '' # Keychain password, can be hardcoded
 
 def bytes_to_int(b):
     return int(codecs.encode(b, 'hex'), 16)
@@ -41,17 +39,17 @@ def readKeychain():
         def get_table_offsets(tbl_array_offset):
             ntables = bytes_to_int(kc[tbl_array_offset +4 : tbl_array_offset +8])
             tbl_offsets_b = kc[tbl_array_offset +8 : tbl_array_offset +8 +(ntables *4)]
-            return [bytes_to_int(tbl_offsets_b[i:i+4]) +tbl_array_offset for i in xrange(0, len(tbl_offsets_b), 4)]
+            return [bytes_to_int(tbl_offsets_b[i:i+4]) +tbl_array_offset for i in six.moves.range(0, len(tbl_offsets_b), 4)]
 
         def get_record_offsets(tbl_start):
             nrecords = bytes_to_int(kc[tbl_start +24 : tbl_start +28])
             rec_offsets_b = kc[tbl_start +28 : tbl_start +28 +(nrecords *4)]
-            rec_offsets = [bytes_to_int(rec_offsets_b[i:i+4]) +tbl_start for i in xrange(0, len(rec_offsets_b), 4)]
+            rec_offsets = [bytes_to_int(rec_offsets_b[i:i+4]) +tbl_start for i in six.moves.range(0, len(rec_offsets_b), 4)]
             return [ro for ro in rec_offsets if ro != tbl_start and bytes_to_int(kc[ro : ro +4])] # remove 0 offset records and empty records
 
         def match_record_attribute(rec_start, rec_nattr, rec_attr, attr_match):
             attr_offsets_b = kc[rec_start +24 : rec_start +24 +(rec_nattr *4)]
-            attr_offsets = [bytes_to_int(attr_offsets_b[i:i+4]) +rec_start -1 for i in xrange(0, len(attr_offsets_b), 4)]
+            attr_offsets = [bytes_to_int(attr_offsets_b[i:i+4]) +rec_start -1 for i in six.moves.range(0, len(attr_offsets_b), 4)]
             if attr_offsets[0] and attr_offsets[0] < rec_start +bytes_to_int(kc[rec_start : rec_start +4]): # non-zero offset, and no weird big values
                 if kc[attr_offsets[rec_attr] +4 : attr_offsets[rec_attr] +4 +bytes_to_int(kc[attr_offsets[rec_attr] : attr_offsets[rec_attr] +4])] == attr_match:
                     return kc[rec_start +24 +(rec_nattr *4) : rec_start +24 +(rec_nattr *4) +bytes_to_int(kc[rec_start +16 : rec_start +20])] # return record blob data (NOTE not sure about BLOB size!!!)
@@ -119,19 +117,19 @@ def getCurrentTimes():
     return clientTime, time.tzname[1], clientTimestamp
 
 
-class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         content_len = int(self.headers.getheader('content-length', 0))
         post_body = self.rfile.read(content_len)
         
-        print post_body
+        print(post_body)
 
         body = json.loads(post_body)
       
         
         data = "{\"search\": [{\"startDate\": 0, \"ids\": ['"+ str(body['ids'][0]) + "'] }]}"
-        print data
+        print(data)
         iCloud_decryptionkey = retrieveICloudKey()
         AppleDSID, searchPartyToken = getAppleDSIDandSearchPartyToken(iCloud_decryptionkey)
         machineID, oneTimePassword = getOTPHeaders()
@@ -149,7 +147,7 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             'X-BA-CLIENT-TIMESTAMP': "%s" % (unixEpoch)
         }
 
-        conn = httplib.HTTPSConnection('gateway.icloud.com')
+        conn = six.moves.http_client.HTTPSConnection('gateway.icloud.com', timeout=5, context=ssl._create_unverified_context())
         conn.request("POST", "/acsnservice/fetch", data, request_headers)
         res = conn.getresponse()
         # self.wfile.write(res.read())
@@ -161,20 +159,30 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         responseBody = res.read()
         self.wfile.write(responseBody)
 
-        print responseBody
+        print(responseBody)
 
 
 
 PORT = 80
 if __name__ == "__main__":
     if not pwd: pwd = getpass.getpass('Keychain password:')
+    isV3 =  sys.version_info.major > 2
+    print('Using python3' if isV3 else 'Using python2')
     Handler = ServerHandler
 
-    httpd = SocketServer.TCPServer(("", PORT), Handler)
+    httpd = six.moves.socketserver.TCPServer(("", PORT), Handler)
 
-    print "serving at port", PORT
-    httpd.serve_forever()
-    # socketserver.TCPServer(('0.0.0.0', 80), FindMy_proxy).serve_forever()
+    print("serving at port " +  str(PORT))
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:        
+        httpd.server_close()
+        print('Server stopped')
+    
+
 
 
 

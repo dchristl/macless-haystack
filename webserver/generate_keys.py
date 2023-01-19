@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python 
 import sys,base64,hashlib,random
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend
@@ -19,7 +19,7 @@ TEMPLATE = Template('{'
         '\"lastDerivationTimestamp\": 0.0,'
         '\"updateInterval\": 3600,'
         '\"privateKey\": \"$privateKey\",'
-        '\"icon\": \"\",'
+        '\"icon\": \"hare.fill\",'
         '\"isDeployed\": true,'
         '\"colorSpaceName\": \"kCGColorSpaceExtendedSRGB\",'
         '\"usesDerivation\": false,'
@@ -33,10 +33,11 @@ def int_to_bytes(n, length, endianess='big'):
     s = ('0'*(len(h) % 2) + h).zfill(length*2).decode('hex')
     return s if endianess == 'big' else s[::-1]
 
-def to_C_byte_array(adv_key):
+def to_C_byte_array(adv_key, isV3):
     out = '{'
-    for element in range(0, len(adv_key)):        
-        out = out + "0x{:02x}".format(ord(adv_key[element])) 
+    for element in range(0, len(adv_key)):    
+        e = adv_key[element] if isV3 else ord(adv_key[element])   
+        out = out + "0x{:02x}".format(e) 
         if element != len(adv_key)-1:
             out = out + ','
 
@@ -85,22 +86,34 @@ fname = '%s.keys' % (prefix)
 keys=open(OUTPUT_FOLDER + fname, 'w')
 
 
-for i in range(args.nkeys):
+isV3 =  sys.version_info.major > 2
+print('Using python3' if isV3 else 'Using python2')
+
+i = 0
+while i < args.nkeys:
     priv = random.getrandbits(224)
     adv = ec.derive_private_key(priv, ec.SECP224R1(), default_backend()).public_key().public_numbers().x
-
-    priv_bytes = int_to_bytes(priv, 28)
-    adv_bytes = int_to_bytes(adv, 28)
+    if isV3:
+        priv_bytes = priv.to_bytes(28, 'big')
+        adv_bytes = adv.to_bytes(28, 'big')
+    else: 
+        priv_bytes = int_to_bytes(priv, 28)
+        adv_bytes = int_to_bytes(adv, 28)
     
-    arrays.write(to_C_byte_array(adv_bytes))
-
-
     priv_b64 = base64.b64encode(priv_bytes).decode("ascii")
     adv_b64 = base64.b64encode(adv_bytes).decode("ascii")
     s256_b64 = base64.b64encode(sha256(adv_bytes)).decode("ascii")
 
+    if '/' in s256_b64[:7]:
+        print('Key skipped and regenerated, because there was a / in the b64 of the hashed pubkey :(')
+        continue
+    else:
+        i += 1    
+
+    arrays.write(to_C_byte_array(adv_bytes, isV3))
+
     devices.write(TEMPLATE.substitute(name=prefix, 
-    id=str(long(random.choice(range(0,10000000)))),
+    id=str(random.choice(range(0,10000000))),
     privateKey=priv_b64
 
     ))
