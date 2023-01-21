@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logger/logger.dart';
 import 'package:openhaystack_mobile/accessory/accessory_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:openhaystack_mobile/findMy/find_my_controller.dart';
@@ -16,6 +17,10 @@ class AccessoryRegistry extends ChangeNotifier {
   List<Accessory> _accessories = [];
   bool loading = false;
   bool initialLoadFinished = false;
+
+  var logger = Logger(
+    printer: PrettyPrinter(methodCount: 0),
+  );
 
   /// Creates the accessory registry.
   ///
@@ -79,7 +84,7 @@ class AccessoryRegistry extends ChangeNotifier {
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
       var reports = reportsForAccessories.elementAt(i);
-
+      logger.i('${reports.length} reports fetched for $accessory overall');
       accessory.locationHistory = reports
           .where((report) =>
               report.latitude.abs() <= 90 && report.longitude.abs() < 90)

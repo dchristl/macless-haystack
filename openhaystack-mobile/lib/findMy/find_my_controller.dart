@@ -17,7 +17,7 @@ class FindMyController {
   static final HashMap _keyCache = HashMap();
 
   static final logger = Logger(
-    printer: PrettyPrinter(),
+    printer: PrettyPrinter(methodCount: 0),
   );
 
   /// Starts a new, fetches and decrypts all location reports
@@ -47,20 +47,16 @@ class FindMyController {
       for (var e in keyPairs) e.getHashedAdvertisementKey(): e
     };
 
-    List jsonResults = await Stream.fromIterable(hashedKeyKeyPairsMap.values)
-        .asyncMap((kp) => ReportsFetcher.fetchLocationReports(
-            hashedKeyKeyPairsMap.keys, url))
-        .toList();
+    List jsonResults = await ReportsFetcher.fetchLocationReports(
+        hashedKeyKeyPairsMap.keys, url);
 
-    for (List<dynamic> jsresults in jsonResults) {
-      for (var result in jsresults) {
-        FindMyKeyPair keyPair =
-            hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
-        results.add(
-            await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
-      }
+    for (var result in jsonResults) {
+      FindMyKeyPair keyPair =
+          hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
+      results.add(
+          await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
     }
-    logger.d(jsonResults);
+
     return results;
   }
 

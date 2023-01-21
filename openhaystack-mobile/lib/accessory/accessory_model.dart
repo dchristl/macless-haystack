@@ -166,7 +166,6 @@ class Accessory {
   Accessory.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
-        additionalKeys = List.empty(),
         hashedPublicKey = json['hashedPublicKey'],
         datePublished = json['datePublished'] != null
             ? DateTime.fromMillisecondsSinceEpoch(json['datePublished'])
@@ -182,7 +181,9 @@ class Accessory {
         symmetricKey = json['symmetricKey'],
         lastDerivationTimestamp = json['lastDerivationTimestamp'],
         updateInterval = json['updateInterval'],
-        oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'] {
+        oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'],
+        additionalKeys = json['additionalKeys']?.cast<String>() ?? List.empty()       
+         {
     _init();
   }
 

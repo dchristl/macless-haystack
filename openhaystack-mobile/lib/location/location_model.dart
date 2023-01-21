@@ -15,7 +15,7 @@ class LocationModel extends ChangeNotifier {
   bool initialLocationSet = false;
 
   var logger = Logger(
-    printer: PrettyPrinter(),
+    printer: PrettyPrinter(methodCount: 0),
   );
 
   /// Requests access to the device location from the user.
