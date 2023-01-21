@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:openhaystack_mobile/item_management/item_creation.dart';
 import 'package:openhaystack_mobile/item_management/item_file_import.dart';
 import 'package:openhaystack_mobile/item_management/item_import.dart';
+import 'dart:io';
 
 class NewKeyAction extends StatelessWidget {
   /// If the action button is small.
@@ -49,7 +50,7 @@ class NewKeyAction extends StatelessWidget {
                     );
 
                     if (result != null) {
-                      var uploadfile = result.files.single.bytes;                      
+                      var uploadfile = result.files.single.bytes;
                       if (uploadfile != null) {
                         Navigator.pushReplacement(
                             context,
@@ -57,6 +58,18 @@ class NewKeyAction extends StatelessWidget {
                               builder: (context) =>
                                   ItemFileImport(bytes: uploadfile),
                             ));
+                      } else if (result.paths.isNotEmpty) {
+                        String? filePath = result.paths[0];
+                        if (filePath != null) {
+                          var fileAsBytes = await File(filePath).readAsBytes();
+
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ItemFileImport(
+                                    bytes: fileAsBytes),
+                              ));
+                        }
                       }
                     }
                   },
