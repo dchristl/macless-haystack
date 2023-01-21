@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +80,6 @@ class _AppLayoutState extends State<AppLayout> {
     }
 
     Size screenSize = MediaQuery.of(context).size;
-    Orientation orientation = MediaQuery.of(context).orientation;
 
     // TODO: More advanced media query handling
     if (screenSize.width < 800) {

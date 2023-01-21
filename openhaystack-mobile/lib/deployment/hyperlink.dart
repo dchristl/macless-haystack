@@ -5,7 +5,7 @@ class Hyperlink extends StatelessWidget {
   /// The target url to open.
   String target;
   /// The display text of the hyperlink. Default is [target].
-  String _text;
+  final String _text;
 
   /// Displays a hyperlink that can be opened by a tap.
   Hyperlink({
@@ -24,7 +24,7 @@ class Hyperlink extends StatelessWidget {
         ),
       ),
       onTap: () {
-        launch(target);
+        launchUrl(Uri.parse((target)));
       },
     );
   }

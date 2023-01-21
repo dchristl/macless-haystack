@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart' as geocode;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:logger/logger.dart';
 
 class LocationModel extends ChangeNotifier {
   LatLng? here;
@@ -13,8 +14,12 @@ class LocationModel extends ChangeNotifier {
   final Location _location = Location();
   bool initialLocationSet = false;
 
+  var logger = Logger(
+    printer: PrettyPrinter(),
+  );
+
   /// Requests access to the device location from the user.
-  /// 
+  ///
   /// Initializes the location services and requests location
   /// access from the user if not granged.
   /// Returns if location access was granted.
@@ -24,7 +29,7 @@ class LocationModel extends ChangeNotifier {
     if (!serviceEnabled) {
       serviceEnabled = await _location.requestService();
       if (!serviceEnabled) {
-        print('Could not enable location service.');
+        logger.w('Could not enable location service.');
         return false;
       }
     }
@@ -33,7 +38,6 @@ class LocationModel extends ChangeNotifier {
     var permissionGranted = await _location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await _location.requestPermission();
-      
     }
 
     if (permissionGranted == PermissionStatus.granted) {
@@ -49,12 +53,11 @@ class LocationModel extends ChangeNotifier {
   }
 
   /// Requests location updates from the platform.
-  /// 
+  ///
   /// Listeners will be notified about locaiton changes.
   Future<void> requestLocationUpdates() async {
     var permissionGranted = await requestLocationAccess();
     if (permissionGranted) {
-
       // Handle future location updates
       locationStream ??= _location.onLocationChanged.listen(_updateLocation);
 
@@ -73,21 +76,21 @@ class LocationModel extends ChangeNotifier {
   }
 
   /// Updates the current location if new location data is available.
-  /// 
+  ///
   /// Additionally updates the current address information to match
   /// the new location.
   void _updateLocation(LocationData locationData) {
     if (locationData.latitude != null && locationData.longitude != null) {
-      // print('Locaiton here: ${locationData.latitude!}, ${locationData.longitude!}');
+      logger.d(
+          'Location here: ${locationData.latitude!}, ${locationData.longitude!}');
       here = LatLng(locationData.latitude!, locationData.longitude!);
       initialLocationSet = true;
-      getAddress(here!)
-        .then((value) {
-          herePlace = value;
-          notifyListeners();
-        });
+      getAddress(here!).then((value) {
+        herePlace = value;
+        notifyListeners();
+      });
     } else {
-      print('Received invalid location data: $locationData');
+      logger.e('Received invalid location data: $locationData');
     }
     notifyListeners();
   }
@@ -109,7 +112,7 @@ class LocationModel extends ChangeNotifier {
   }
 
   /// Returns the address for a given geolocation (latitude & longitude).
-  /// 
+  ///
   /// Only works on mobile platforms with their local APIs.
   static Future<geocode.Placemark?> getAddress(LatLng? location) async {
     if (location == null) {
@@ -119,13 +122,13 @@ class LocationModel extends ChangeNotifier {
     double lng = location.longitude;
 
     try {
-      List<geocode.Placemark> placemarks = await geocode.placemarkFromCoordinates(lat, lng);
+      List<geocode.Placemark> placemarks =
+          await geocode.placemarkFromCoordinates(lat, lng);
       return placemarks.first;
     } on MissingPluginException {
       return null;
     } on PlatformException {
-      return null; 
+      return null;
     }
   }
-
 }

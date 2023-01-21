@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:openhaystack_mobile/accessory/accessory_dto.dart';
@@ -134,9 +133,9 @@ class ItemExportMenu extends StatelessWidget {
     String encodedAccessories = encoder.convert(exportAccessories);
     await file.writeAsString(encodedAccessories);
     // Share export file over os share dialog
-    Share.shareFiles(
-      [file.path],
-      mimeTypes: ['application/json'],
+
+    Share.shareXFiles(
+      [XFile(file.path)],
       subject: filename,
     );
   }

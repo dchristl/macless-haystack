@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 class AccessoryIcon extends StatelessWidget {
   /// The icon to display.

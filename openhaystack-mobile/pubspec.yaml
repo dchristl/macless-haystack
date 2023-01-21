@@ -32,8 +32,8 @@ dependencies:
 
   # UI
   flutter_colorpicker: ^1.0.3
-  flutter_launcher_icons: ^0.9.2
-  flutter_slidable: ^1.2.0
+  flutter_launcher_icons: ^0.11.0
+  flutter_slidable: ^2.0.0
 
   # Networking
   http: ^0.13.4
@@ -56,16 +56,22 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.0.9
-  flutter_secure_storage: ^5.0.2
-  file_picker: ^4.4.0
+  flutter_secure_storage: ^7.0.1
+  file_picker: ^5.2.5
 
   # Sharing
   receive_sharing_intent: ^1.4.5
-  share_plus: ^3.0.4
+  share_plus: ^6.3.0
   url_launcher: ^6.0.17
   path_provider: ^2.0.8
   maps_launcher: ^2.0.1
+
+
   flutter_settings_screens: 0.3.3-null-safety+2
+  dependencies:
+  latlong2: ^0.8.1
+  intl: ^0.17.0
+  logger: ^1.1.0
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -81,7 +87,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
 
 # Configuration for flutter_launcher_icons
 flutter_icons:

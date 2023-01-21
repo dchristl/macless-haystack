@@ -64,8 +64,8 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            launch(
-                                'https://github.com/seemoo-lab/openhaystack/');
+                            launchUrl(Uri.parse(
+                                'https://github.com/seemoo-lab/openhaystack/'));
                           },
                       ),
                       const TextSpan(
@@ -111,9 +111,9 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                             OutlinedButton(
                               child: const Text('Send per mail'),
                               onPressed: () async {
-                                await launch(
+                                await launchUrl(Uri.parse(
                                     DeploymentEmail.getMicrobitDeploymentEmail(
-                                        widget.advertisementKey));
+                                        widget.advertisementKey)));
                               },
                             ),
                             ElevatedButton(
@@ -164,9 +164,9 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                             OutlinedButton(
                               child: const Text('Send per mail'),
                               onPressed: () async {
-                                await launch(
+                                await launchUrl(Uri.parse(
                                     DeploymentEmail.getESP32DeploymentEmail(
-                                        widget.advertisementKey));
+                                        widget.advertisementKey)));
                               },
                             ),
                             ElevatedButton(
@@ -217,9 +217,9 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                             OutlinedButton(
                               child: const Text('Send per mail'),
                               onPressed: () async {
-                                await launch(
+                                await launchUrl(Uri.parse(
                                     DeploymentEmail.getLinuxHCIDeploymentEmail(
-                                        widget.advertisementKey));
+                                        widget.advertisementKey)));
                               },
                             ),
                             ElevatedButton(

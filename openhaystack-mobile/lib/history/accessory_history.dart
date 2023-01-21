@@ -106,7 +106,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                       Polyline(
                         points: locationHistory.map((entry) => entry.a).toList(),
                         strokeWidth: 4,
-                        color: Theme.of(context).colorScheme.primaryVariant,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ],
                   ),

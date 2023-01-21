@@ -43,7 +43,7 @@ class KeyManagement extends StatelessWidget {
                 },
                 dense: true,
                 title: Text(accessory.name),
-                subtitle: Text('Last seen: ' + lastSeen),
+                subtitle: Text('Last seen: $lastSeen'),
                 leading: AccessoryIcon(
                   icon: accessory.icon,
                   color: accessory.color,

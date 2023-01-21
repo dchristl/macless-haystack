@@ -9,11 +9,16 @@ import 'package:pointycastle/src/utils.dart' as pc_utils;
 import 'package:openhaystack_mobile/findMy/decrypt_reports.dart';
 import 'package:openhaystack_mobile/findMy/models.dart';
 import 'package:openhaystack_mobile/findMy/reports_fetcher.dart';
+import 'package:logger/logger.dart';
 
 class FindMyController {
   static const _storage = FlutterSecureStorage();
   static final ECCurve_secp224r1 _curveParams = ECCurve_secp224r1();
   static final HashMap _keyCache = HashMap();
+
+  static final logger = Logger(
+    printer: PrettyPrinter(),
+  );
 
   /// Starts a new, fetches and decrypts all location reports
   /// for the given [FindMyKeyPair].
@@ -37,7 +42,7 @@ class FindMyController {
       Map map) async {
     List<FindMyLocationReport> results = <FindMyLocationReport>[];
     List<FindMyKeyPair> keyPairs = map['keyPair'];
-    var url = map['url'] ;
+    var url = map['url'];
     Map<String, FindMyKeyPair> hashedKeyKeyPairsMap = {
       for (var e in keyPairs) e.getHashedAdvertisementKey(): e
     };
@@ -55,7 +60,7 @@ class FindMyController {
             await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
       }
     }
-    print(jsonResults);
+    logger.d(jsonResults);
     return results;
   }
 

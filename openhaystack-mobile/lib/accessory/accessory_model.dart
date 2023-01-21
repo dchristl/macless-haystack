@@ -236,7 +236,7 @@ class Accessory {
   }
 
   Future<List<String>> getAdditionalPrivateKeys() {
-    return Stream.fromIterable(additionalKeys as List)
+    return Stream.fromIterable(additionalKeys)
         .asyncMap(
             (hashedPublicKey) => FindMyController.getKeyPair(hashedPublicKey))
         .map((event) => event.getBase64PrivateKey())

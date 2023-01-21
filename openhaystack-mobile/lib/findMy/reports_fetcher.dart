@@ -20,7 +20,7 @@ class ReportsFetcher {
       return await jsonDecode(response.body)["results"];
     } else {
       throw Exception(
-          "Failed to fetch location reports with statusCode:${response.statusCode}\n\n Response:\n${response}");
+          "Failed to fetch location reports with statusCode:${response.statusCode}\n\n Response:\n$response");
     }
   }
 }

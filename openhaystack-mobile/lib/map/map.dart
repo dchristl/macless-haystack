@@ -99,7 +99,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
               InteractiveFlag.pinchZoom | InteractiveFlag.drag |
               InteractiveFlag.doubleTapZoom | InteractiveFlag.flingAnimation |
               InteractiveFlag.pinchMove,
-          ),
+          ),          
           layers: [
             TileLayerOptions(
               backgroundColor: Theme.of(context).colorScheme.surface,
