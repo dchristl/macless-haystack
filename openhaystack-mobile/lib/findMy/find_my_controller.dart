@@ -53,6 +53,7 @@ class FindMyController {
     for (var result in jsonResults) {
       FindMyKeyPair keyPair =
           hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
+      logger.i('Decrypting with private key of ${result['id']}');
       results.add(
           await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
     }

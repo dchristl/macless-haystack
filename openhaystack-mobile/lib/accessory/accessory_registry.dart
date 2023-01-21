@@ -84,7 +84,8 @@ class AccessoryRegistry extends ChangeNotifier {
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
       var reports = reportsForAccessories.elementAt(i);
-      logger.i('${reports.length} reports fetched for $accessory overall');
+      logger.i(
+          '${reports.length} reports fetched for ${accessory.hashedPublicKey} overall');
       accessory.locationHistory = reports
           .where((report) =>
               report.latitude.abs() <= 90 && report.longitude.abs() < 90)
