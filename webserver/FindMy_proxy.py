@@ -180,12 +180,12 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         post_body = self.rfile.read(content_len)
 
-        print(post_body)
-
+        print('Geting with post: ' + post_body)
+        UTCTime, Timezone, unixEpoch = getCurrentTimes()
         body = json.loads(post_body)
+        startdate = unixEpoch - 60 * 60 * 24 * 7 
+        data = '{"search": [{"endDate": %d, "startDate": %d, "ids": [\'%s\']}]}' % ((unixEpoch -978307200) *1000000, (startdate -978307200)*1000000, "','".join(body['ids']))
 
-        data = "{\"search\": [{\"startDate\": 0, \"ids\": ['" + \
-            str(body['ids'][0]) + "'] }]}"
         print(data)
         iCloud_decryptionkey = retrieveICloudKey()
         AppleDSID, searchPartyToken = getAppleDSIDandSearchPartyToken(
