@@ -26,7 +26,7 @@ class FindMyController {
 
     Map map = <String, Object>{};
     map['keyPair'] = keyPairs;
-    map['url'] = url;
+    map['url'] = url ?? 'http://localhost:56176';
     return compute(_getListedReportResults, map);
   }
 
@@ -37,7 +37,7 @@ class FindMyController {
       Map map) async {
     List<FindMyLocationReport> results = <FindMyLocationReport>[];
     List<FindMyKeyPair> keyPairs = map['keyPair'];
-    var url = map['url'] ?? 'http://localhost:56176';
+    var url = map['url'] ;
     Map<String, FindMyKeyPair> hashedKeyKeyPairsMap = {
       for (var e in keyPairs) e.getHashedAdvertisementKey(): e
     };

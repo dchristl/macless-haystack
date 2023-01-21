@@ -40,7 +40,11 @@ dependencies:
 
   # Cryptography
   # latest version of pointy castle for crypto functions
-  pointycastle: ^3.4.0
+  # pointycastle: ^3.4.0
+
+  pointycastle:
+    git:
+      url: https://github.com/dchristl/pc-dart
 
   # State Management
   provider: ^6.0.1
@@ -62,6 +66,7 @@ dependencies:
   path_provider: ^2.0.8
   maps_launcher: ^2.0.1
   flutter_settings_screens: 0.3.3-null-safety+2
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

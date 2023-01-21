@@ -3,11 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:openhaystack_mobile/dashboard/dashboard_desktop.dart';
 import 'package:openhaystack_mobile/dashboard/dashboard_mobile.dart';
 import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
-import 'package:openhaystack_mobile/item_management/item_file_import.dart';
 import 'package:openhaystack_mobile/location/location_model.dart';
 import 'package:openhaystack_mobile/preferences/user_preferences_model.dart';
 import 'package:openhaystack_mobile/splashscreen.dart';

@@ -7,7 +7,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.5"
+    version: "3.3.2"
   args:
     dependency: transitive
     description:
@@ -425,9 +425,11 @@ packages:
   pointycastle:
     dependency: "direct main"
     description:
-      name: pointycastle
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "7db03f5dac684224c32b0dd65a5147f635baa529"
+      url: "https://github.com/dchristl/pc-dart"
+    source: git
     version: "3.6.2"
   positioned_tap_detector_2:
     dependency: transitive
