@@ -13,7 +13,6 @@ const accessoryStorageKey = 'ACCESSORIES';
 
 class AccessoryRegistry extends ChangeNotifier {
   final _storage = const FlutterSecureStorage();
-  final _findMyController = FindMyController();
   List<Accessory> _accessories = [];
   bool loading = false;
   bool initialLoadFinished = false;
@@ -30,6 +29,7 @@ class AccessoryRegistry extends ChangeNotifier {
   /// Loads the user's accessories from persistent storage.
   Future<void> loadAccessories() async {
     loading = true;
+
     String? serialized = await _storage.read(key: accessoryStorageKey);
     if (serialized != null) {
       List accessoryJson = json.decode(serialized);
@@ -48,53 +48,6 @@ class AccessoryRegistry extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// __USE ONLY FOR DEBUGGING PURPOSES__
-  ///
-  /// __ALL PERSISTENT DATA WILL BE LOST!__
-  ///
-  /// Overwrites all accessories in this registry with demo data for testing.
-  Future<void> overwriteEverythingWithDemoDataForDebugging() async {
-    // Delete everything to start with a fresh set of demo accessories
-    await _storage.deleteAll();
-
-    // Load demo accessories
-    List<Accessory> demoAccessories = [
-      Accessory(
-          hashedPublicKey: 'TrnHrAM0ZrFSDeq1NN7ppmh0zYJotYiO09alVVF1mPI=',
-          id: '-5952179461995674635',
-          name: 'Raspberry Pi',
-          color: Colors.green,
-          datePublished: DateTime.fromMillisecondsSinceEpoch(1636390931651),
-          icon: 'gift.fill',
-          lastLocation: LatLng(49.874739, 8.656280)),
-      Accessory(
-          hashedPublicKey: 'TrnHrAM0ZrFSDeq1NN7ppmh0zYJotYiO09alVVF1mPI=',
-          id: '-5952179461995674635',
-          name: 'My Bag',
-          color: Colors.blue,
-          datePublished: DateTime.fromMillisecondsSinceEpoch(1636390931651),
-          icon: 'case.fill',
-          lastLocation: LatLng(49.874739, 8.656280)),
-      Accessory(
-          hashedPublicKey: 'TrnHrAM0ZrFSDeq1NN7ppmh0zYJotYiO09alVVF1mPI=',
-          id: '-5952179461995674635',
-          name: 'Car',
-          color: Colors.red,
-          datePublished: DateTime.fromMillisecondsSinceEpoch(1636390931651),
-          icon: 'car.fill',
-          lastLocation: LatLng(49.874739, 8.656280)),
-    ];
-    _accessories = demoAccessories;
-
-    // Store demo accessories for later use
-    await _storeAccessories();
-
-    // Import private key for demo accessories
-    // Public key hash is TrnHrAM0ZrFSDeq1NN7ppmh0zYJotYiO09alVVF1mPI=
-    await FindMyController.importKeyPair(
-        'siykvOCIEQRVDwrbjyZUXuBwsMi0Htm7IBmBIg==');
-  }
-
   /// Fetches new location reports and matches them to their accessory.
   Future<void> loadLocationReports() async {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
@@ -105,22 +58,27 @@ class AccessoryRegistry extends ChangeNotifier {
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
 
-      var keyPair =  await FindMyController.getKeyPair(accessory.hashedPublicKey);
+      var keyPair =
+          await FindMyController.getKeyPair(accessory.hashedPublicKey);
 
-      //Liste aufbauen 
-      
-      var locationRequest = FindMyController.computeResults(keyPair, url);
+      List<FindMyKeyPair> hashedPublicKeys =
+          await Stream.fromIterable(accessory.additionalKeys)
+              .asyncMap((hashedPublicKey) =>
+                  FindMyController.getKeyPair(hashedPublicKey))
+              .toList();
+
+      hashedPublicKeys.add(keyPair);
+
+      var locationRequest =
+          FindMyController.computeResults(hashedPublicKeys, url);
       runningLocationRequests.add(locationRequest);
     }
 
-    // wait for location updates to succeed and update state afterwards
     var reportsForAccessories = await Future.wait(runningLocationRequests);
+
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
       var reports = reportsForAccessories.elementAt(i);
-
-      print(
-          "Found ${reports.length} reports for accessory '${accessory.name}'");
 
       accessory.locationHistory = reports
           .where((report) =>

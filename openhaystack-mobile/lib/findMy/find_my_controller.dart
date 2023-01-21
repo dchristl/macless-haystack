@@ -1,7 +1,5 @@
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,17 +13,19 @@ import 'package:openhaystack_mobile/findMy/reports_fetcher.dart';
 class FindMyController {
   static const _storage = FlutterSecureStorage();
   static final ECCurve_secp224r1 _curveParams = ECCurve_secp224r1();
-  static HashMap _keyCache = HashMap();
+  static final HashMap _keyCache = HashMap();
 
-  /// Starts a new [Isolate], fetches and decrypts all location reports
+  /// Starts a new, fetches and decrypts all location reports
   /// for the given [FindMyKeyPair].
   /// Returns a list of [FindMyLocationReport]'s.
   static Future<List<FindMyLocationReport>> computeResults(
-      FindMyKeyPair keyPair, String? url) async {
-    await _loadPrivateKey(keyPair);
+      List<FindMyKeyPair> keyPairs, String? url) async {
+    for (var kp in keyPairs) {
+      await _loadPrivateKey(kp);
+    }
 
-    Map map = Map();
-    map['keyPair'] = keyPair;
+    Map map = <String, Object>{};
+    map['keyPair'] = keyPairs;
     map['url'] = url;
     return compute(_getListedReportResults, map);
   }
@@ -36,14 +36,26 @@ class FindMyController {
   static Future<List<FindMyLocationReport>> _getListedReportResults(
       Map map) async {
     List<FindMyLocationReport> results = <FindMyLocationReport>[];
-    var keyPair = map['keyPair'];
-    var url = map['url'];
-    final jsonResults = await ReportsFetcher.fetchLocationReports(
-        keyPair.getHashedAdvertisementKey(), url);
-    for (var result in jsonResults) {
-      results.add(
-          await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
+    List<FindMyKeyPair> keyPairs = map['keyPair'];
+    var url = map['url'] ?? 'http://localhost:56176';
+    Map<String, FindMyKeyPair> hashedKeyKeyPairsMap = {
+      for (var e in keyPairs) e.getHashedAdvertisementKey(): e
+    };
+
+    List jsonResults = await Stream.fromIterable(hashedKeyKeyPairsMap.values)
+        .asyncMap((kp) => ReportsFetcher.fetchLocationReports(
+            kp.getHashedAdvertisementKey(), url))
+        .toList();
+
+    for (List<dynamic> jsresults in jsonResults) {
+      for (var result in jsresults) {
+        FindMyKeyPair keyPair =
+            hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
+        results.add(
+            await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
+      }
     }
+    print(jsonResults);
     return results;
   }
 
@@ -66,9 +78,6 @@ class FindMyController {
   static ECPublicKey _derivePublicKey(ECPrivateKey privateKey) {
     final pk = _curveParams.G * privateKey.d;
     final publicKey = ECPublicKey(pk, _curveParams);
-    print(
-        "Isolate:${Isolate.current.hashCode}: Point Data: ${base64Encode(publicKey.Q!.getEncoded(false))}");
-
     return publicKey;
   }
 

@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:openhaystack_mobile/findMy/models.dart';
 import 'package:provider/provider.dart';
 import 'package:openhaystack_mobile/accessory/accessory_dto.dart';
 import 'package:openhaystack_mobile/accessory/accessory_icon_model.dart';
@@ -13,7 +12,7 @@ import 'package:openhaystack_mobile/item_management/loading_spinner.dart';
 
 class ItemFileImport extends StatefulWidget {
   /// The path to the file to import from.
-  final String filePath;
+  final Uint8List bytes;
 
   /// Lets the user select which accessories to import from a file.
   ///
@@ -21,7 +20,7 @@ class ItemFileImport extends StatefulWidget {
   /// The user can then select the accessories to import.
   const ItemFileImport({
     Key? key,
-    required this.filePath,
+    required this.bytes,
   }) : super(key: key);
 
   @override
@@ -48,24 +47,13 @@ class _ItemFileImportState extends State<ItemFileImport> {
   void initState() {
     super.initState();
 
-    _initStateAsync(widget.filePath);
+    _initStateAsync(widget.bytes);
   }
 
-  void _initStateAsync(String filePath) async {
-    var isValidPath = await _validateFilePath(filePath);
-
-    if (!isValidPath) {
-      setState(() {
-        hasError = true;
-        errorText = 'Invalid file path. Please select another file.';
-      });
-
-      return;
-    }
-
+  void _initStateAsync(Uint8List bytes) async {
     // Parse the JSON file and read all contained accessories
     try {
-      var accessoryDTOs = await _parseAccessories(filePath);
+      var accessoryDTOs = await _parseAccessories(bytes);
 
       setState(() {
         accessories = accessoryDTOs;
@@ -81,21 +69,9 @@ class _ItemFileImportState extends State<ItemFileImport> {
     }
   }
 
-  /// Validate that the file path is a valid path and the file exists.
-  Future<bool> _validateFilePath(String filePath) async {
-    if (filePath.isEmpty) {
-      return false;
-    }
-    File file = File(filePath);
-    var fileExists = await file.exists();
-
-    return fileExists;
-  }
-
   /// Parse the JSON encoded accessories from the file stored at [filePath].
-  Future<List<AccessoryDTO>> _parseAccessories(String filePath) async {
-    File file = File(filePath);
-    String encodedContent = await file.readAsString();
+  Future<List<AccessoryDTO>> _parseAccessories(Uint8List bytes) async {
+    String encodedContent = String.fromCharCodes(bytes);
 
     List<dynamic> content = jsonDecode(encodedContent);
     var accessoryDTOs =
@@ -163,22 +139,21 @@ class _ItemFileImportState extends State<ItemFileImport> {
     var keyPair = await FindMyController.importKeyPair(accessoryDTO.privateKey);
 
     Accessory newAccessory = Accessory(
-      datePublished: DateTime.now(),
-      hashedPublicKey: keyPair.hashedPublicKey,
-      id: accessoryDTO.id.toString(),
-      name: accessoryDTO.name,
-      color: color,
-      icon: icon,
-      isActive: accessoryDTO.isActive,
-      isDeployed: accessoryDTO.isDeployed,
-      lastLocation: null,
-      lastDerivationTimestamp: accessoryDTO.lastDerivationTimestamp,
-      symmetricKey: accessoryDTO.symmetricKey,
-      updateInterval: accessoryDTO.updateInterval,
-      usesDerivation: accessoryDTO.usesDerivation,
-      oldestRelevantSymmetricKey: accessoryDTO.oldestRelevantSymmetricKey,
-      additionalKeys: additionalPublicKeys
-    );
+        datePublished: DateTime.now(),
+        hashedPublicKey: keyPair.hashedPublicKey,
+        id: accessoryDTO.id.toString(),
+        name: accessoryDTO.name,
+        color: color,
+        icon: icon,
+        isActive: accessoryDTO.isActive,
+        isDeployed: accessoryDTO.isDeployed,
+        lastLocation: null,
+        lastDerivationTimestamp: accessoryDTO.lastDerivationTimestamp,
+        symmetricKey: accessoryDTO.symmetricKey,
+        updateInterval: accessoryDTO.updateInterval,
+        usesDerivation: accessoryDTO.usesDerivation,
+        oldestRelevantSymmetricKey: accessoryDTO.oldestRelevantSymmetricKey,
+        additionalKeys: additionalPublicKeys);
 
     registry.addAccessory(newAccessory);
   }

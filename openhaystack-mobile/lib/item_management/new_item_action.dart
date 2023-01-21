@@ -48,16 +48,14 @@ class NewKeyAction extends StatelessWidget {
                       dialogTitle: 'Select accessory configuration',
                     );
 
-                    if (result != null && result.paths.isNotEmpty) {
-                      // File selected, dialog not canceled
-                      String? filePath = result.paths[0];
-
-                      if (filePath != null) {
+                    if (result != null) {
+                      var uploadfile = result.files.single.bytes;                      
+                      if (uploadfile != null) {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  ItemFileImport(filePath: filePath),
+                                  ItemFileImport(bytes: uploadfile),
                             ));
                       }
                     }

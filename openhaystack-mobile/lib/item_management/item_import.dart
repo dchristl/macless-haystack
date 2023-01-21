@@ -26,6 +26,7 @@ class _AccessoryImportState extends State<AccessoryImport> {
     name: '',    
     hashedPublicKey: '',
     datePublished: DateTime.now(),
+    additionalKeys: List.empty()
   );
   String privateKey = '';
 

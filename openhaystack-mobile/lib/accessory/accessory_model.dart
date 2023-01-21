@@ -33,7 +33,7 @@ class Accessory {
 
   /// The display name of the accessory.
   String name;
-  List<String>? additionalKeys = List.empty();
+  List<String> additionalKeys;
 
   /// The display icon of the accessory.
   String _icon;
@@ -78,7 +78,7 @@ class Accessory {
       this.lastDerivationTimestamp,
       this.updateInterval,
       this.oldestRelevantSymmetricKey,
-      this.additionalKeys})
+      required this.additionalKeys})
       : _icon = icon,
         _lastLocation = lastLocation,
         super() {
@@ -122,6 +122,7 @@ class Accessory {
     isActive = newAccessory.isActive;
     isDeployed = newAccessory.isDeployed;
     lastLocation = newAccessory.lastLocation;
+    additionalKeys = newAccessory.additionalKeys;
   }
 
   /// The last known location of the accessory.
@@ -210,6 +211,8 @@ class Accessory {
         'lastDerivationTimestamp': lastDerivationTimestamp,
         'updateInterval': updateInterval,
         'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
+        'additionalKeys': additionalKeys,
+
       };
 
   /// Returns the Base64 encoded hash of the advertisement key

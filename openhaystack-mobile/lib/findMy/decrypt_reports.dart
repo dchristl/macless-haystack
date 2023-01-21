@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:pointycastle/export.dart';
@@ -51,7 +49,6 @@ class DecryptReports {
     final sharedKey = ephemeralPublicKey.Q! * privateKey.d;
     final sharedKeyBytes = pc_utils.encodeBigIntAsUnsigned(
         sharedKey!.x!.toBigInteger()!);
-    print("Isolate:${Isolate.current.hashCode}: Shared Key (shared secret): ${base64Encode(sharedKeyBytes)}");
 
     return sharedKeyBytes;
   }
@@ -109,7 +106,6 @@ class DecryptReports {
     Uint8List out = Uint8List(shaDigest.digestSize);
     shaDigest.doFinal(out, 0);
 
-    print("Isolate:${Isolate.current.hashCode}: Derived key: ${base64Encode(out)}");
     return out;
   }
 }

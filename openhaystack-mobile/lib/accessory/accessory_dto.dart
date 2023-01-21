@@ -69,7 +69,7 @@ class AccessoryDTO {
         usesDerivation = json['usesDerivation'] ?? false,
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'] ?? '',
         isActive = json['isActive'],
-        additionalKeys = json['additionalKeys'].cast<String>();
+        additionalKeys = json['additionalKeys']?.cast<String>() ?? List.empty();
 
   /// Creates a JSON map of the serialized transfer object.
   ///

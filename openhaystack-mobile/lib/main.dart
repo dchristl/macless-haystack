@@ -49,43 +49,22 @@ class AppLayout extends StatefulWidget {
 }
 
 class _AppLayoutState extends State<AppLayout> {
-  StreamSubscription? _intentDataStreamSubscription;
+ 
 
   @override
   initState() {
     super.initState();
 
-    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
-        .listen(handleFileSharingIntent, onError: print);
-    ReceiveSharingIntent.getInitialMedia().then(handleFileSharingIntent);
 
     var accessoryRegistry =
         Provider.of<AccessoryRegistry>(context, listen: false);
     accessoryRegistry.loadAccessories();
   }
 
-  Future<void> handleFileSharingIntent(List<SharedMediaFile> files) async {
-    // Received a sharing intent with a number of files.
-    // Import the accessories for each device in sequence.
-    // If no files are shared do nothing
-    for (var file in files) {
-      if (file.type == SharedMediaType.FILE) {
-        // On iOS the file:// prefix has to be stripped to access the file path
-        String path = Platform.isIOS
-            ? Uri.decodeComponent(file.path.replaceFirst('file://', ''))
-            : file.path;
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ItemFileImport(filePath: path),
-            ));
-      }
-    }
-  }
+
 
   @override
-  void dispose() {
-    _intentDataStreamSubscription?.cancel();
+  void dispose() {   
     super.dispose();
   }
 
