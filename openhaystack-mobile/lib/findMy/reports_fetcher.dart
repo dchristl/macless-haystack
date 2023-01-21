@@ -6,14 +6,16 @@ class ReportsFetcher {
   /// Fetches the location reports corresponding to the given hashed advertisement
   /// key.
   /// Throws [Exception] if no answer was received.
-  static Future<List> fetchLocationReports(String hashedAdvertisementKey,
+  static Future<List> fetchLocationReports(
+      Iterable<String> hashedAdvertisementKeys,
       [String? url]) async {
+    var keys = hashedAdvertisementKeys.toList(growable: false);
     final response = await http.post(Uri.parse(url as String),
         headers: <String, String>{
           "Content-Type": "application/json",
         },
         body: jsonEncode(<String, dynamic>{
-          "ids": [hashedAdvertisementKey],
+          "ids": keys,
         }));
 
     if (response.statusCode == 200) {

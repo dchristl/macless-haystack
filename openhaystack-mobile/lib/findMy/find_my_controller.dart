@@ -49,7 +49,7 @@ class FindMyController {
 
     List jsonResults = await Stream.fromIterable(hashedKeyKeyPairsMap.values)
         .asyncMap((kp) => ReportsFetcher.fetchLocationReports(
-            kp.getHashedAdvertisementKey(), url))
+            hashedKeyKeyPairsMap.keys, url))
         .toList();
 
     for (List<dynamic> jsresults in jsonResults) {
