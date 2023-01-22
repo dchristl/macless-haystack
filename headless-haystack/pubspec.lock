@@ -159,7 +159,7 @@ packages:
       name: flutter_map
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.0"
+    version: "3.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -274,7 +274,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.0"
+    version: "0.18.0"
   js:
     dependency: transitive
     description:
@@ -480,6 +480,13 @@ packages:
       url: "https://github.com/dchristl/pc-dart"
     source: git
     version: "3.6.2"
+  polylabel:
+    dependency: transitive
+    description:
+      name: polylabel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   positioned_tap_detector_2:
     dependency: transitive
     description:
@@ -632,13 +639,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.12"
-  transparent_image:
-    dependency: transitive
-    description:
-      name: transparent_image
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   tuple:
     dependency: transitive
     description:
@@ -767,4 +767,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.18.0 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.3.0"

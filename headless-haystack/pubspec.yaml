@@ -50,7 +50,7 @@ dependencies:
   provider: ^6.0.1
 
   # Location
-  flutter_map: ^0.14.0
+  flutter_map: ^3.1.0
   location: ^4.2.0
   geocoding: ^2.0.1
 
@@ -70,7 +70,7 @@ dependencies:
   flutter_settings_screens: 0.3.3-null-safety+2
   dependencies:
   latlong2: ^0.8.1
-  intl: ^0.17.0
+  intl: ^0.18.0
   logger: ^1.1.0
   
 

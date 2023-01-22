@@ -74,11 +74,13 @@ class _AccessoryMapState extends State<AccessoryMap> {
         .where((accessory) => accessory.lastLocation != null)
         .map((accessory) => accessory.lastLocation!)
         .toList();
-    _mapController.fitBounds(
-        LatLngBounds.fromPoints([...points, ...accessoryPoints]),
-        options: const FitBoundsOptions(
-          padding: EdgeInsets.all(25),
-        ));
+    if (accessoryPoints.isNotEmpty) {
+      _mapController.fitBounds(
+          LatLngBounds.fromPoints([...points, ...accessoryPoints]),
+          options: const FitBoundsOptions(
+            padding: EdgeInsets.all(25),
+          ));
+    }
   }
 
   @override
@@ -105,8 +107,8 @@ class _AccessoryMapState extends State<AccessoryMap> {
               InteractiveFlag.flingAnimation |
               InteractiveFlag.pinchMove,
         ),
-        layers: [
-          TileLayerOptions(
+        children: [
+          TileLayer(
             backgroundColor: Theme.of(context).colorScheme.surface,
             tileBuilder: (context, child, tile) {
               var isDark = (Theme.of(context).brightness == Brightness.dark);
@@ -139,12 +141,9 @@ class _AccessoryMapState extends State<AccessoryMap> {
                   : child;
             },
             urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-            attributionBuilder: (_) {
-              return const Text("© OpenStreetMap contributors");
-            },
+            subdomains: const ['a', 'b', 'c'],
           ),
-          MarkerLayerOptions(
+          MarkerLayer(
             markers: [
               ...accessories
                   .where((accessory) => accessory.lastLocation != null)
@@ -159,7 +158,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
                   .toList(),
             ],
           ),
-          MarkerLayerOptions(markers: [
+          MarkerLayer(markers: [
             if (locationModel.here != null)
               Marker(
                 width: 25.0,

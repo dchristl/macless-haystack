@@ -22,7 +22,7 @@ class AccessoryHistory extends StatefulWidget {
 }
 
 class _AccessoryHistoryState extends State<AccessoryHistory> {
-  final MapController _mapController = MapController();
+  late MapController _mapController;
 
   bool showPopup = false;
   Pair<LatLng, DateTime>? popupEntry;
@@ -32,12 +32,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   @override
   void initState() {
     super.initState();
-
-    _mapController.onReady.then((_) {
-      var historicLocations =
-          widget.accessory.locationHistory.map((entry) => entry.a).toList();
-      var bounds = LatLngBounds.fromPoints(historicLocations);
-      _mapController.fitBounds(bounds);
+    _mapController = MapController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      mapReady();
     });
   }
 
@@ -65,9 +62,11 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
               flex: 3,
               fit: FlexFit.tight,
               child: FlutterMap(
+                key: ValueKey(MediaQuery.of(context).orientation),
                 mapController: _mapController,
                 options: MapOptions(
                   center: LatLng(49.874739, 8.656280),
+                  // onMapReady: mapReady,
                   zoom: 13.0,
                   interactiveFlags: InteractiveFlag.pinchZoom |
                       InteractiveFlag.drag |
@@ -81,49 +80,45 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                     });
                   },
                 ),
-                layers: [
-                  TileLayerOptions(
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    tileBuilder: (context, child, tile) {
-                      var isDark =
-                          (Theme.of(context).brightness == Brightness.dark);
-                      return isDark
-                          ? ColorFiltered(
-                              colorFilter: const ColorFilter.matrix([
-                                -1,
-                                0,
-                                0,
-                                0,
-                                255,
-                                0,
-                                -1,
-                                0,
-                                0,
-                                255,
-                                0,
-                                0,
-                                -1,
-                                0,
-                                255,
-                                0,
-                                0,
-                                0,
-                                1,
-                                0,
-                              ]),
-                              child: child,
-                            )
-                          : child;
-                    },
-                    urlTemplate:
-                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c'],
-                    attributionBuilder: (_) {
-                      return const Text("© OpenStreetMap contributors");
-                    },
-                  ),
+                children: [
+                  TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      tileBuilder: (context, child, tile) {
+                        var isDark =
+                            (Theme.of(context).brightness == Brightness.dark);
+                        return isDark
+                            ? ColorFiltered(
+                                colorFilter: const ColorFilter.matrix([
+                                  -1,
+                                  0,
+                                  0,
+                                  0,
+                                  255,
+                                  0,
+                                  -1,
+                                  0,
+                                  0,
+                                  255,
+                                  0,
+                                  0,
+                                  -1,
+                                  0,
+                                  255,
+                                  0,
+                                  0,
+                                  0,
+                                  1,
+                                  0,
+                                ]),
+                                child: child,
+                              )
+                            : child;
+                      },
+                      subdomains: const ['a', 'b', 'c']),
                   // The line connecting the locations chronologically
-                  PolylineLayerOptions(
+                  PolylineLayer(
                     polylines: [
                       Polyline(
                         points:
@@ -133,8 +128,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                       ),
                     ],
                   ),
-                  // The markers for the historic locaitons
-                  MarkerLayerOptions(
+                  // The markers for the historic locations
+                  MarkerLayer(
                     markers: locationHistory
                         .map((entry) => Marker(
                               point: entry.a,
@@ -157,7 +152,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                         .toList(),
                   ),
                   // Displays the tooltip if active
-                  MarkerLayerOptions(
+                  MarkerLayer(
                     markers: [
                       if (showPopup)
                         LocationPopup(
@@ -185,5 +180,12 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
         ),
       ),
     );
+  }
+
+  mapReady() {
+    var historicLocations =
+        widget.accessory.locationHistory.map((entry) => entry.a).toList();
+    var bounds = LatLngBounds.fromPoints(historicLocations);
+    _mapController.fitBounds(bounds);
   }
 }

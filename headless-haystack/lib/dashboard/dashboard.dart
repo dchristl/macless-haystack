@@ -25,6 +25,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+
   /// A list of the tabs displayed in the bottom tab bar.
   late final List<Map<String, dynamic>> _tabs = [
     {
@@ -65,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
     loadLocationUpdates();
   }
 
-  /// Fetch locaiton updates for all accessories.
+  /// Fetch location updates for all accessories.
   Future<void> loadLocationUpdates() async {
     var accessoryRegistry =
         Provider.of<AccessoryRegistry>(context, listen: false);

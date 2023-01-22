@@ -62,6 +62,7 @@ class FindMyController {
       logger.d('Decrypting with private key of ${result['id']}');
       results.add(
           await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
+      break; //FIXME
     }
 
     return results;

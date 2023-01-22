@@ -18,7 +18,8 @@ class AccessoryMapListVertical extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AccessoryMapListVertical> createState() => _AccessoryMapListVerticalState();
+  State<AccessoryMapListVertical> createState() =>
+      _AccessoryMapListVerticalState();
 }
 
 class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
@@ -29,11 +30,12 @@ class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
       LatLngBounds(point),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<AccessoryRegistry, LocationModel>(
-      builder: (BuildContext context, AccessoryRegistry accessoryRegistry, LocationModel locationModel, Widget? child) {
+      builder: (BuildContext context, AccessoryRegistry accessoryRegistry,
+          LocationModel locationModel, Widget? child) {
         return Column(
           children: [
             Flexible(
@@ -54,4 +56,5 @@ class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
       },
     );
   }
+
 }
