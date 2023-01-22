@@ -62,8 +62,6 @@ class _AccessoryListState extends State<AccessoryList> {
         if (accessories.isEmpty) {
           return const NoAccessoriesPlaceholder();
         }
-
-        // TODO: Refresh Indicator for desktop
         // Use pull to refresh method
         return SlidableAutoCloseBehavior(
           child: RefreshIndicator(

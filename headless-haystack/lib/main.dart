@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:openhaystack_mobile/dashboard/dashboard_mobile.dart';
+import 'package:openhaystack_mobile/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
 import 'package:openhaystack_mobile/location/location_model.dart';
@@ -72,6 +72,6 @@ class _AppLayoutState extends State<AppLayout> {
       return const Splashscreen();
     }
 
-    return const DashboardMobile();
+    return const Dashboard();
   }
 }
