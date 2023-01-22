@@ -3,13 +3,13 @@ import 'package:openhaystack_mobile/accessory/accessory_color_selector.dart';
 
 class AccessoryColorInput extends StatelessWidget {
   /// The inititial color value
-  Color color;
+  final Color color;
   /// Callback called when the color is changed. Parameter is null
   /// if color did not change
-  ValueChanged<Color?> changeListener;
+  final ValueChanged<Color?> changeListener;
 
   /// Displays a color selection input that previews the current selection.
-  AccessoryColorInput({
+  const AccessoryColorInput({
     Key? key,
     required this.color,
     required this.changeListener,

@@ -8,7 +8,7 @@ import 'package:openhaystack_mobile/deployment/hyperlink.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeploymentInstructions extends StatefulWidget {
-  String advertisementKey;
+  final String advertisementKey;
 
   /// Displays deployment instructions for an already created accessory.
   ///
@@ -16,13 +16,15 @@ class DeploymentInstructions extends StatefulWidget {
   /// Deployment guides for special hardware can be accessed separately.
   ///
   /// The deployment instructions are customized with the [advertisementKey].
-  DeploymentInstructions({
+  const DeploymentInstructions({
     Key? key,
     this.advertisementKey = '<ADVERTISEMENT_KEY>',
   }) : super(key: key);
-
   @override
-  _DeploymentInstructionsState createState() => _DeploymentInstructionsState();
+  State<StatefulWidget> createState() {
+    return _DeploymentInstructionsState();
+  }
+
 }
 
 class _DeploymentInstructionsState extends State<DeploymentInstructions> {
@@ -98,7 +100,7 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                               'the created key so it can be found by Apple\'s Find My '
                               'network.'),
                         ),
-                        ListTile(
+                        const ListTile(
                           title: Hyperlink(
                             text: 'See deployment guide on GitHub',
                             target:
@@ -151,7 +153,7 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                               'the created key so it can be found by Apple\'s Find My '
                               'network.'),
                         ),
-                        ListTile(
+                       const  ListTile(
                           title: Hyperlink(
                             text: 'See deployment guide on GitHub',
                             target:
@@ -204,7 +206,7 @@ class _DeploymentInstructionsState extends State<DeploymentInstructions> {
                               'the devices advertises the created key so it can be '
                               'found by Apple\'s Find My network.'),
                         ),
-                        ListTile(
+                       const  ListTile(
                           title: Hyperlink(
                             text: 'See deployment guide on GitHub',
                             target:

@@ -8,19 +8,24 @@ import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
 import 'package:openhaystack_mobile/item_management/accessory_name_input.dart';
 
 class AccessoryDetail extends StatefulWidget {
-  Accessory accessory;
+  final Accessory accessory;
 
   /// A page displaying the editable information of a specific [accessory].
-  /// 
+  ///
   /// This shows the editable information of a specific [accessory] and
   /// allows the user to edit them.
-  AccessoryDetail({
+  const AccessoryDetail({
     Key? key,
     required this.accessory,
   }) : super(key: key);
 
   @override
-  _AccessoryDetailState createState() => _AccessoryDetailState();
+  State<StatefulWidget> createState() {
+    return _AccessoryDetailState();
+  }
+
+  // @override
+  // _AccessoryDetailState createState() => _AccessoryDetailState();
 }
 
 class _AccessoryDetailState extends State<AccessoryDetail> {
@@ -70,20 +75,26 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                           child: IconButton(
                             onPressed: () async {
                               // Show icon selection
-                              String? selectedIcon = await AccessoryIconSelector
-                                .showIconSelection(context, newAccessory.rawIcon, newAccessory.color);
+                              String? selectedIcon =
+                                  await AccessoryIconSelector.showIconSelection(
+                                      context,
+                                      newAccessory.rawIcon,
+                                      newAccessory.color);
                               if (selectedIcon != null) {
                                 setState(() {
                                   newAccessory.setIcon(selectedIcon);
                                 });
-
-                                // Show color selection only when icon is selected
-                                Color? selectedColor = await AccessoryColorSelector
-                                  .showColorSelection(context, newAccessory.color);
-                                if (selectedColor != null) {
-                                  setState(() {
-                                    newAccessory.color = selectedColor;
-                                  });
+                                if (mounted) {
+                                  // Show color selection only when icon is selected
+                                  Color? selectedColor =
+                                      await AccessoryColorSelector
+                                          .showColorSelection(
+                                              context, newAccessory.color);
+                                  if (selectedColor != null) {
+                                    setState(() {
+                                      newAccessory.color = selectedColor;
+                                    });
+                                  }
                                 }
                               }
                             },
@@ -123,20 +134,26 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
               ),
               ListTile(
                 title: OutlinedButton(
+                  onPressed: _formKey.currentState == null ||
+                          !_formKey.currentState!.validate()
+                      ? null
+                      : () {
+                          if (_formKey.currentState != null &&
+                              _formKey.currentState!.validate()) {
+                            // Update accessory with changed values
+                            var accessoryRegistry =
+                                Provider.of<AccessoryRegistry>(context,
+                                    listen: false);
+                            accessoryRegistry.editAccessory(
+                                widget.accessory, newAccessory);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Changes saved!'),
+                              ),
+                            );
+                          }
+                        },
                   child: const Text('Save'),
-                  onPressed: _formKey.currentState == null || !_formKey.currentState!.validate()
-                    ? null : () {
-                    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-                      // Update accessory with changed values
-                      var accessoryRegistry = Provider.of<AccessoryRegistry>(context, listen: false);
-                      accessoryRegistry.editAccessory(widget.accessory, newAccessory);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Changes saved!'),
-                        ),
-                      );
-                    }
-                  },
                 ),
               ),
               ListTile(
@@ -148,10 +165,14 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                       },
                     ),
                   ),
-                  child: const Text('Delete Accessory', style: TextStyle(color: Colors.white),),
+                  child: const Text(
+                    'Delete Accessory',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onPressed: () {
                     // Delete accessory
-                    var accessoryRegistry = Provider.of<AccessoryRegistry>(context, listen: false);
+                    var accessoryRegistry =
+                        Provider.of<AccessoryRegistry>(context, listen: false);
                     accessoryRegistry.removeAccessory(widget.accessory);
                     Navigator.pop(context);
                   },

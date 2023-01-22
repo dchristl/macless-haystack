@@ -10,7 +10,6 @@ import 'package:openhaystack_mobile/item_management/accessory_name_input.dart';
 import 'package:openhaystack_mobile/item_management/accessory_pk_input.dart';
 
 class AccessoryImport extends StatefulWidget {
-
   /// Displays an input form to manually import an accessory.
   const AccessoryImport({Key? key}) : super(key: key);
 
@@ -19,15 +18,13 @@ class AccessoryImport extends StatefulWidget {
 }
 
 class _AccessoryImportState extends State<AccessoryImport> {
-
   /// Stores the properties of the accessory to import.
   Accessory newAccessory = Accessory(
-    id: '',
-    name: '',    
-    hashedPublicKey: '',
-    datePublished: DateTime.now(),
-    additionalKeys: List.empty()
-  );
+      id: '',
+      name: '',
+      hashedPublicKey: '',
+      datePublished: DateTime.now(),
+      additionalKeys: List.empty());
   String privateKey = '';
 
   final _formKey = GlobalKey<FormState>();
@@ -43,15 +40,20 @@ class _AccessoryImportState extends State<AccessoryImport> {
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Key import failed. Check if private key is correct.'),
+              content:
+                  Text('Key import failed. Check if private key is correct.'),
             ),
           );
         }
         var keyPair = await FindMyController.importKeyPair(privateKey);
         newAccessory.hashedPublicKey = keyPair.hashedPublicKey;
-        AccessoryRegistry accessoryRegistry = Provider.of<AccessoryRegistry>(context, listen: false);
-        accessoryRegistry.addAccessory(newAccessory);
-        Navigator.pop(context);
+
+        if (mounted) {
+          AccessoryRegistry accessoryRegistry =
+              Provider.of<AccessoryRegistry>(context, listen: false);
+          accessoryRegistry.addAccessory(newAccessory);
+          Navigator.pop(context);
+        }
       }
     }
   }
@@ -68,7 +70,8 @@ class _AccessoryImportState extends State<AccessoryImport> {
           child: Column(
             children: [
               const ListTile(
-                title: Text('Please enter the accessory parameters. They can be found in the exported accessory file.'),
+                title: Text(
+                    'Please enter the accessory parameters. They can be found in the exported accessory file.'),
               ),
               AccessoryIdInput(
                 changeListener: (id) => setState(() {

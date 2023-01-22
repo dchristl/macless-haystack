@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AccessoryIdInput extends StatelessWidget {
-  ValueChanged<String?> changeListener;
+ final  ValueChanged<String?> changeListener;
 
   /// Displays an input field with validation for an accessory ID.
-  AccessoryIdInput({
+  const AccessoryIdInput({
     Key? key,
     required this.changeListener,
   }) : super(key: key);

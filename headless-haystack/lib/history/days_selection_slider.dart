@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 
 class DaysSelectionSlider extends StatefulWidget {
-
   /// The number of days currently selected.
-  double numberOfDays;
+  final double numberOfDays;
+
   /// A callback listening for value changes.
-  ValueChanged<double> onChanged;
+  final ValueChanged<double> onChanged;
 
   /// Display a slider that allows to define how many days to go back
   /// (range 1 to 7).
-  DaysSelectionSlider({
+  const DaysSelectionSlider({
     Key? key,
     required this.numberOfDays,
     required this.onChanged,
   }) : super(key: key);
 
   @override
-  _DaysSelectionSliderState createState() => _DaysSelectionSliderState();
+  State<StatefulWidget> createState() {
+    return _DaysSelectionSliderState();
+  }
 }
 
 class _DaysSelectionSliderState extends State<DaysSelectionSlider> {
@@ -52,5 +54,4 @@ class _DaysSelectionSliderState extends State<DaysSelectionSlider> {
       ),
     );
   }
-
 }

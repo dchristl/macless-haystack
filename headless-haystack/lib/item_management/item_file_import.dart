@@ -24,7 +24,9 @@ class ItemFileImport extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ItemFileImportState createState() => _ItemFileImportState();
+  State<StatefulWidget> createState() {
+    return _ItemFileImportState();
+  }
 }
 
 class _ItemFileImportState extends State<ItemFileImport> {
@@ -107,7 +109,9 @@ class _ItemFileImportState extends State<ItemFileImport> {
         content: Text(
             'Successfully imported ${nrOfImports.toString()} accessories.'),
       );
-      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      }
     }
   }
 

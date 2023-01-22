@@ -17,7 +17,6 @@ class Splashscreen extends StatelessWidget {
       body: Center(
         child: Container(
           constraints: BoxConstraints(maxWidth: maxSize, maxHeight: maxSize),
-          // TODO: Update app icon accordingly (https://docs.flutter.dev/development/ui/assets-and-images#platform-assets)
           child: const Image(
             width: 1800,
             image: AssetImage('assets/OpenHaystackIcon.png')),

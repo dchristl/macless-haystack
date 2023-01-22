@@ -9,7 +9,9 @@ class PreferencesPage extends StatefulWidget {
   const PreferencesPage({Key? key}) : super(key: key);
 
   @override
-  _PreferencesPageState createState() => _PreferencesPageState();
+  State<StatefulWidget> createState() {
+    return _PreferencesPageState();
+  }
 }
 
 class _PreferencesPageState extends State<PreferencesPage> {

@@ -18,7 +18,9 @@ class DashboardMobile extends StatefulWidget {
   const DashboardMobile({Key? key}) : super(key: key);
 
   @override
-  _DashboardMobileState createState() => _DashboardMobileState();
+  State<StatefulWidget> createState() {
+    return _DashboardMobileState();
+  }
 }
 
 class _DashboardMobileState extends State<DashboardMobile> {
@@ -70,17 +72,19 @@ class _DashboardMobileState extends State<DashboardMobile> {
 
     try {
       var count = await accessoryRegistry.loadLocationReports();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          content: Text(
-            'Fetched $count reports',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            content: Text(
+              'Fetched $count reports',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     } catch (e, stacktrace) {
       logger.e('Error on fetching', e, stacktrace);
       ScaffoldMessenger.of(context).showSnackBar(

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CodeBlock extends StatelessWidget {
-  String text;
+  final String text;
 
   /// Displays a code block that can easily copied by the user.
-  CodeBlock({
+  const CodeBlock({
     Key? key,
     required this.text,
   }) : super(key: key);

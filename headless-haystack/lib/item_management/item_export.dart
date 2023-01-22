@@ -11,13 +11,13 @@ import 'package:share_plus/share_plus.dart';
 
 class ItemExportMenu extends StatelessWidget {
   /// The accessory to export from
-  Accessory accessory;
+ final  Accessory accessory;
 
   /// Displays a bottom sheet with export options.
   ///
   /// The accessory can be exported to a JSON file or the
   /// key parameters can be exported separately.
-  ItemExportMenu({
+  const ItemExportMenu({
     Key? key,
     required this.accessory,
   }) : super(key: key);

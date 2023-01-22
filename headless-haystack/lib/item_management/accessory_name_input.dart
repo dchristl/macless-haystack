@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AccessoryNameInput extends StatelessWidget {
-  ValueChanged<String?>? onSaved;
-  ValueChanged<String>? onChanged;
+  final ValueChanged<String?>? onSaved;
+  final ValueChanged<String>? onChanged;
   /// The initial accessory name
-  String? initialValue;
+  final String? initialValue;
 
   /// Displays an input field with validation for an accessory name.
-  AccessoryNameInput({
+  const AccessoryNameInput({
     Key? key,
     this.onSaved,
     this.initialValue,

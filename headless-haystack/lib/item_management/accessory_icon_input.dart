@@ -3,17 +3,17 @@ import 'package:openhaystack_mobile/accessory/accessory_icon_selector.dart';
 
 class AccessoryIconInput extends StatelessWidget {
   /// The initial icon
-  IconData initialIcon;
+  final IconData initialIcon;
   /// The original icon name
-  String iconString;
+  final String iconString;
   /// The color of the icon
-  Color color;
+  final Color color;
   /// Callback called when the icon is changed. Parameter is null
   /// if icon did not change
-  ValueChanged<String?> changeListener;
+  final ValueChanged<String?> changeListener;
 
   /// Displays an icon selection input that previews the current selection.
-  AccessoryIconInput({
+  const AccessoryIconInput({
     Key? key,
     required this.initialIcon,
     required this.iconString,

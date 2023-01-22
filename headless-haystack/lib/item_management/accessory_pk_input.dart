@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class AccessoryPrivateKeyInput extends StatelessWidget {
-  ValueChanged<String?> changeListener;
+  final ValueChanged<String?> changeListener;
 
   /// Displays an input field with validation for a Base64 encoded accessory private key.
-  AccessoryPrivateKeyInput({
+  const AccessoryPrivateKeyInput({
     Key? key,
     required this.changeListener,
   }) : super(key: key);

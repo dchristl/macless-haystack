@@ -51,7 +51,7 @@ class NewKeyAction extends StatelessWidget {
 
                     if (result != null) {
                       var uploadfile = result.files.single.bytes;
-                      if (uploadfile != null) {
+                      if (uploadfile != null ) {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

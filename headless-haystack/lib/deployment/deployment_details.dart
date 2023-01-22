@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 
 class DeploymentDetails extends StatefulWidget {
   /// The steps required to deploy on this target.
-  List<Step> steps;
+  final List<Step> steps;
+
   /// The name of the deployment target.
-  String title;
+  final String title;
 
   /// Describes a generic step-by-step deployment for a special hardware target.
-  /// 
+  ///
   /// The actual steps depend on the target platform and are provided in [steps].
-  DeploymentDetails({
+  const DeploymentDetails({
     Key? key,
     required this.title,
     required this.steps,
   }) : super(key: key);
 
   @override
-  _DeploymentDetailsState createState() => _DeploymentDetailsState();
+  State<StatefulWidget> createState() {
+    return _DeploymentDetailsState();
+  }
 }
 
 class _DeploymentDetailsState extends State<DeploymentDetails> {
@@ -34,18 +37,22 @@ class _DeploymentDetailsState extends State<DeploymentDetails> {
         child: Stepper(
           currentStep: _index,
           controlsBuilder: (BuildContext context, ControlsDetails details) {
-            String continueText = _index < stepCount - 1 ? 'CONTINUE' : 'FINISH';
+            String continueText =
+                _index < stepCount - 1 ? 'CONTINUE' : 'FINISH';
             return Row(
               children: <Widget>[
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1))),
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(1))),
                   onPressed: details.onStepContinue,
                   child: Text(continueText),
                 ),
-                if (_index > 0) TextButton(
-                  onPressed: details.onStepCancel,
-                  child: const Text('BACK'),
-                ),
+                if (_index > 0)
+                  TextButton(
+                    onPressed: details.onStepCancel,
+                    child: const Text('BACK'),
+                  ),
               ],
             );
           },
@@ -54,8 +61,7 @@ class _DeploymentDetailsState extends State<DeploymentDetails> {
             if (_index == 0) {
               // Cancel deployment and return
               Navigator.pop(context);
-            }
-            else if (_index > 0) {
+            } else if (_index > 0) {
               setState(() {
                 _index -= 1;
               });
@@ -68,7 +74,7 @@ class _DeploymentDetailsState extends State<DeploymentDetails> {
               // Deployment finished
               Navigator.pop(context);
               Navigator.pop(context);
-            } else { 
+            } else {
               setState(() {
                 _index += 1;
               });

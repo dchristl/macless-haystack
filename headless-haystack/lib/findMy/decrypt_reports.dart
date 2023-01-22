@@ -77,8 +77,10 @@ class DecryptReports {
     final iv = symmetricKey.sublist(16, symmetricKey.length);
 
     final aesGcm = GCMBlockCipher(AESEngine())
-      ..init(false, AEADParameters(KeyParameter(decryptionKey),
-          tag.lengthInBytes * 8, iv, tag));
+      ..init(
+          false,
+          AEADParameters(
+              KeyParameter(decryptionKey), tag.lengthInBytes * 8, iv, tag));
 
     final plainText = Uint8List(cipherText.length);
     var offset = 0;

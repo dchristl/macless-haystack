@@ -9,26 +9,24 @@ import 'package:openhaystack_mobile/item_management/accessory_name_input.dart';
 import 'package:openhaystack_mobile/deployment/deployment_instructions.dart';
 
 class AccessoryGeneration extends StatefulWidget {
-
   /// Displays a page to create a new accessory.
-  /// 
+  ///
   /// The parameters of the new accessory can be input in text fields.
-  const AccessoryGeneration({ Key? key }) : super(key: key);
-
+  const AccessoryGeneration({Key? key}) : super(key: key);
   @override
-  _AccessoryGenerationState createState() => _AccessoryGenerationState();
+  State<StatefulWidget> createState() {
+    return _AccessoryGenerationState();
+  }
 }
 
 class _AccessoryGenerationState extends State<AccessoryGeneration> {
-
   /// Stores the properties of the new accessory.
   Accessory newAccessory = Accessory(
-    id: '',
-    name: '',   
-    hashedPublicKey: '',
-    datePublished: DateTime.now(),
-    additionalKeys: List.empty()
-  );
+      id: '',
+      name: '',
+      hashedPublicKey: '',
+      datePublished: DateTime.now(),
+      additionalKeys: List.empty());
 
   /// Stores the advertisement key of the newly created accessory.
   String? advertisementKey;
@@ -44,8 +42,11 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
         var keyPair = await FindMyController.generateKeyPair();
         advertisementKey = keyPair.getBase64AdvertisementKey();
         newAccessory.hashedPublicKey = keyPair.hashedPublicKey;
-        AccessoryRegistry accessoryRegistry = Provider.of<AccessoryRegistry>(context, listen: false);
-        accessoryRegistry.addAccessory(newAccessory);
+        if (mounted) {
+          AccessoryRegistry accessoryRegistry =
+              Provider.of<AccessoryRegistry>(context, listen: false);
+          accessoryRegistry.addAccessory(newAccessory);
+        }
         return true;
       }
     }
@@ -91,7 +92,8 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
                 },
               ),
               const ListTile(
-                title: Text('A secure key pair will be generated for you automatically.'),
+                title: Text(
+                    'A secure key pair will be generated for you automatically.'),
               ),
               SwitchListTile(
                 value: newAccessory.isActive,
@@ -116,7 +118,7 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
                   child: const Text('Create only'),
                   onPressed: () async {
                     var created = await createAccessory(context);
-                    if (created) {
+                    if (created && mounted) {
                       Navigator.pop(context);
                     }
                   },
@@ -127,12 +129,14 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
                   child: const Text('Create and Deploy'),
                   onPressed: () async {
                     var created = await createAccessory(context);
-                    if (created) {
+                    if (created && mounted) {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => DeploymentInstructions(
-                          advertisementKey: advertisementKey ?? '<ADVERTISEMENT_KEY>',
-                        )),
+                        MaterialPageRoute(
+                            builder: (context) => DeploymentInstructions(
+                                  advertisementKey:
+                                      advertisementKey ?? '<ADVERTISEMENT_KEY>',
+                                )),
                       );
                     }
                   },
