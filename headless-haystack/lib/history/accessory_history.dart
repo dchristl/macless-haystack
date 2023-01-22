@@ -52,8 +52,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
             .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.accessory.name),
+      appBar: AppBar( 
+        title: Text("${widget.accessory.name} (${widget.accessory.locationHistory.length} history reports)"),
       ),
       body: SafeArea(
         child: Column(
@@ -66,7 +66,6 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 mapController: _mapController,
                 options: MapOptions(
                   center: LatLng(49.874739, 8.656280),
-                  // onMapReady: mapReady,
                   zoom: 13.0,
                   interactiveFlags: InteractiveFlag.pinchZoom |
                       InteractiveFlag.drag |
