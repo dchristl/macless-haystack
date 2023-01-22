@@ -273,7 +273,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
             onPressed: () {
               if (accessories != null) {
                 _importSelectedAccessories();
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }
             },
             child: Text(

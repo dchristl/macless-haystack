@@ -31,7 +31,11 @@ class FindMyController {
 
     Map map = <String, Object>{};
     map['keyPair'] = keyPairs;
-    map['url'] = url ?? 'http://localhost:56176';
+    if (url?.isEmpty ?? true) {
+      url = 'http://localhost:56176';
+    }
+
+    map['url'] = url;
     return compute(_getListedReportResults, map);
   }
 
@@ -53,7 +57,7 @@ class FindMyController {
     for (var result in jsonResults) {
       FindMyKeyPair keyPair =
           hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
-      logger.i('Decrypting with private key of ${result['id']}');
+      logger.d('Decrypting with private key of ${result['id']}');
       results.add(
           await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
     }

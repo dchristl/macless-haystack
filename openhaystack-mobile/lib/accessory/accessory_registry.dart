@@ -102,7 +102,6 @@ class AccessoryRegistry extends ChangeNotifier {
         accessory.datePublished = lastReport.timestamp ?? lastReport.published;
       }
     }
-
     // Store updated lastLocation and datePublished for accessories
     _storeAccessories();
 

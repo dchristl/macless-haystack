@@ -180,7 +180,7 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         post_body = self.rfile.read(content_len)
 
-        print('Geting with post: ' + post_body)
+        print('Getting with post: ' + post_body)
         UTCTime, Timezone, unixEpoch = getCurrentTimes()
         body = json.loads(post_body)
         startdate = unixEpoch - 60 * 60 * 24 * 7 

@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:openhaystack_mobile/dashboard/dashboard_desktop.dart';
 import 'package:openhaystack_mobile/dashboard/dashboard_mobile.dart';
+import 'package:provider/provider.dart';
 import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
 import 'package:openhaystack_mobile/location/location_model.dart';
 import 'package:openhaystack_mobile/preferences/user_preferences_model.dart';
@@ -26,7 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => LocationModel()),
       ],
       child: MaterialApp(
-        title: 'OpenHaystack',
+        title: 'HeadlessHaystack',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
@@ -45,22 +43,17 @@ class AppLayout extends StatefulWidget {
 }
 
 class _AppLayoutState extends State<AppLayout> {
- 
-
   @override
   initState() {
     super.initState();
-
 
     var accessoryRegistry =
         Provider.of<AccessoryRegistry>(context, listen: false);
     accessoryRegistry.loadAccessories();
   }
 
-
-
   @override
-  void dispose() {   
+  void dispose() {
     super.dispose();
   }
 
@@ -79,13 +72,6 @@ class _AppLayoutState extends State<AppLayout> {
       return const Splashscreen();
     }
 
-    Size screenSize = MediaQuery.of(context).size;
-
-    // TODO: More advanced media query handling
-    if (screenSize.width < 800) {
-      return const DashboardMobile();
-    } else {
-      return const DashboardDesktop();
-    }
+    return const DashboardMobile();
   }
 }

@@ -9,6 +9,7 @@ import 'package:openhaystack_mobile/location/location_model.dart';
 import 'package:openhaystack_mobile/preferences/preferences_page.dart';
 import 'package:openhaystack_mobile/preferences/user_preferences_model.dart';
 
+
 class DashboardMobile extends StatefulWidget {
   /// Displays the layout for the mobile view of the app.
   ///
