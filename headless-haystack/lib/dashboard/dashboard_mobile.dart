@@ -9,7 +9,6 @@ import 'package:openhaystack_mobile/location/location_model.dart';
 import 'package:openhaystack_mobile/preferences/preferences_page.dart';
 import 'package:openhaystack_mobile/preferences/user_preferences_model.dart';
 
-
 class DashboardMobile extends StatefulWidget {
   /// Displays the layout for the mobile view of the app.
   ///
@@ -70,7 +69,18 @@ class _DashboardMobileState extends State<DashboardMobile> {
     );
 
     try {
-      await accessoryRegistry.loadLocationReports();
+      var count = await accessoryRegistry.loadLocationReports();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: Text(
+            'Fetched $count reports',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+        ),
+      );
     } catch (e, stacktrace) {
       logger.e('Error on fetching', e, stacktrace);
       ScaffoldMessenger.of(context).showSnackBar(

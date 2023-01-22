@@ -5,8 +5,6 @@ import 'package:openhaystack_mobile/preferences/user_preferences_model.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 class PreferencesPage extends StatefulWidget {
- 
-
   /// Displays this preferences page with information about the app.
   const PreferencesPage({Key? key}) : super(key: key);
 
@@ -21,52 +19,52 @@ class _PreferencesPageState extends State<PreferencesPage> {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: Consumer<UserPreferences>(
-        builder: (BuildContext context, UserPreferences prefs, Widget? child) {
-          return Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: ListView(
-                children: [
-                  SwitchListTile(
-                    title: const Text('Show this devices location'),
-                    value: !prefs.locationPreferenceKnown! ||
-                        (prefs.locationAccessWanted ?? true),
-                    onChanged: (showLocation) {
-                      prefs.setLocationPreference(showLocation);
-                      var locationModel =
-                          Provider.of<LocationModel>(context, listen: false);
-                      if (showLocation) {
-                        locationModel.requestLocationUpdates();
-                      } else {
-                        locationModel.cancelLocationUpdates();
-                      }
-                    },
-                  ),
-                  TextInputSettingsTile(
-                    settingKey: haystackurl,
-                    title: 'Url to Headless Haystack',
-                    validator: (String? url) {
-                      if (url != null && url.startsWith('http')) {
-                        return null;
-                      }
-                      return "Invalid Url";
-                    },
-                  ),
-                  ListTile(
-                    title: TextButton(
-                      child: const Text('About'),
-                      onPressed: () => showAboutDialog(
-                        context: context,
-                      ),
-                    ),
-                  ),
-                ],
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            getLocationTile(),
+            getUrlTile(),
+            ListTile(
+              title: TextButton(
+                child: const Text('About'),
+                onPressed: () => showAboutDialog(
+                  context: context,
+                ),
               ),
             ),
-          );
-        },
+          ],
+        ),
       ),
+    );
+  }
+
+  getLocationTile() {
+    return SwitchSettingsTile(
+      settingKey: locationPreferenceKnownKey,
+      title: 'Show this devices location',
+      onChange: (showLocation) {
+        var locationModel = Provider.of<LocationModel>(context, listen: false);
+        if (showLocation) {
+          locationModel.requestLocationUpdates();
+        } else {
+          locationModel.cancelLocationUpdates();
+        }
+      },
+    );
+  }
+
+  getUrlTile() {
+    return TextInputSettingsTile(
+      initialValue: 'http://localhost:56176',
+      settingKey: haystackurl,
+      title: 'Url to Headless Haystack',
+      validator: (String? url) {
+        if (url != null &&
+            url.startsWith(RegExp('http[s]?://', caseSensitive: false))) {
+          return null;
+        }
+        return "Invalid Url";
+      },
     );
   }
 }

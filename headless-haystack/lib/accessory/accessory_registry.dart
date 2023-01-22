@@ -45,16 +45,13 @@ class AccessoryRegistry extends ChangeNotifier {
       _accessories = [];
     }
 
-    // For Debugging:
-    // await overwriteEverythingWithDemoDataForDebugging();
-
     loading = false;
 
     notifyListeners();
   }
 
   /// Fetches new location reports and matches them to their accessory.
-  Future<void> loadLocationReports() async {
+  Future<int> loadLocationReports() async {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
 
     // request location updates for all accessories simultaneously
@@ -80,10 +77,11 @@ class AccessoryRegistry extends ChangeNotifier {
     }
 
     var reportsForAccessories = await Future.wait(runningLocationRequests);
-
+    int out = 0;
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
       var reports = reportsForAccessories.elementAt(i);
+      out += reports.length;
       logger.i(
           '${reports.length} reports fetched for ${accessory.hashedPublicKey} overall');
       accessory.locationHistory = reports
@@ -107,6 +105,7 @@ class AccessoryRegistry extends ChangeNotifier {
 
     initialLoadFinished = true;
     notifyListeners();
+    return Future.value(out);
   }
 
   /// Stores the user's accessories in persistent storage.
