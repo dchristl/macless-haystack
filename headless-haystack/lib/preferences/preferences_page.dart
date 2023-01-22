@@ -25,12 +25,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
             getLocationTile(),
             getUrlTile(),
             ListTile(
-              title: TextButton(
-                child: const Text('About'),
-                onPressed: () => showAboutDialog(
-                  context: context,
-                ),
-              ),
+              title: getAbout(),
             ),
           ],
         ),
@@ -57,7 +52,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
     return TextInputSettingsTile(
       initialValue: 'http://localhost:56176',
       settingKey: haystackurl,
-      title: 'Url to Headless Haystack',
+      title: 'Url to Headless Haystack server',
       validator: (String? url) {
         if (url != null &&
             url.startsWith(RegExp('http[s]?://', caseSensitive: false))) {
@@ -66,5 +61,26 @@ class _PreferencesPageState extends State<PreferencesPage> {
         return "Invalid Url";
       },
     );
+  }
+
+  getAbout() {
+    return TextButton(
+        style: ButtonStyle(
+            padding:
+                MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(10)),
+            foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                return Colors.white;
+              },
+            ),
+            backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                return Colors.indigo;
+              },
+            )),
+        child: const Text('About'),
+        onPressed: () => showAboutDialog(
+              context: context,
+            ));
   }
 }
