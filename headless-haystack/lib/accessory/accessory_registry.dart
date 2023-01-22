@@ -83,22 +83,16 @@ class AccessoryRegistry extends ChangeNotifier {
       var reports = reportsForAccessories.elementAt(i);
       out += reports.length;
       logger.i(
-          '${reports.length} reports fetched for ${accessory.hashedPublicKey} overall');
-      accessory.locationHistory = reports
-          .where((report) =>
-              report.latitude.abs() <= 90 && report.longitude.abs() < 90)
-          .map((report) => Pair<LatLng, DateTime>(
-                LatLng(report.latitude, report.longitude),
-                report.timestamp ?? report.published,
-              ))
-          .toList();
+          '${reports.length} reports fetched for ${accessory.hashedPublicKey} in total');
 
-      if (reports.isNotEmpty) {
-        var lastReport = reports.first;
+      if (reports.where((element) => !element.isEncrypted()).isNotEmpty) {
+        var lastReport =
+            reports.where((element) => !element.isEncrypted()).first;
         accessory.lastLocation =
-            LatLng(lastReport.latitude, lastReport.longitude);
+            LatLng(lastReport.latitude!, lastReport.longitude!);
         accessory.datePublished = lastReport.timestamp ?? lastReport.published;
       }
+      fillLocationHistory(reports, accessory);
     }
     // Store updated lastLocation and datePublished for accessories
     _storeAccessories();
@@ -137,5 +131,18 @@ class AccessoryRegistry extends ChangeNotifier {
     oldAccessory.update(newAccessory);
     _storeAccessories();
     notifyListeners();
+  }
+
+  Future<void> fillLocationHistory(
+      List<FindMyLocationReport> reports, Accessory accessory) async {
+    for (var i = 0; i < reports.length; i++) {
+      FindMyLocationReport report = reports[i];
+      reports[i].decrypt().whenComplete(() {
+        Pair<LatLng, DateTime> pair = Pair(
+            LatLng(report.latitude!, report.longitude!),
+            report.timestamp ?? report.published!);
+        accessory.locationHistory.add(pair);
+      });
+    }
   }
 }

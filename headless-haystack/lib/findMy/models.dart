@@ -1,24 +1,71 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:logger/logger.dart';
 import 'package:pointycastle/ecc/api.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
 import 'package:openhaystack_mobile/findMy/find_my_controller.dart';
+import 'package:openhaystack_mobile/findMy/decrypt_reports.dart';
 
 /// Represents a decrypted FindMyReport.
 class FindMyLocationReport {
-  double latitude;
-  double longitude;
-  int accuracy;
-  DateTime published;
+  static final logger = Logger(
+    printer: PrettyPrinter(methodCount: 0),
+  );
+
+  double? latitude;
+  double? longitude;
+  int? accuracy;
+  DateTime? published;
   DateTime? timestamp;
   int? confidence;
+  dynamic result;
+
+  String? base64privateKey;
+
+  String? id;
 
   FindMyLocationReport(this.latitude, this.longitude, this.accuracy,
       this.published, this.timestamp, this.confidence);
 
-  Location get location => Location(latitude, longitude);
+  FindMyLocationReport.decrypted(this.result, this.base64privateKey, this.id);
+
+  Location get location => Location(latitude!, longitude!);
+
+  bool isEncrypted() {
+    return latitude == null;
+  }
+
+  String? getId() {
+    return id;
+  }
+
+  Future<void> decrypt() async {
+    {
+      await Future.delayed(const Duration(milliseconds: 1)); //Is needed otherwise is executed synchron
+      if (isEncrypted()) {
+        logger.d('Decrypting report with private key of ${getId()}');
+        final unixTimestampInMillis = result["datePublished"];
+        final datePublished =
+            DateTime.fromMillisecondsSinceEpoch(unixTimestampInMillis);
+        FindMyReport report = FindMyReport(datePublished,
+            base64Decode(result["payload"]), id!, result["statusCode"]);
+
+        FindMyLocationReport decryptedReport =
+            await DecryptReports.decryptReport(
+                report, base64Decode(base64privateKey!));
+        latitude = decryptedReport.latitude;
+        longitude = decryptedReport.longitude;
+        accuracy = decryptedReport.accuracy;
+        timestamp = decryptedReport.timestamp;
+        confidence = decryptedReport.confidence;
+        result = null;
+        base64privateKey = null;
+      }
+    }
+  }
 }
 
 class Location {
@@ -40,9 +87,8 @@ class FindMyReport {
 
   FindMyReport(this.datePublished, this.payload, this.id, this.statusCode);
 
-  FindMyReport.completeInit(this.datePublished, this.payload, this.id, this.statusCode,
-  this.confidence, this.timestamp);
-
+  FindMyReport.completeInit(this.datePublished, this.payload, this.id,
+      this.statusCode, this.confidence, this.timestamp);
 }
 
 class FindMyKeyPair {
@@ -53,16 +99,17 @@ class FindMyKeyPair {
 
   /// Time when this key was used to send BLE advertisements
   DateTime startTime;
+
   /// Duration from start time how long the key was used to send BLE advertisements
   double duration;
 
-  FindMyKeyPair(this._publicKey, this.hashedPublicKey, this._privateKey, this.startTime,
-      this.duration);
+  FindMyKeyPair(this._publicKey, this.hashedPublicKey, this._privateKey,
+      this.startTime, this.duration);
 
   String getBase64PublicKey() {
     return base64Encode(_publicKey.Q!.getEncoded(false));
   }
-  
+
   String getBase64PrivateKey() {
     return base64Encode(pc_utils.encodeBigIntAsUnsigned(_privateKey.d!));
   }

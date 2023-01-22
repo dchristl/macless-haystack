@@ -183,9 +183,11 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   }
 
   mapReady() {
-    var historicLocations =
-        widget.accessory.locationHistory.map((entry) => entry.a).toList();
-    var bounds = LatLngBounds.fromPoints(historicLocations);
-    _mapController.fitBounds(bounds);
+    if (widget.accessory.locationHistory.isNotEmpty) {
+      var historicLocations =
+          widget.accessory.locationHistory.map((entry) => entry.a).toList();
+      var bounds = LatLngBounds.fromPoints(historicLocations);
+      _mapController.fitBounds(bounds);
+    }
   }
 }

@@ -8,7 +8,6 @@ import 'package:pointycastle/export.dart';
 import 'package:pointycastle/src/platform_check/platform_check.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
-import 'package:openhaystack_mobile/findMy/decrypt_reports.dart';
 import 'package:openhaystack_mobile/findMy/models.dart';
 import 'package:openhaystack_mobile/findMy/reports_fetcher.dart';
 import 'package:logger/logger.dart';
@@ -55,15 +54,24 @@ class FindMyController {
 
     List jsonResults = await ReportsFetcher.fetchLocationReports(
         hashedKeyKeyPairsMap.keys, url);
-
+    FindMyLocationReport? latest;
     for (var result in jsonResults) {
+      DateTime currentDate =
+          DateTime.fromMillisecondsSinceEpoch(result['datePublished']);
+      DateTime latestDate =
+          latest?.published ?? DateTime.fromMicrosecondsSinceEpoch(0);
       FindMyKeyPair keyPair =
           hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
-      logger.d('Decrypting with private key of ${result['id']}');
-      results.add(
-          await _decryptResult(result, keyPair, keyPair.privateKeyBase64!));
+      var currentReport = FindMyLocationReport.decrypted(result,
+          keyPair.getBase64PrivateKey(), keyPair.getHashedAdvertisementKey());
+      if (currentDate.isAfter(latestDate)) {
+        latest = currentReport;
+      }
+      results.add(currentReport);
     }
-
+    if (latest != null) {
+      await latest.decrypt();
+    }
     return results;
   }
 
@@ -89,27 +97,6 @@ class FindMyController {
     return publicKey;
   }
 
-  /// Decrypts the encrypted reports with the given [FindMyKeyPair] and private key.
-  /// Returns the decrypted report as a [FindMyLocationReport].
-  static Future<FindMyLocationReport> _decryptResult(
-      dynamic result, FindMyKeyPair keyPair, String privateKey) async {
-    assert(result["id"]! == keyPair.getHashedAdvertisementKey(),
-        "Returned FindMyReport hashed key != requested hashed key");
-
-    final unixTimestampInMillis = result["datePublished"];
-    final datePublished =
-        DateTime.fromMillisecondsSinceEpoch(unixTimestampInMillis);
-    FindMyReport report = FindMyReport(
-        datePublished,
-        base64Decode(result["payload"]),
-        keyPair.getHashedAdvertisementKey(),
-        result["statusCode"]);
-
-    FindMyLocationReport decryptedReport =
-        await DecryptReports.decryptReport(report, base64Decode(privateKey));
-
-    return decryptedReport;
-  }
 
   /// Returns the to the base64 encoded given hashed public key
   /// corresponding [FindMyKeyPair] from the local [FlutterSecureStorage].
