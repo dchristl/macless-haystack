@@ -138,7 +138,7 @@ class AccessoryRegistry extends ChangeNotifier {
     for (var i = 0; i < reports.length; i++) {
       FindMyLocationReport report = reports[i];
       reports[i].decrypt().whenComplete(() {
-        if (report.longitude! > -180 && report.longitude! < 180) {
+        if (report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
           Pair<LatLng, DateTime> pair = Pair(
               LatLng(report.latitude!, report.longitude!),
               report.timestamp ?? report.published!);
