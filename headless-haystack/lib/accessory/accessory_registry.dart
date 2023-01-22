@@ -124,7 +124,10 @@ class AccessoryRegistry extends ChangeNotifier {
   /// Removes [accessory] from this registry.
   void removeAccessory(Accessory accessory) {
     _accessories.remove(accessory);
-    // TODO: remove private key from keychain
+    accessory.getHashedPublicKey().then((publicKey) {
+      _storage.delete(key: publicKey);
+    });
+
     _storeAccessories();
     notifyListeners();
   }

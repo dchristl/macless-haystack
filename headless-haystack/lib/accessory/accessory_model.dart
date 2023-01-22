@@ -234,6 +234,10 @@ class Accessory {
   Future<String> getPrivateKey() async {
     var keyPair = await FindMyController.getKeyPair(hashedPublicKey);
     return keyPair.getBase64PrivateKey();
+  }  
+  
+  Future<String> getHashedPublicKey() async {
+    return hashedPublicKey;
   }
 
   Future<List<String>> getAdditionalPrivateKeys() {
