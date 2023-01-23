@@ -146,12 +146,16 @@ while i < args.nkeys:
         if args.yaml:
             yaml.write('    - "%s"\n' % adv_b64)
 
+addKeysS = ''
+if (len(additionalKeys) > 0 ):
+    addKeysS  = "\"" + "\",\"".join(additionalKeys) + "\""
+
+
 devices.write(TEMPLATE.substitute(name=prefix,
                                   id=str(random.choice(
                                       range(0, 10000000))),
                                   privateKey=priv_b64,
-                                  additionalKeys="\"" +
-                                  "\",\"".join(additionalKeys) + "\""
+                                  additionalKeys=addKeysS
                                   ))
 
 arrays.write('};')
