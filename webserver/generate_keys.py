@@ -10,6 +10,7 @@ import shutil
 import os
 import string
 from string import Template
+import struct
 
 OUTPUT_FOLDER = 'output/'
 TEMPLATE = Template('{'
@@ -87,7 +88,8 @@ if args.yaml:
 
 
 keyfile = open(OUTPUT_FOLDER + prefix + '_keyfile', 'wb')
-keyfile.write(args.nkeys.to_bytes(1, 'big'))
+
+keyfile.write(struct.pack("B", args.nkeys))
 
 devices = open(OUTPUT_FOLDER + prefix + '_devices.json', 'w')
 devices.write('[\n')
