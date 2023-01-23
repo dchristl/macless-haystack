@@ -35,9 +35,9 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 ## Instructions
 
-- MacOS-Guest or Host: Run `generate_keypairs.py` with the number of keypairs to generate as argument (e.g. `./generate_keypairs.py -n 10 -p PREFIX`). All files will be in output-folder
-- Host: Copy the array definition in PREFIX_array.txt in Firmware (openhaystack_main.c:55)
+- Host or MacOS-Guest: Run `generate_keypairs.py` with the number of keypairs to generate as argument (e.g. `./generate_keypairs.py -n 10 -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
 - Host: Compile firmware and flash ESP32
+- Host: Flash the keyfile to the ESP32 at PREFIX_keyfile at address 0x110000 with `esptool.py write_flash 0x110000 PREFIX_keyfile`
 - MacOS-Guest: Start Webserver with `./FindMy_proxy.py` (is running on port 80, but is exposed to 56176)
 - Host: Change the host in `openhaystack-mobile/lib/findMy/reports_fetcher.dart` to your Host-IP or DNS name
 - Host: Build mobile application with `flutter build apk`
