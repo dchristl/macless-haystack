@@ -65,6 +65,12 @@ parser.add_argument(
 parser.add_argument(
     '-v', '--verbose', help='print keys as they are generated', action="store_true")
 args = parser.parse_args()
+
+
+if args.nkeys < 1 or args.nkeys > 100:
+    raise argparse.ArgumentTypeError(
+        "Number of keys out of range (>1 and <100)")
+        
 current_directory = os.getcwd()
 final_directory = os.path.join(current_directory, OUTPUT_FOLDER)
 

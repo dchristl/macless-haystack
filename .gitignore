@@ -118,5 +118,6 @@ openssl/release
 **/output
 **/.pio
 **/.vscode
+**/*.code-workspace
 notes
 
