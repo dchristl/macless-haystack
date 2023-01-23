@@ -51,8 +51,6 @@ static uint8_t adv_data[31] = {
     0x00, /* Hint (0x00) */
 };
 
-// Overwrite this with the generate_keypairs.py output
-static uint8_t public_keys[][28] = {};
 
 /* https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/bluetooth/esp_gap_ble.html#_CPPv420esp_ble_adv_params_t */
 static esp_ble_adv_params_t ble_adv_params = {
@@ -75,6 +73,23 @@ static esp_ble_adv_params_t ble_adv_params = {
     // Allow both scan and connection requests from anyone.
     .adv_filter_policy = ADV_FILTER_ALLOW_SCAN_ANY_CON_ANY,
 };
+
+int load_bytes_from_partition(uint8_t *dst, size_t size, int offset)
+{
+    const esp_partition_t *keypart = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_NVS_KEYS, "key");
+    if (keypart == NULL)
+    {
+        ESP_LOGE(LOG_TAG, "Could not find key partition");
+        return 1;
+    }
+    esp_err_t status;
+    status = esp_partition_read(keypart, offset, dst, size);
+    if (status != ESP_OK)
+    {
+        ESP_LOGE(LOG_TAG, "Could not read key from partition: %s", esp_err_to_name(status));
+    }
+    return status;
+}
 
 static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param)
 {
@@ -131,11 +146,18 @@ void set_payload_from_key(uint8_t *payload, uint8_t *public_key)
     payload[29] = public_key[0] >> 6;
 }
 
-uint get_rnd_key_index()
+uint get_key_count()
 {
-    return (esp_random() % (sizeof(public_keys) / sizeof(public_keys[0])));
+    uint8_t keyCount[1];
+    if (load_bytes_from_partition(keyCount, sizeof(keyCount), 0) != ESP_OK)
+    {
+        ESP_LOGE(LOG_TAG, "Could not read the key count, stopping.");
+        return 0;
+    }
+    ESP_LOGE(LOG_TAG, "Found %i keys", keyCount[0]);
+    return keyCount[0];
 }
-
+static uint8_t public_key[28];
 void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init());
@@ -150,15 +172,22 @@ void app_main(void)
 
     ESP_LOGI(LOG_TAG, "application initialized");
 
-    uint8_t *public_key;
     /* Start with a random index */
-    uint key_index = get_rnd_key_index();
+    uint key_count = get_key_count();
+    uint key_index = (esp_random() % key_count);
     uint8_t cycle = 0;
     while (true)
     {
         esp_err_t status;
-
-        public_key = public_keys[key_index];
+        // Shift for keycount size + keylength * index
+        int address = 1 + (key_index * sizeof(public_key));
+        ESP_LOGI(LOG_TAG, "Loading key with index %d at address %d", key_index, address);
+        if (load_bytes_from_partition(public_key, sizeof(public_key), address) != ESP_OK)
+        {
+            ESP_LOGE(LOG_TAG, "Could not read the key, stopping.");
+            return;
+        }
+        ESP_LOGI(LOG_TAG, "using key with start %02x %02x", public_key[0], public_key[1]);
         set_addr_from_key(rnd_addr, public_key);
         set_payload_from_key(adv_data, public_key);
 
@@ -195,7 +224,7 @@ void app_main(void)
         if (cycle >= REUSE_CYCLES)
         {
             ESP_LOGI(LOG_TAG, "Max cycles %d are reached. Changing key ", cycle);
-            key_index = (key_index + 1) % (sizeof(public_keys) / sizeof(public_keys[0]));
+            key_index = (key_index + 1) % (key_count); // Back to zero if out of range
             cycle = 0;
         }
         else

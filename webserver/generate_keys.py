@@ -85,8 +85,9 @@ if args.yaml:
     yaml = open(OUTPUT_FOLDER + prefix + '_' + args.yaml + '.yaml', 'w')
     yaml.write('  keys:\n')
 
-arrays = open(OUTPUT_FOLDER + prefix + '_array.txt', 'w')
-arrays.write('static uint8_t public_keys[][28] = {')
+
+keyfile = open(OUTPUT_FOLDER + prefix + '_keyfile', 'wb')
+keyfile.write(args.nkeys.to_bytes(1, 'big'))
 
 devices = open(OUTPUT_FOLDER + prefix + '_devices.json', 'w')
 devices.write('[\n')
@@ -121,12 +122,10 @@ while i < args.nkeys:
     else:
         i += 1
 
-
-    arrays.write(to_C_byte_array(adv_bytes, isV3))
+    keyfile.write(base64.b64decode(adv_b64))
 
     if i < args.nkeys:
         additionalKeys.append(priv_b64)  # The last one is the leading one
-        arrays.write(',')
 
     if args.verbose:
         print('%d)' % (i+1))
@@ -145,8 +144,8 @@ while i < args.nkeys:
             yaml.write('    - "%s"\n' % adv_b64)
 
 addKeysS = ''
-if (len(additionalKeys) > 0 ):
-    addKeysS  = "\"" + "\",\"".join(additionalKeys) + "\""
+if (len(additionalKeys) > 0):
+    addKeysS = "\"" + "\",\"".join(additionalKeys) + "\""
 
 
 devices.write(TEMPLATE.substitute(name=prefix,
@@ -156,5 +155,4 @@ devices.write(TEMPLATE.substitute(name=prefix,
                                   additionalKeys=addKeysS
                                   ))
 
-arrays.write('};')
 devices.write(']')
