@@ -69,8 +69,8 @@ args = parser.parse_args()
 
 if args.nkeys < 1 or args.nkeys > 100:
     raise argparse.ArgumentTypeError(
-        "Number of keys out of range (>1 and <100)")
-        
+        "Number of keys out of range (between 1 and 100)")
+
 current_directory = os.getcwd()
 final_directory = os.path.join(current_directory, OUTPUT_FOLDER)
 
