@@ -16,8 +16,8 @@
 #include "esp_bt_main.h"
 #include "esp_bt_defs.h"
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
 #include "esp_sleep.h"
+#include "esp_random.h"
 
 /* Delay between advertisement. Advertisment will only be transmitted for a short period of time (20ms) and the device will go to sleep.
 Higher delay = less power consumption, but more inaccurate tracking
@@ -29,7 +29,7 @@ Smaller number of cycles = key changes more often, but more keys needed.
  */
 #define REUSE_CYCLES 30
 
-static const char *LOG_TAG = "open_haystack";
+static const char *LOG_TAG = "headless_haystack";
 
 /** Callback function for BT events */
 static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);

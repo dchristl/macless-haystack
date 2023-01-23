@@ -126,6 +126,7 @@ while i < args.nkeys:
 
     if i < args.nkeys:
         additionalKeys.append(priv_b64)  # The last one is the leading one
+        arrays.write(',')
 
     if args.verbose:
         print('%d)' % (i+1))
