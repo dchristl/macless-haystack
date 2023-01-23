@@ -146,5 +146,6 @@ class AccessoryRegistry extends ChangeNotifier {
         }
       });
     }
+    _storeAccessories();
   }
 }
