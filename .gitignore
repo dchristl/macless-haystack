@@ -118,6 +118,7 @@ openssl/release
 **/output
 **/.pio
 **/.vscode
+**/.dart_tool
 **/*.code-workspace
 notes
 
