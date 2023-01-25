@@ -55,17 +55,18 @@ class FindMyController {
     List jsonResults = await ReportsFetcher.fetchLocationReports(
         hashedKeyKeyPairsMap.keys, url);
     FindMyLocationReport? latest;
+    DateTime latestDate =
+        latest?.published ?? DateTime.fromMicrosecondsSinceEpoch(0);
     for (var result in jsonResults) {
       DateTime currentDate =
           DateTime.fromMillisecondsSinceEpoch(result['datePublished']);
-      DateTime latestDate =
-          latest?.published ?? DateTime.fromMicrosecondsSinceEpoch(0);
       FindMyKeyPair keyPair =
           hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
       var currentReport = FindMyLocationReport.decrypted(result,
           keyPair.getBase64PrivateKey(), keyPair.getHashedAdvertisementKey());
       if (currentDate.isAfter(latestDate)) {
         latest = currentReport;
+        latestDate = currentDate;
       }
       results.add(currentReport);
     }
@@ -96,7 +97,6 @@ class FindMyController {
     final publicKey = ECPublicKey(pk, _curveParams);
     return publicKey;
   }
-
 
   /// Returns the to the base64 encoded given hashed public key
   /// corresponding [FindMyKeyPair] from the local [FlutterSecureStorage].
