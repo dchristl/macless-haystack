@@ -64,12 +64,22 @@ parser.add_argument(
     '-y', '--yaml', help='yaml file where to write the list of generated keys')
 parser.add_argument(
     '-v', '--verbose', help='print keys as they are generated', action="store_true")
+parser.add_argument(
+
+    '-tinfs', '--thisisnotforstalking', help=argparse.SUPPRESS)   
+
 args = parser.parse_args()
 
+MAX_KEYS = 1
 
-if args.nkeys < 1 or args.nkeys > 100:
+if (args.thisisnotforstalking == 'i_agree'):
+    MAX_KEYS = 100
+
+ 
+if args.nkeys < 1 or args.nkeys > MAX_KEYS:
     raise argparse.ArgumentTypeError(
-        "Number of keys out of range (between 1 and 100)")
+        "Number of keys out of range (between 1 and " + str(MAX_KEYS) + ")")
+
 
 current_directory = os.getcwd()
 final_directory = os.path.join(current_directory, OUTPUT_FOLDER)
