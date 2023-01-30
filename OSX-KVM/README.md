@@ -3,10 +3,8 @@
 ### Requirements
 
 - [Docker](https://www.docker.com/) installed
-- Downloaded/cloned headless haystack project
-- [Git](https://git-scm.com/) installed 
 - If you are on Windows host, install (Windows Subsystem for Linux) and run all commands there
-- If you already own a mac and just want to use headless haystack you can jump directly to [Install Headless Haystack](#markdown-header-install-headless-haystack)
+- If you already own a mac and just want to use headless haystack you can jump directly to [Install Headless Haystack](#install-headless-haystack)
 
 ### Download and start your docker container
 

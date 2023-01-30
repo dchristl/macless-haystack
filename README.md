@@ -27,20 +27,13 @@ Stripped down to the mobile application (Android) and ESP32 firmware. ESP32 firm
 
 Customization in keypair generator to output an array for the ESP32 firmware and a json for import in the Android application. 
 
-## Requirements
-
-- MacOS (virtual or real). Checkout [dockerized Catalina](https://github.com/sickcodes/Docker-OSX#run-catalina-pre-installed-) 
-- Valid Apple ID and signed in MacOS.
-- Installed [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html) for building the customized ESP32 framework
-- Installed [Flutter](https://docs.flutter.dev/get-started/install/linux) and [Android SDK](https://developer.android.com/about/versions/13/setup-sdk#install-sdk) for the Android application
 
 ## Instructions
 
-- Host or MacOS-Guest: Run `generate_keypairs.py` with the number of keypairs to generate as argument (e.g. `./generate_keypairs.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
-- Host: Compile firmware and flash ESP32
-- Host: Flash the keyfile to the ESP32 at PREFIX_keyfile at address 0x110000 with `esptool.py write_flash 0x110000 PREFIX_keyfile`
-- MacOS-Guest: Start Webserver with `./FindMy_proxy.py` (is running on port 80, but is exposed to 56176)
-- Host: Build mobile application with `flutter build apk`
-- Mobile: Install application
-- Mobile: Import PREFIX_devices.json to Android application
+- Host: [Set up your virtual or real MAC](OSX-KVM/README.md)
+- Host or MacOS-Guest: Run `generate_keypairs.py` to generate your key (e.g. `./generate_keypairs.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
+- Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md)
+- *Optional*: Mobile: Install application
+- *Optional*: Host: Browse to [http://localhost:56443/](http://localhost:56443/)
+- Mobile or Host: Import PREFIX_devices.json to your  application
 
