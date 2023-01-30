@@ -161,7 +161,7 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                       (Set<MaterialState> states) {
-                        return Theme.of(context).errorColor;
+                        return Theme.of(context).colorScheme.error;
                       },
                     ),
                   ),

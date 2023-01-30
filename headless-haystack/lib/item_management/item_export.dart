@@ -11,7 +11,7 @@ import 'package:share_plus/share_plus.dart';
 
 class ItemExportMenu extends StatelessWidget {
   /// The accessory to export from
- final  Accessory accessory;
+  final Accessory accessory;
 
   /// Displays a bottom sheet with export options.
   ///
@@ -47,14 +47,18 @@ class ItemExportMenu extends StatelessWidget {
                         Provider.of<AccessoryRegistry>(context, listen: false)
                             .accessories;
                     await _exportAccessoriesAsJSON(accessories);
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 ListTile(
                   title: const Text('Export Accessory (JSON)'),
                   onTap: () async {
                     await _exportAccessoriesAsJSON([accessory]);
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -63,7 +67,9 @@ class ItemExportMenu extends StatelessWidget {
                     var advertisementKey =
                         await accessory.getHashedAdvertisementKey();
                     Share.share(advertisementKey);
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -72,7 +78,9 @@ class ItemExportMenu extends StatelessWidget {
                     var advertisementKey =
                         await accessory.getAdvertisementKey();
                     Share.share(advertisementKey);
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 ListTile(
@@ -80,7 +88,9 @@ class ItemExportMenu extends StatelessWidget {
                   onTap: () async {
                     var privateKey = await accessory.getPrivateKey();
                     Share.share(privateKey);
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               ],

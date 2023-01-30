@@ -55,8 +55,7 @@ class FindMyController {
     List jsonResults = await ReportsFetcher.fetchLocationReports(
         hashedKeyKeyPairsMap.keys, url);
     FindMyLocationReport? latest;
-    DateTime latestDate =
-        latest?.published ?? DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime latestDate = DateTime.fromMicrosecondsSinceEpoch(0);
     for (var result in jsonResults) {
       DateTime currentDate =
           DateTime.fromMillisecondsSinceEpoch(result['datePublished']);
