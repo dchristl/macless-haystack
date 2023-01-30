@@ -12,7 +12,8 @@ Included projects are (Credits goes to them for the hard work):
     - The standalone python webserver for fetching the FindMy reports
 - [Positive security's Find you](https://github.com/positive-security/find-you)
     - ESP32 firmware customization for battery optimization 
-- Optional: Dockerized MacOS by [Sickcodes](https://github.com/sickcodes/Docker-OSX) 
+- Optional: Dockerized MacOS by [Sickcodes](https://github.com/sickcodes/Docker-OSX)
+- Optional: mac OS serial generator by [Sickcodes](https://github.com/sickcodes/osx-serial-generator)
 
 
 ## Changes to the original projects

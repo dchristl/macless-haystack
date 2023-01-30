@@ -21,7 +21,7 @@ import six
 import ssl
 import sys
 
-pwd = ''  # Keychain password, can be hardcoded
+pwd = 'alpine'  # Keychain password, can be hardcoded
 
 
 def bytes_to_int(b):
@@ -222,7 +222,7 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         print(responseBody)
 
 
-PORT = 80
+PORT = 6176
 if __name__ == "__main__":
     if not pwd:
         pwd = getpass.getpass('Keychain password:')

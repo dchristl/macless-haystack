@@ -121,4 +121,4 @@ openssl/release
 **/.dart_tool
 **/*.code-workspace
 notes
-
+**/osx-serial-generator
