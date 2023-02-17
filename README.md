@@ -31,7 +31,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 ## Instructions
 
 - Host: [Set up your virtual or real MAC](OSX-KVM/README.md)
-- Host or MacOS-Guest: Run `generate_keypairs.py` to generate your key (e.g. `./generate_keypairs.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
+- Host or MacOS-Guest: Run `generate_keys.py` (check the projects webserver-folder) to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
 - Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md)
 - *Optional*: Mobile: Install application
 - *Optional*: Host: Browse to [http://localhost:56443/](http://localhost:56443/)
