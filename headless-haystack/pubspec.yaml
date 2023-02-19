@@ -51,12 +51,12 @@ dependencies:
 
   # Location
   flutter_map: ^3.1.0
-  location: ^4.2.0
+  location: ^4.4.0
   geocoding: ^2.0.1
 
   # Storage
   shared_preferences: ^2.0.9
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^7.0.0
   file_picker: ^5.2.5
 
   # Sharing
