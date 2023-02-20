@@ -56,19 +56,17 @@ dependencies:
 
   # Storage
   shared_preferences: ^2.0.9
-  flutter_secure_storage: ^7.0.0
+  flutter_secure_storage: ^8.0.0
   file_picker: ^5.2.5
 
   # Sharing
-  receive_sharing_intent: ^1.4.5
   share_plus: ^6.3.0
   url_launcher: ^6.0.17
   path_provider: ^2.0.8
   maps_launcher: ^2.0.1
 
 
-  flutter_settings_screens: 0.3.3-null-safety+2
-  dependencies:
+  flutter_settings_screens: ^0.3.3-null-safety+2
   latlong2: ^0.8.1
   intl: ^0.18.0
   logger: ^1.1.0
@@ -82,6 +80,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+
+  dependency_validator: ^3.2.2
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -92,7 +92,7 @@ dev_dependencies:
 # Configuration for flutter_launcher_icons
 flutter_icons:
   android: true
-  ios: true
+  ios: false
   image_path: "assets/OpenHaystackIcon.png"
 
 
