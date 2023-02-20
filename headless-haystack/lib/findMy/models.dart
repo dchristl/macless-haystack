@@ -5,8 +5,8 @@ import 'package:logger/logger.dart';
 import 'package:pointycastle/ecc/api.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
-import 'package:openhaystack_mobile/findMy/find_my_controller.dart';
-import 'package:openhaystack_mobile/findMy/decrypt_reports.dart';
+import 'package:headless_haystack/findMy/find_my_controller.dart';
+import 'package:headless_haystack/findMy/decrypt_reports.dart';
 
 /// Represents a decrypted FindMyReport.
 class FindMyLocationReport {

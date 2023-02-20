@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:openhaystack_mobile/deployment/deployment_email.dart';
-import 'package:openhaystack_mobile/deployment/deployment_esp32.dart';
-import 'package:openhaystack_mobile/deployment/deployment_linux_hci.dart';
-import 'package:openhaystack_mobile/deployment/deployment_nrf51.dart';
-import 'package:openhaystack_mobile/deployment/hyperlink.dart';
+import 'package:headless_haystack/deployment/deployment_email.dart';
+import 'package:headless_haystack/deployment/deployment_esp32.dart';
+import 'package:headless_haystack/deployment/deployment_linux_hci.dart';
+import 'package:headless_haystack/deployment/deployment_nrf51.dart';
+import 'package:headless_haystack/deployment/hyperlink.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeploymentInstructions extends StatefulWidget {

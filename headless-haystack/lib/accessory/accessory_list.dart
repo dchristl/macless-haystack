@@ -6,12 +6,12 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:openhaystack_mobile/accessory/accessory_list_item.dart';
-import 'package:openhaystack_mobile/accessory/accessory_list_item_placeholder.dart';
-import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
-import 'package:openhaystack_mobile/accessory/no_accessories.dart';
-import 'package:openhaystack_mobile/history/accessory_history.dart';
-import 'package:openhaystack_mobile/location/location_model.dart';
+import 'package:headless_haystack/accessory/accessory_list_item.dart';
+import 'package:headless_haystack/accessory/accessory_list_item_placeholder.dart';
+import 'package:headless_haystack/accessory/accessory_registry.dart';
+import 'package:headless_haystack/accessory/no_accessories.dart';
+import 'package:headless_haystack/history/accessory_history.dart';
+import 'package:headless_haystack/location/location_model.dart';
 
 class AccessoryList extends StatefulWidget {
   final AsyncCallback loadLocationUpdates;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:openhaystack_mobile/deployment/code_block.dart';
-import 'package:openhaystack_mobile/deployment/deployment_details.dart';
-import 'package:openhaystack_mobile/deployment/hyperlink.dart';
+import 'package:headless_haystack/deployment/code_block.dart';
+import 'package:headless_haystack/deployment/deployment_details.dart';
+import 'package:headless_haystack/deployment/hyperlink.dart';
 
 class DeploymentInstructionsESP32 extends StatelessWidget {
   final String advertisementKey;

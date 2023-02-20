@@ -3,12 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:openhaystack_mobile/accessory/accessory_dto.dart';
-import 'package:openhaystack_mobile/accessory/accessory_icon_model.dart';
-import 'package:openhaystack_mobile/accessory/accessory_model.dart';
-import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
-import 'package:openhaystack_mobile/findMy/find_my_controller.dart';
-import 'package:openhaystack_mobile/item_management/loading_spinner.dart';
+import 'package:headless_haystack/accessory/accessory_dto.dart';
+import 'package:headless_haystack/accessory/accessory_icon_model.dart';
+import 'package:headless_haystack/accessory/accessory_model.dart';
+import 'package:headless_haystack/accessory/accessory_registry.dart';
+import 'package:headless_haystack/findMy/find_my_controller.dart';
+import 'package:headless_haystack/item_management/loading_spinner.dart';
 
 class ItemFileImport extends StatefulWidget {
   /// The path to the file to import from.

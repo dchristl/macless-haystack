@@ -1,4 +1,4 @@
-package de.seemoo.android.openhaystack
+package de.dchristl.headlesshaystack
 
 import android.os.Build
 import android.os.Bundle

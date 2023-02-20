@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:openhaystack_mobile/accessory/accessory_color_selector.dart';
+import 'package:headless_haystack/accessory/accessory_color_selector.dart';
 
 class AccessoryColorInput extends StatelessWidget {
   /// The inititial color value

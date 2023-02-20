@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:pointycastle/export.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
-import 'package:openhaystack_mobile/findMy/models.dart';
+import 'package:headless_haystack/findMy/models.dart';
 
 class DecryptReports {
   /// Decrypts a given [FindMyReport] with the given private key.

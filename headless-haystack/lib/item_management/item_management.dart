@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:openhaystack_mobile/accessory/accessory_detail.dart';
-import 'package:openhaystack_mobile/accessory/accessory_icon.dart';
-import 'package:openhaystack_mobile/accessory/no_accessories.dart';
-import 'package:openhaystack_mobile/item_management/item_export.dart';
-import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
+import 'package:headless_haystack/accessory/accessory_detail.dart';
+import 'package:headless_haystack/accessory/accessory_icon.dart';
+import 'package:headless_haystack/accessory/no_accessories.dart';
+import 'package:headless_haystack/item_management/item_export.dart';
+import 'package:headless_haystack/accessory/accessory_registry.dart';
 import 'package:intl/intl.dart';
 
 class KeyManagement extends StatelessWidget {

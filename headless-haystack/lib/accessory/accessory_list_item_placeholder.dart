@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:openhaystack_mobile/accessory/accessory_list_item.dart';
-import 'package:openhaystack_mobile/placeholder/avatar_placeholder.dart';
-import 'package:openhaystack_mobile/placeholder/text_placeholder.dart';
+import 'package:headless_haystack/accessory/accessory_list_item.dart';
+import 'package:headless_haystack/placeholder/avatar_placeholder.dart';
+import 'package:headless_haystack/placeholder/text_placeholder.dart';
 
 class AccessoryListItemPlaceholder extends StatelessWidget {
 

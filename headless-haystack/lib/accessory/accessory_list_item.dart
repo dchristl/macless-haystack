@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:openhaystack_mobile/accessory/accessory_icon.dart';
-import 'package:openhaystack_mobile/accessory/accessory_model.dart';
+import 'package:headless_haystack/accessory/accessory_icon.dart';
+import 'package:headless_haystack/accessory/accessory_model.dart';
 import 'package:intl/intl.dart';
 
 class AccessoryListItem extends StatelessWidget {

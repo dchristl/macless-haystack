@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
-import 'package:openhaystack_mobile/accessory/accessory_list.dart';
-import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
-import 'package:openhaystack_mobile/location/location_model.dart';
-import 'package:openhaystack_mobile/map/map.dart';
+import 'package:headless_haystack/accessory/accessory_list.dart';
+import 'package:headless_haystack/accessory/accessory_registry.dart';
+import 'package:headless_haystack/location/location_model.dart';
+import 'package:headless_haystack/map/map.dart';
 import 'package:latlong2/latlong.dart';
 
 class AccessoryMapListVertical extends StatefulWidget {

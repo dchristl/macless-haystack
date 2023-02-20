@@ -8,8 +8,8 @@ import 'package:pointycastle/export.dart';
 import 'package:pointycastle/src/platform_check/platform_check.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
-import 'package:openhaystack_mobile/findMy/models.dart';
-import 'package:openhaystack_mobile/findMy/reports_fetcher.dart';
+import 'package:headless_haystack/findMy/models.dart';
+import 'package:headless_haystack/findMy/reports_fetcher.dart';
 import 'package:logger/logger.dart';
 
 class FindMyController {

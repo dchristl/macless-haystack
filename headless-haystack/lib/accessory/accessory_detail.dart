@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:openhaystack_mobile/accessory/accessory_color_selector.dart';
-import 'package:openhaystack_mobile/accessory/accessory_icon.dart';
-import 'package:openhaystack_mobile/accessory/accessory_icon_selector.dart';
-import 'package:openhaystack_mobile/accessory/accessory_model.dart';
-import 'package:openhaystack_mobile/accessory/accessory_registry.dart';
-import 'package:openhaystack_mobile/item_management/accessory_name_input.dart';
+import 'package:headless_haystack/accessory/accessory_color_selector.dart';
+import 'package:headless_haystack/accessory/accessory_icon.dart';
+import 'package:headless_haystack/accessory/accessory_icon_selector.dart';
+import 'package:headless_haystack/accessory/accessory_model.dart';
+import 'package:headless_haystack/accessory/accessory_registry.dart';
+import 'package:headless_haystack/item_management/accessory_name_input.dart';
 
 class AccessoryDetail extends StatefulWidget {
   final Accessory accessory;
