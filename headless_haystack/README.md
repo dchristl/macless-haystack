@@ -34,19 +34,19 @@ $ flutter run
 When the app is running a new key pair can be created / imported in the app.
 
 ## Project Structure
-The project follows the default structure for flutter applications. The `android`, `ios` and `web` folders contain native projects for the specified platform. Native code can be added here for example to access special APIs.
+The project follows the default structure for flutter applications. The `android`, `linux` and `web` folders contain native projects for the specified platform. Native code can be added here for example to access special APIs.
 
 The business logic and UI can be found in the `lib` folder. This folder is furthermore separated into modules containing code regarding a common aspect.
 The business logic for accessing and decrypting the location reports is separated in the `findMy` folder for easier reuse.
 
 ## Building
-This project currently supports iOS and Android targets.
+This project currently supports Android, Linux and web targets.
 If you are building the project for the first time, you need to run
 ```bash
 $ flutter pub run flutter_launcher_icons:main 
 ```
 to create the icons and then, to create a distributable application package run
 ```bash
-$ flutter build [ios|apk|web]
+$ flutter build [linux|apk|web]
 ```
 The resulting build artifacts can be found in the `build` folder. To deploy the artifacts to a device consult the platform specific documentation.
