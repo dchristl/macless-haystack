@@ -177,9 +177,12 @@ if __name__ == "__main__":
                     names[hashed_adv] = name
 
     startdate = unixEpoch - 60 * 60 * args.hours
-    data = '{"search": [{"endDate": %d, "startDate": %d, "ids": %s}]}' % ((unixEpoch -978307200) *1000000, (startdate -978307200)*1000000, ids.keys())
+    startdate = unixEpoch - 60 * 60 * args.hours
+
+    keys = '","'.join(ids.keys())
+
+    data = '{"search": [{"endDate": %d, "startDate": %d, "ids":["%s"]}]}' % ((unixEpoch -978307200) *1000000, (startdate -978307200)*1000000, keys)
     print(data)
-    # send out the whole thing
     
     conn = six.moves.http_client.HTTPSConnection('gateway.icloud.com', timeout=5, context=ssl._create_unverified_context())
     # conn = six.moves.http_client.HTTPSConnection('gateway.icloud.com')
