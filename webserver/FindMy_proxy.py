@@ -9,7 +9,7 @@ import sys
 from apple_cryptography import *
 
 
-PORT = 80
+PORT = 6167
 
 class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
