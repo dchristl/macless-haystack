@@ -122,3 +122,4 @@ openssl/release
 **/*.code-workspace
 notes
 **/osx-serial-generator
+*.pyc
