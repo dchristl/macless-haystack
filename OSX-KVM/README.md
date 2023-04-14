@@ -81,7 +81,7 @@ All commands will be executed in MacOs (virtual or real). <!-- Make sure [Homebr
 
 - Download and unzip latest headless haystack
 ```
-curl -L -O https://github.com/dchristl/headless-haystack/releases/download/vXX.XX.XX/macos-webapplication.zip
+curl -L -O  https://github.com/dchristl/headless-haystack/releases/latest/download/macos-webapplication.zip
 unzip macos-webapplication.zip -d webserver
 ```
 - Browse to webserver folder, change the password if not 'alpine' 
