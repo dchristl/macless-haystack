@@ -87,7 +87,7 @@ unzip macos-webapplication.zip -d webserver
 - Browse to webserver folder, change the password if not 'alpine' 
 ```
 cd webserver
-# Change the password in line 'pwd = 'alpine'' at the beginning of the file
+# Change the password in line 'pwd = ''' at the beginning of the apple_cryptography.py file
 nano FindMy_proxy.py
 ```
 
