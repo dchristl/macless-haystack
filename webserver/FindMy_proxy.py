@@ -21,11 +21,14 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        content_len = int(self.headers.getheader('content-length', 0))
+        if hasattr(self.headers, 'getheader'):
+          content_len = int(self.headers.getheader('content-length', 0))
+        else:
+          content_len = int(self.headers.get('content-length'))
 
         post_body = self.rfile.read(content_len)
 
-        print('Getting with post: ' + post_body)
+        print('Getting with post: ' + str(post_body))
         UTCTime, Timezone, unixEpoch = getCurrentTimes()
         body = json.loads(post_body)
         startdate = unixEpoch - 60 * 60 * 24 * 7
