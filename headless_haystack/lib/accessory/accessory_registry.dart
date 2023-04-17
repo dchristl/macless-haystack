@@ -135,6 +135,7 @@ class AccessoryRegistry extends ChangeNotifier {
 
   Future<void> fillLocationHistory(
       List<FindMyLocationReport> reports, Accessory accessory) async {
+    accessory.locationHistory.clear();
     for (var i = 0; i < reports.length; i++) {
       FindMyLocationReport report = reports[i];
       reports[i].decrypt().whenComplete(() {

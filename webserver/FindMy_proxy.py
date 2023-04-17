@@ -31,17 +31,19 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         print('Getting with post: ' + str(post_body))
         UTCTime, Timezone, unixEpoch = getCurrentTimes()
         body = json.loads(post_body)
-        startdate = unixEpoch - 60 * 60 * 24 * 7
-        data = '{"search": [{"endDate": %d, "startDate": %d, "ids": [\"%s\"]}]}' % (
-            (unixEpoch - 978307200) * 1000000, (startdate - 978307200)*1000000, "\",\"".join(body['ids']))
+        if "days" in body:
+            days = body['days']
+        else: 
+            days = 7
+        print('Querying for ' + str(days) + ' days')
+        startdate = (unixEpoch - 60 * 60 * 24 * days) * 1000
+        data = '{"search": [{"ids": [\"%s\"]}]}' % ( "\",\"".join(body['ids']))
 
-        print(data)
         iCloud_decryptionkey = retrieveICloudKey()
         AppleDSID, searchPartyToken = getAppleDSIDandSearchPartyToken(
             iCloud_decryptionkey)
         machineID, oneTimePassword = getOTPHeaders()
         UTCTime, Timezone, unixEpoch = getCurrentTimes()
-
         request_headers = {
             'Authorization': "Basic %s" % (base64.b64encode((AppleDSID + ':' + searchPartyToken).encode('ascii')).decode('ascii')),
             'X-Apple-I-MD': "%s" % (oneTimePassword),
@@ -58,17 +60,28 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
             'gateway.icloud.com', timeout=5, context=ssl._create_unverified_context())
         conn.request("POST", "/acsnservice/fetch", data, request_headers)
         res = conn.getresponse()
-        # self.wfile.write(res.read())
+        result = json.loads(res.read())
 
+
+        results = result["results"]
+
+        newResults = [] 
+        
+        for idx, entry in enumerate(results):
+            if (int(entry["datePublished"]) > startdate):  
+                newResults.append(entry)
+
+               
+        result["results"] = newResults
         self.send_response(200)
         # send response headers
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         # send the body of the response
-        responseBody = res.read()
-        self.wfile.write(responseBody)
+        responseBody = json.dumps(result)
+        self.wfile.write(responseBody.encode())
 
-        print(responseBody)
+        # print(responseBody)
 
 
 
