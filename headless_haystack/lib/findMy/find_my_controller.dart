@@ -3,14 +3,17 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:headless_haystack/findMy/models.dart';
+import 'package:headless_haystack/findMy/reports_fetcher.dart';
+import 'package:logger/logger.dart';
 import 'package:pointycastle/export.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/platform_check/platform_check.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
-import 'package:headless_haystack/findMy/models.dart';
-import 'package:headless_haystack/findMy/reports_fetcher.dart';
-import 'package:logger/logger.dart';
+
+import '../preferences/user_preferences_model.dart';
 
 class FindMyController {
   static const _storage = FlutterSecureStorage();
@@ -37,6 +40,7 @@ class FindMyController {
     }
 
     map['url'] = url;
+    map['daysToFetch'] =  Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!;
     return compute(_getListedReportResults, map);
   }
 
@@ -48,12 +52,13 @@ class FindMyController {
     List<FindMyLocationReport> results = <FindMyLocationReport>[];
     List<FindMyKeyPair> keyPairs = map['keyPair'];
     var url = map['url'];
+    int daysToFetch = map['daysToFetch'];
     Map<String, FindMyKeyPair> hashedKeyKeyPairsMap = {
       for (var e in keyPairs) e.getHashedAdvertisementKey(): e
     };
 
     List jsonResults = await ReportsFetcher.fetchLocationReports(
-        hashedKeyKeyPairsMap.keys, url);
+        hashedKeyKeyPairsMap.keys, daysToFetch, url);
     FindMyLocationReport? latest;
     DateTime latestDate = DateTime.fromMicrosecondsSinceEpoch(0);
     for (var result in jsonResults) {

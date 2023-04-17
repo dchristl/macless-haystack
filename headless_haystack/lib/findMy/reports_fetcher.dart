@@ -11,8 +11,9 @@ class ReportsFetcher {
   static var logger = Logger(
     printer: PrettyPrinter(methodCount: 0),
   );
+
   static Future<List> fetchLocationReports(
-      Iterable<String> hashedAdvertisementKeys,
+      Iterable<String> hashedAdvertisementKeys, int daysToFetch,
       [String? url]) async {
     var keys = hashedAdvertisementKeys.toList(growable: false);
     logger.i('Using ${keys.length} key(s) to ask webservice');
@@ -22,6 +23,7 @@ class ReportsFetcher {
         },
         body: jsonEncode(<String, dynamic>{
           "ids": keys,
+          "days": daysToFetch,
         }));
 
     if (response.statusCode == 200) {
