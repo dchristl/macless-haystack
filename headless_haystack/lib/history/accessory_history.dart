@@ -18,6 +18,7 @@ class AccessoryHistory extends StatefulWidget {
     Key? key,
     required this.accessory,
   }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _AccessoryHistoryState();
@@ -30,12 +31,16 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   bool showPopup = false;
   Pair<LatLng, DateTime>? popupEntry;
 
-  double numberOfDays = Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!.toDouble();
+  double numberOfDays =
+      Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!.toDouble();
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+    if (numberOfDays < 1) {
+      numberOfDays = 7;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mapReady();
     });
@@ -55,8 +60,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
             .toList();
 
     return Scaffold(
-      appBar: AppBar( 
-        title: Text("${widget.accessory.name} (${widget.accessory.locationHistory.length} history reports)"),
+      appBar: AppBar(
+        title: Text(
+            "${widget.accessory.name} (${widget.accessory.locationHistory.length} history reports)"),
       ),
       body: SafeArea(
         child: Column(

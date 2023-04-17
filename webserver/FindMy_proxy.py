@@ -62,16 +62,21 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         res = conn.getresponse()
         result = json.loads(res.read())
 
-
         results = result["results"]
 
         newResults = [] 
+        latestEntry = None
         
         for idx, entry in enumerate(results):
             if (int(entry["datePublished"]) > startdate):  
                 newResults.append(entry)
+            if latestEntry is None:
+                latestEntry = entry
+            elif latestEntry["datePublished"] < entry["datePublished"]:
+                latestEntry = entry
 
-               
+        if days < 1 and latestEntry is not None:
+            newResults.append(latestEntry)         
         result["results"] = newResults
         self.send_response(200)
         # send response headers

@@ -56,13 +56,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
       title: 'Number of days to fetch location',
       settingKey: numberOfDaysToFetch,
       values: const <int, String>{
+        0: "latest location only",
         1: "1",
         2: "2",
         3: "3",
         4: "4",
         5: "5",
         6: "6",
-        7: "7"
+        7: "7",
       },
       selected: 7,
     );

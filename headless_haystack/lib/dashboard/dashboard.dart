@@ -82,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
           SnackBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
             content: Text(
-              'Fetched $count locations',
+              'Fetched $count location(s)',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
