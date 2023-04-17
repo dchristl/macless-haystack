@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const introductionShownKey = 'INTRODUCTION_SHOWN';
 const locationPreferenceKnownKey = 'LOCATION_PREFERENCE_KNOWN';
 const locationAccessWantedKey = 'LOCATION_PREFERENCE_WANTED';
 const haystackurl = 'HAYSTACK_URL';
+const numberOfDaysToFetch = 'NUMBER_OF_DAYS';
 
 class UserPreferences extends ChangeNotifier {
   /// If these settings are initialized.

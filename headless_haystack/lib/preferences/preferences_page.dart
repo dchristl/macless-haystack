@@ -26,6 +26,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
           children: <Widget>[
             getLocationTile(),
             getUrlTile(),
+            getNumberofDaysTile(),
             ListTile(
               title: getAbout(),
             ),
@@ -47,6 +48,23 @@ class _PreferencesPageState extends State<PreferencesPage> {
           locationModel.cancelLocationUpdates();
         }
       },
+    );
+  }
+
+  getNumberofDaysTile() {
+    return DropDownSettingsTile<int>(
+      title: 'Number of days to fetch location',
+      settingKey: numberOfDaysToFetch,
+      values: const <int, String>{
+        1: "1",
+        2: "2",
+        3: "3",
+        4: "4",
+        5: "5",
+        6: "6",
+        7: "7"
+      },
+      selected: 7,
     );
   }
 

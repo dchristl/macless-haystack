@@ -38,6 +38,7 @@ class _DaysSelectionSliderState extends State<DaysSelectionSlider> {
             children: [
               const Text('1', style: TextStyle(fontWeight: FontWeight.bold)),
               Expanded(
+
                 child: Slider(
                   value: widget.numberOfDays,
                   min: 1,
