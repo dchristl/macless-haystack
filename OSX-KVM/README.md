@@ -88,7 +88,7 @@ unzip macos-webapplication.zip -d webserver
 ```
 cd webserver
 # Change the password in line 'pwd = ''' at the beginning of the apple_cryptography.py file
-nano FindMy_proxy.py
+nano apple_cryptography.py
 ```
 
 - Start the fetch-location service
