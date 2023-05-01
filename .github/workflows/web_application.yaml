@@ -1,0 +1,31 @@
+name: Web-Release
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+      - name: Web Build
+        working-directory: ./headless_haystack
+        run: |
+          ls -al
+          flutter pub get
+          flutter build web --release
+      - name: Copy files to web application
+        run: |
+          mkdir -p ./headless_haystack/build/webapplication
+          cp ./webserver/FindMy_proxy.py ./headless_haystack/build/webapplication
+          cp ./webserver/apple_cryptography.py  ./headless_haystack/build/webapplication
+          cp -R ./headless_haystack/build/web ./headless_haystack/build/webapplication
+      - name: Upload Web Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-webapplication
+          path: ./headless_haystack/build/webapplication
