@@ -18,7 +18,6 @@ jobs:
           flutter pub get
           flutter build apk --release
       - name: Upload Android Artifacts
-        working-directory: ./headless_haystack
         uses: actions/upload-artifact@v3
         with:
           name: android
