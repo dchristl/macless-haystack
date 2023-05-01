@@ -15,7 +15,7 @@ jobs:
       - uses: subosito/flutter-action@v2
       - uses: actions/checkout@v3
       - name: GH-Page Build
-        working-directory: ../headless_haystack
+        working-directory: ./headless_haystack
         run: |
           pwd
           flutter pub get
