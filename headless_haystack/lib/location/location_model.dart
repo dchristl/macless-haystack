@@ -11,7 +11,6 @@ class LocationModel extends ChangeNotifier {
   LatLng? here;
   geocode.Placemark? herePlace;
   StreamSubscription<LocationData>? locationStream;
-  final Location _location = Location();
   bool initialLocationSet = false;
 
   var logger = Logger(
@@ -24,28 +23,15 @@ class LocationModel extends ChangeNotifier {
   /// access from the user if not granged.
   /// Returns if location access was granted.
   Future<bool> requestLocationAccess() async {
-    // Enable location service
-    var serviceEnabled = await _location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await _location.requestService();
-      if (!serviceEnabled) {
-        logger.w('Could not enable location service.');
-        return false;
-      }
-    }
-
     // Request location access from user if not permanently denied or already granted
-    var permissionGranted = await _location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await _location.requestPermission();
+    var permissionGranted = await getPermissionStatus();
+    if (permissionGranted == PermissionStatus.notDetermined) {
+      permissionGranted = await requestPermission();
     }
 
-    if (permissionGranted == PermissionStatus.granted) {
-      // Permission not granted
+    if (permissionGranted == PermissionStatus.authorizedAlways ||
+        permissionGranted == PermissionStatus.authorizedWhenInUse) {
       return true;
-    } else if (permissionGranted == PermissionStatus.grantedLimited) {
-      // Permission granted to access approximate location
-      return false;
     } else {
       // Permission not granted
       return false;
@@ -54,15 +40,15 @@ class LocationModel extends ChangeNotifier {
 
   /// Requests location updates from the platform.
   ///
-  /// Listeners will be notified about locaiton changes.
+  /// Listeners will be notified about location changes.
   Future<void> requestLocationUpdates() async {
     var permissionGranted = await requestLocationAccess();
     if (permissionGranted) {
       // Handle future location updates
-      locationStream ??= _location.onLocationChanged.listen(_updateLocation);
+      locationStream ??= onLocationChanged().listen(_updateLocation);
 
       // Fetch the current location
-      var locationData = await _location.getLocation();
+      var locationData = await getLocation();
       _updateLocation(locationData);
     } else {
       initialLocationSet = true;

@@ -47,7 +47,7 @@ dependencies:
 
   # Location
   flutter_map: ^3.1.0
-  location: ^4.4.0
+  location: ^5.0.0-dev.8
   geocoding: ^2.0.1
 
   # Storage
