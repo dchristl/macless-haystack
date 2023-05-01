@@ -1,4 +1,4 @@
-name: Web-Release
+name: Github-Page-Release
 
 on: [ push ]
 
@@ -14,9 +14,10 @@ jobs:
           java-version: '11'
       - uses: subosito/flutter-action@v2
       - uses: actions/checkout@v3
-      - name: Web Build
+      - name: GH-Page Build
         working-directory: ./headless_haystack
         run: |
+          flutter pub get
           flutter build web --release --base-href "/headless-haystack/"
       - name: Deploy to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4
