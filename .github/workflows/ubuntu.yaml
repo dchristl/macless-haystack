@@ -22,16 +22,17 @@ jobs:
       #   with:
       #     name: android
       #     path: ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk
-      - name: Web Build
-        working-directory: ./headless_haystack
-        run: |
-          flutter build web --release
-      - name: Upload Web Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: web
-          path: ./headless_haystack/build/web
+#      - name: Web Build
+#        working-directory: ./headless_haystack
+#        run: |
+#          flutter build web --release
+#      - name: Upload Web Artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: web
+#          path: ./headless_haystack/build/web
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: ./headless_haystack/build/web
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./headless_haystack/web
