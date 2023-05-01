@@ -53,7 +53,7 @@ dependencies:
   # Storage
   shared_preferences: ^2.0.9
   flutter_secure_storage: ^8.0.0
-  file_picker: ^5.2.5
+  file_picker: ^5.2.10
 
   # Sharing
   share_plus: ^6.3.0
