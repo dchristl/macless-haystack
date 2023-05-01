@@ -1,0 +1,189 @@
+{
+    "StreamConfig": {},
+    "State": {
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "RemovalInProgress": false,
+        "Dead": false,
+        "Pid": 106574,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2023-01-28T14:25:07.221648738Z",
+        "FinishedAt": "2023-01-28T14:23:24.299521315Z",
+        "Health": null
+    },
+    "ID": "14fe83732f6a602df22daf7097b7bf6b9bb2f5610ac40f0376c86457bf4f437e",
+    "Created": "2023-01-28T13:12:39.402643875Z",
+    "Managed": false,
+    "Path": "/bin/bash",
+    "Args": [
+        "-c",
+        "echo \"${BOILERPLATE}\"     ; [[ \"${TERMS_OF_USE}\" = i_agree ]] || exit 1     ; echo \"Disk is being copied between layers... Please wait a minute...\"     ; sudo touch /dev/kvm /dev/snd \"${IMAGE_PATH}\" \"${BOOTDISK}\" \"${ENV}\" 2>/dev/null || true     ; sudo chown -R $(id -u):$(id -g) /dev/kvm /dev/snd \"${IMAGE_PATH}\" \"${BOOTDISK}\" \"${ENV}\" 2>/dev/null || true     ; [[ \"${NOPICKER}\" == true ]] && {         sed -i '/^.*InstallMedia.*/d' Launch.sh         && export BOOTDISK=\"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore-nopicker.qcow2}\"     ; }     || export BOOTDISK=\"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2}\"     ; [[ \"${GENERATE_UNIQUE}\" == true ]] && {         ./Docker-OSX/osx-serial-generator/generate-unique-machine-values.sh             --master-plist-url=\"${MASTER_PLIST_URL}\"             --count 1             --tsv ./serial.tsv             --bootdisks             --width \"${WIDTH:-1920}\"             --height \"${HEIGHT:-1080}\"             --output-bootdisk \"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2}\"             --output-env \"${ENV:=/env}\"     || exit 1 ; }     ; [[ \"${GENERATE_SPECIFIC}\" == true ]] && {             source \"${ENV:=/env}\" 2>/dev/null             ; ./Docker-OSX/osx-serial-generator/generate-specific-bootdisk.sh             --master-plist-url=\"${MASTER_PLIST_URL}\"             --model \"${DEVICE_MODEL}\"             --serial \"${SERIAL}\"             --board-serial \"${BOARD_SERIAL}\"             --uuid \"${UUID}\"             --mac-address \"${MAC_ADDRESS}\"             --width \"${WIDTH:-1920}\"             --height \"${HEIGHT:-1080}\"             --output-bootdisk \"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2}\"      || exit 1 ; }     ; { [[ \"${DISPLAY}\" = ':99' ]] || [[ \"${HEADLESS}\" == true ]] ; } && {         nohup Xvfb :99 -screen 0 1920x1080x16         & until [[ \"$(xrandr --query 2>/dev/null)\" ]]; do sleep 1 ; done     ; }     ; stat \"${IMAGE_PATH}\"     ; echo \"Large image is being copied between layers, please wait a minute...\"     ; ./enable-ssh.sh     ; [[ -e ~/.ssh/id_docker_osx ]] || {         /usr/bin/ssh-keygen -t rsa -f ~/.ssh/id_docker_osx -q -N \"\"         && chmod 600 ~/.ssh/id_docker_osx     ; }     ; /bin/bash -c ./Launch.sh     & echo \"Booting Docker-OSX in the background. Please wait...\"     ; until [[ \"$(sshpass -p${PASSWORD:=alpine} ssh-copy-id -f -i ~/.ssh/id_docker_osx.pub -p 10022 ${USERNAME:=user}@127.0.0.1)\" ]]; do         echo \"Disk is being copied between layers. Repeating until able to copy SSH key into OSX...\"         ; sleep 1     ; done     ; grep id_docker_osx ~/.ssh/config || {         tee -a ~/.ssh/config <<< 'Host 127.0.0.1'         ; tee -a ~/.ssh/config <<< \"    User ${USERNAME:=user}\"         ; tee -a ~/.ssh/config <<< '    Port 10022'         ; tee -a ~/.ssh/config <<< '    IdentityFile ~/.ssh/id_docker_osx'         ; tee -a ~/.ssh/config <<< '    StrictHostKeyChecking no'         ; tee -a ~/.ssh/config <<< '    UserKnownHostsFile=/dev/null'     ; }     && echo 'Default username: user'     && echo 'Default password: alpine'     && echo 'Change it immediately using the command: passwd'     && ssh -i ~/.ssh/id_docker_osx ${USERNAME:=user}@127.0.0.1 -p 10022 \"${OSX_COMMANDS}\""
+    ],
+    "Config": {
+        "Hostname": "14fe83732f6a",
+        "Domainname": "",
+        "User": "arch",
+        "AttachStdin": true,
+        "AttachStdout": true,
+        "AttachStderr": true,
+        "ExposedPorts": {
+            "10022/tcp": {},
+            "6176/tcp": {},
+            "6443/tcp": {}
+        },
+        "Tty": true,
+        "OpenStdin": true,
+        "StdinOnce": true,
+        "Env": [
+            "GENERATE_UNIQUE=true",
+            "WIDTH=1024",
+            "HEIGHT=768",
+            "MASTER_PLIST_URL=https://raw.githubusercontent.com/dchristl/headless-haystack/main/OSX-KVM/custom.plist",
+            "DISPLAY=:99",
+            "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "LANG=C.UTF-8",
+            "USER=arch",
+            "LIBGUESTFS_DEBUG=1",
+            "LIBGUESTFS_TRACE=1",
+            "ADDITIONAL_PORTS=",
+            "BASESYSTEM_FORMAT=qcow2",
+            "BOOT_ARGS=",
+            "BOOTDISK=",
+            "CPU=Penryn",
+            "CPUID_FLAGS=vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on,+ssse3,+sse4.2,+popcnt,+avx,+aes,+xsave,+xsaveopt,check,",
+            "ENV=/env",
+            "GENERATE_SPECIFIC=false",
+            "IMAGE_PATH=/home/arch/OSX-KVM/mac_hdd_ng.img",
+            "IMAGE_FORMAT=qcow2",
+            "KVM=accel=kvm:tcg",
+            "NETWORKING=vmxnet3",
+            "NOPICKER=true",
+            "RAM=3",
+            "HEADLESS=false",
+            "USERNAME=user",
+            "PASSWORD=alpine",
+            "TERMS_OF_USE=i_agree",
+            "BOILERPLATE=By using this Dockerfile, you hereby agree that you are a security reseacher or developer and agree to use this Dockerfile to make the world a safer place. Examples include: making your apps safer, finding your mobile phone, compiling security products, etc. You understand that Docker-OSX is an Open Source project, which is released to the public under the GNU Pulic License version 3 and above. You acknowledge that the Open Source project is absolutely unaffiliated with any third party, in any form whatsoever. Any trademarks or intelectual property which happen to be mentioned anywhere in or around the project are owned by their respective owners. By using this Dockerfile, you agree to agree to the EULA of each piece of upstream or downstream software. The following code is released for the sole purpose of security research, under the GNU Public License version 3. If you are concerned about the licensing, please note that this project is not AGPL. A copy of the license is available online: https://github.com/sickcodes/Docker-OSX/blob/master/LICENSE. In order to use the following Dockerfile you must read and understand the terms. Once you have read the terms, use the -e TERMS_OF_USE=i_agree or -e TERMS_OF_USE=i_disagree"
+        ],
+        "Cmd": [
+            "/bin/bash",
+            "-c",
+            "echo \"${BOILERPLATE}\"     ; [[ \"${TERMS_OF_USE}\" = i_agree ]] || exit 1     ; echo \"Disk is being copied between layers... Please wait a minute...\"     ; sudo touch /dev/kvm /dev/snd \"${IMAGE_PATH}\" \"${BOOTDISK}\" \"${ENV}\" 2>/dev/null || true     ; sudo chown -R $(id -u):$(id -g) /dev/kvm /dev/snd \"${IMAGE_PATH}\" \"${BOOTDISK}\" \"${ENV}\" 2>/dev/null || true     ; [[ \"${NOPICKER}\" == true ]] && {         sed -i '/^.*InstallMedia.*/d' Launch.sh         && export BOOTDISK=\"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore-nopicker.qcow2}\"     ; }     || export BOOTDISK=\"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2}\"     ; [[ \"${GENERATE_UNIQUE}\" == true ]] && {         ./Docker-OSX/osx-serial-generator/generate-unique-machine-values.sh             --master-plist-url=\"${MASTER_PLIST_URL}\"             --count 1             --tsv ./serial.tsv             --bootdisks             --width \"${WIDTH:-1920}\"             --height \"${HEIGHT:-1080}\"             --output-bootdisk \"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2}\"             --output-env \"${ENV:=/env}\"     || exit 1 ; }     ; [[ \"${GENERATE_SPECIFIC}\" == true ]] && {             source \"${ENV:=/env}\" 2>/dev/null             ; ./Docker-OSX/osx-serial-generator/generate-specific-bootdisk.sh             --master-plist-url=\"${MASTER_PLIST_URL}\"             --model \"${DEVICE_MODEL}\"             --serial \"${SERIAL}\"             --board-serial \"${BOARD_SERIAL}\"             --uuid \"${UUID}\"             --mac-address \"${MAC_ADDRESS}\"             --width \"${WIDTH:-1920}\"             --height \"${HEIGHT:-1080}\"             --output-bootdisk \"${BOOTDISK:=/home/arch/OSX-KVM/OpenCore/OpenCore.qcow2}\"      || exit 1 ; }     ; { [[ \"${DISPLAY}\" = ':99' ]] || [[ \"${HEADLESS}\" == true ]] ; } && {         nohup Xvfb :99 -screen 0 1920x1080x16         & until [[ \"$(xrandr --query 2>/dev/null)\" ]]; do sleep 1 ; done     ; }     ; stat \"${IMAGE_PATH}\"     ; echo \"Large image is being copied between layers, please wait a minute...\"     ; ./enable-ssh.sh     ; [[ -e ~/.ssh/id_docker_osx ]] || {         /usr/bin/ssh-keygen -t rsa -f ~/.ssh/id_docker_osx -q -N \"\"         && chmod 600 ~/.ssh/id_docker_osx     ; }     ; /bin/bash -c ./Launch.sh     & echo \"Booting Docker-OSX in the background. Please wait...\"     ; until [[ \"$(sshpass -p${PASSWORD:=alpine} ssh-copy-id -f -i ~/.ssh/id_docker_osx.pub -p 10022 ${USERNAME:=user}@127.0.0.1)\" ]]; do         echo \"Disk is being copied between layers. Repeating until able to copy SSH key into OSX...\"         ; sleep 1     ; done     ; grep id_docker_osx ~/.ssh/config || {         tee -a ~/.ssh/config <<< 'Host 127.0.0.1'         ; tee -a ~/.ssh/config <<< \"    User ${USERNAME:=user}\"         ; tee -a ~/.ssh/config <<< '    Port 10022'         ; tee -a ~/.ssh/config <<< '    IdentityFile ~/.ssh/id_docker_osx'         ; tee -a ~/.ssh/config <<< '    StrictHostKeyChecking no'         ; tee -a ~/.ssh/config <<< '    UserKnownHostsFile=/dev/null'     ; }     && echo 'Default username: user'     && echo 'Default password: alpine'     && echo 'Change it immediately using the command: passwd'     && ssh -i ~/.ssh/id_docker_osx ${USERNAME:=user}@127.0.0.1 -p 10022 \"${OSX_COMMANDS}\""
+        ],
+        "Image": "sickcodes/docker-osx:auto",
+        "Volumes": {
+            "/tmp/.X11-unix": {}
+        },
+        "WorkingDir": "/home/arch/OSX-KVM",
+        "Entrypoint": null,
+        "OnBuild": null,
+        "Labels": {
+            "maintainer": "https://twitter.com/sickcodes <https://sick.codes>"
+        }
+    },
+    "Image": "sha256:e39b5350453f69ab048faaef9fbff5cbd1834cb33dec48ef84638221dc0c7d4c",
+    "NetworkSettings": {
+        "Bridge": "",
+        "SandboxID": "820be0bf9d8c40c3f93d046f2ef26662db5bf7f04b8683d4140cde95f8e99f0d",
+        "HairpinMode": false,
+        "LinkLocalIPv6Address": "",
+        "LinkLocalIPv6PrefixLen": 0,
+        "Networks": {
+            "bridge": {
+                "IPAMConfig": null,
+                "Links": null,
+                "Aliases": null,
+                "NetworkID": "54c8ec9d3b411a6bb341c6ad5303b83f461299871da72bf25513f271689e4905",
+                "EndpointID": "a8c8ed7672dc4d26847db613d7ad30564e49e17247f0398d0d8d162327af22dd",
+                "Gateway": "172.17.0.1",
+                "IPAddress": "172.17.0.2",
+                "IPPrefixLen": 16,
+                "IPv6Gateway": "",
+                "GlobalIPv6Address": "",
+                "GlobalIPv6PrefixLen": 0,
+                "MacAddress": "02:42:ac:11:00:02",
+                "DriverOpts": null,
+                "IPAMOperational": false
+            }
+        },
+        "Service": null,
+        "Ports": {
+            "10022/tcp": [
+                {
+                    "HostIp": "0.0.0.0",
+                    "HostPort": "50922"
+                },
+                {
+                    "HostIp": "::",
+                    "HostPort": "50922"
+                }
+            ],
+            "6176/tcp": [
+                {
+                    "HostIp": "0.0.0.0",
+                    "HostPort": "56176"
+                },
+                {
+                    "HostIp": "::",
+                    "HostPort": "56176"
+                }
+            ],
+            "6443/tcp": [
+                {
+                    "HostIp": "0.0.0.0",
+                    "HostPort": "56443"
+                },
+                {
+                    "HostIp": "::",
+                    "HostPort": "56443"
+                }
+            ]
+        },
+        "SandboxKey": "/var/run/docker/netns/820be0bf9d8c",
+        "SecondaryIPAddresses": null,
+        "SecondaryIPv6Addresses": null,
+        "IsAnonymousEndpoint": true,
+        "HasSwarmEndpoint": false
+    },
+    "LogPath": "/mnt/stuff/docker/containers/14fe83732f6a602df22daf7097b7bf6b9bb2f5610ac40f0376c86457bf4f437e/14fe83732f6a602df22daf7097b7bf6b9bb2f5610ac40f0376c86457bf4f437e-json.log",
+    "Name": "/distracted_joliot",
+    "Driver": "overlay2",
+    "OS": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "RestartCount": 0,
+    "HasBeenStartedBefore": true,
+    "HasBeenManuallyStopped": false,
+    "MountPoints": {
+        "/tmp/.X11-unix": {
+            "Source": "/tmp/.X11-unix",
+            "Destination": "/tmp/.X11-unix",
+            "RW": true,
+            "Name": "",
+            "Driver": "",
+            "Type": "bind",
+            "Propagation": "rprivate",
+            "Spec": {
+                "Type": "bind",
+                "Source": "/tmp/.X11-unix",
+                "Target": "/tmp/.X11-unix"
+            },
+            "SkipMountpointCreation": false
+        }
+    },
+    "SecretReferences": null,
+    "ConfigReferences": null,
+    "AppArmorProfile": "docker-default",
+    "HostnamePath": "/mnt/stuff/docker/containers/14fe83732f6a602df22daf7097b7bf6b9bb2f5610ac40f0376c86457bf4f437e/hostname",
+    "HostsPath": "/mnt/stuff/docker/containers/14fe83732f6a602df22daf7097b7bf6b9bb2f5610ac40f0376c86457bf4f437e/hosts",
+    "ShmPath": "",
+    "ResolvConfPath": "/mnt/stuff/docker/containers/14fe83732f6a602df22daf7097b7bf6b9bb2f5610ac40f0376c86457bf4f437e/resolv.conf",
+    "SeccompProfile": "",
+    "NoNewPrivileges": false,
+    "LocalLogCacheMeta": {
+        "HaveNotifyEnabled": false
+    }
+}
