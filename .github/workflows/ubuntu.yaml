@@ -29,7 +29,7 @@ jobs:
       - name: Web Build
         working-directory: ./headless_haystack
         run: |
-          flutter build web --release
+          flutter build web --release --base-href "/headless-haystack/"
       - name: Copy files to web application
         run: |
           mkdir -p ./headless_haystack/build/webapplication
