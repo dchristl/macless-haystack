@@ -1,4 +1,4 @@
-name: ESP32 Release
+name: ESP32-Release
 
 on: [push]
 

@@ -1,4 +1,4 @@
-name: Github-Page-Release
+name: Github-Page-Deployment
 
 on: [ push ]
 
