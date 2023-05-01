@@ -8,32 +8,32 @@ jobs:
     permissions:
       contents: write
     steps:
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'zulu'
-#          java-version: '11'
-#      - uses: subosito/flutter-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v2
       - uses: actions/checkout@v3
-      # - name: Android Build
-      #   working-directory: ./headless_haystack
-      #   run: |
-      #     flutter pub get
-      #     flutter build apk --release
-      # - name: Upload Android Artifacts
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: android
-      #     path: ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk
-#      - name: Web Build
-#        working-directory: ./headless_haystack
-#        run: |
-#          flutter build web --release
-#      - name: Upload Web Artifacts
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: web
-#          path: ./headless_haystack/build/web
-      - name: Deploy
+      - name: Android Build
+          working-directory: ./headless_haystack
+          run: |
+            flutter pub get
+            flutter build apk --release
+      - name: Upload Android Artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: android
+            path: ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk
+      - name: Web Build
+        working-directory: ./headless_haystack
+        run: |
+          flutter build web --release
+      - name: Upload Web Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: ./headless_haystack/build/web
+      - name: Deploy to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./headless_haystack/web
+          folder: ./headless_haystack/build/web
