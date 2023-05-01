@@ -100,7 +100,11 @@ nano apple_cryptography.py
 ```
 ./FindMy_proxy.py &
 ```
-Now start a simple HTTP-Server in the 'web'- folder on port 6443
+> You have now two options. You can use the application directly at [my GitHub-Page](https://dchristl.github.io/headless-haystack/) or you can host your own application on your Mac.
+
+If you want to use the Github-Pages, you just have to brows to the page and import your JSON-file. All inputs are local only, so no data will be transferred outside your client. 
+
+For self hosting you can run a simple HTTP-Server in the 'web'- folder on port 6443
 ```
 cd web
 python -m SimpleHTTPServer 6443
