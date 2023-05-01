@@ -12,9 +12,8 @@ jobs:
           java-version: '11'
       - uses: subosito/flutter-action@v2
       - name: Web Build
-        working-directory: ../headless_haystack
         run: |
-          pwd
+          ls -al
           flutter pub get
           flutter build web --release
       - name: Copy files to web application
