@@ -27,6 +27,6 @@ jobs:
         with:
           name: esp32-firmware
           path: |
-          ./firmware/ESP32/.pio/build/esp32dev/firmware.bin
-          ./firmware/ESP32/.pio/build/esp32dev/partitions.bin
-          ./firmware/ESP32/.pio/build/esp32dev/bootloader.bin
+            firmware/ESP32/.pio/build/esp32dev/firmware.bin
+            firmware/ESP32/.pio/build/esp32dev/partitions.bin
+            firmware/ESP32/.pio/build/esp32dev/bootloader.bin
