@@ -28,7 +28,6 @@ jobs:
           flutter build web --release
       - name: Upload Web Artifacts
         uses: actions/upload-artifact@v3
-        working-directory: ./headless_haystack
         with:
           name: web
           path: ./build/web
