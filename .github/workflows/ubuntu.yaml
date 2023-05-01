@@ -21,7 +21,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: android
-          path: ./build/app/outputs/flutter-apk/app-release.apk
+          path: ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk
       - name: Web Build
         working-directory: ./headless_haystack
         run: |
@@ -30,4 +30,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: web
-          path: ./build/web
+          path: ./headless_haystack/build/web
