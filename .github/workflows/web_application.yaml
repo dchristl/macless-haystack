@@ -13,6 +13,7 @@ jobs:
       - uses: subosito/flutter-action@v2
       - name: Web Build
         run: |
+          pwd
           flutter pub get
           flutter build web --release
       - name: Copy files to web application
