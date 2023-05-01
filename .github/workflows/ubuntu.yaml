@@ -12,16 +12,16 @@ jobs:
           java-version: '11'
       - uses: subosito/flutter-action@v2
       - uses: actions/checkout@v3
-      - name: Android Build
-        working-directory: ./headless_haystack
-        run: |
-          flutter pub get
-          flutter build apk --release
-      - name: Upload Android Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: android
-          path: ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk
+      # - name: Android Build
+      #   working-directory: ./headless_haystack
+      #   run: |
+      #     flutter pub get
+      #     flutter build apk --release
+      # - name: Upload Android Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: android
+      #     path: ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk
       - name: Web Build
         working-directory: ./headless_haystack
         run: |
@@ -31,3 +31,7 @@ jobs:
         with:
           name: web
           path: ./headless_haystack/build/web
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./headless_haystack/build/web
