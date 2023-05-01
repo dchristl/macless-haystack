@@ -1,0 +1,35 @@
+name: Web and Android-Release
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+      - name: Android Build
+        working-directory: ./headless_haystack
+        run: |
+          flutter pub get
+          flutter build apk --release
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v3
+        working-directory: ./headless_haystack
+        with:
+          name: android
+          path: ./build/app/outputs/flutter-apk/app-release.apk
+      - name: Web Build
+        working-directory: ./headless_haystack
+        run: |
+          flutter build web --release
+      - name: Upload Web Artifacts
+        uses: actions/upload-artifact@v3
+        working-directory: ./headless_haystack
+        with:
+          name: web
+          path: ./build/web
