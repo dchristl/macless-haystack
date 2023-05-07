@@ -34,6 +34,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 - Host or MacOS-Guest: Run `generate_keys.py` (check the projects webserver-folder) to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
 - Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md)
 - *Optional*: Mobile: Install application
+- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/headless-haystack/)
 - *Optional*: Host: Browse to [http://localhost:56443/](http://localhost:56443/)
 - Mobile or Host: Import PREFIX_devices.json to your  application
 
