@@ -10,7 +10,7 @@ jobs:
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
         with:
-          age: '10 seconds'
+          age: '90 seconds'
           skip-recent: 1      
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
