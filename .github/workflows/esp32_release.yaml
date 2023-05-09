@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions: write-all
     steps:
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
