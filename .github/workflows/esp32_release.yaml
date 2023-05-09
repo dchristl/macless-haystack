@@ -5,13 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '90 seconds'
-          skip-recent: 1      
+    steps:      
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:

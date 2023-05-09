@@ -5,12 +5,7 @@ on: [ push ]
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '90 seconds'
-          skip-recent: 1      
+    steps:    
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'

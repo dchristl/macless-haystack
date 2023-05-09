@@ -8,6 +8,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '90 seconds'
+          skip-recent: 5
+      - name: Setup Java    
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
