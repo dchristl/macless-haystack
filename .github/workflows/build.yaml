@@ -1,4 +1,4 @@
-name: Github-Page-Deployment
+name: Build, Release and Deploy
 
 on: [ push ]
 
@@ -12,9 +12,7 @@ jobs:
       #   uses: c-hive/gha-remove-artifacts@v1
       #   with:
       #     age: '90 seconds'
-      #     skip-recent: 5
-      - name: Set environment variables
-        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV      
+      #     skip-recent: 5     
       - name: Prepare and checkout   
         uses: actions/setup-java@v2
         with:
@@ -22,6 +20,8 @@ jobs:
           java-version: '11'
       - uses: subosito/flutter-action@v2
       - uses: actions/checkout@v3
+      - name: Set environment variables
+        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV 
       - name: GH-Page Build
         working-directory: ./headless_haystack
         run: |
@@ -68,7 +68,7 @@ jobs:
           key: ${{ runner.os }}-pio
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
@@ -81,7 +81,11 @@ jobs:
           path: |
             firmware/ESP32/.pio/build/esp32dev/firmware.bin
             firmware/ESP32/.pio/build/esp32dev/partitions.bin
-            firmware/ESP32/.pio/build/esp32dev/bootloader.bin                           
+            firmware/ESP32/.pio/build/esp32dev/bootloader.bin     
+      - name: Delete old drafts
+        uses: hugo19941994/delete-draft-releases@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}                                  
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@latest"         
         with:
