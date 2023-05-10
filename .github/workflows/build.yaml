@@ -81,7 +81,6 @@ jobs:
       - name: Build ESP32 firmware
         run: |
           pio run -d firmware/ESP32/
-          ls -al firmware/ESP32/.pio/build/esp32dev/
       - name: Upload firmware
         uses: actions/upload-artifact@v3
         with:
@@ -105,6 +104,6 @@ jobs:
             files: |
                 firmware/ESP32/.pio/build/esp32dev/firmware.bin
                 firmware/ESP32/.pio/build/esp32dev/partitions.bin
-                firmware/ESP32/.pio/build/esp32dev/bootloader.bin      
+                firmware/ESP32/.pio/build/esp32dev/bootloader.bin
                 ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
-                ./headless_haystack/build/webapplication       
+                macos-webapplication.zip      
