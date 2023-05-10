@@ -40,7 +40,6 @@ jobs:
       - name: Web Build
         working-directory: ./headless_haystack
         run: |
-          ls -al
           flutter pub get
           flutter build web --release    
       - name: Copy files to web application
@@ -49,7 +48,7 @@ jobs:
           cp ./webserver/FindMy_proxy.py ./headless_haystack/build/webapplication
           cp ./webserver/apple_cryptography.py  ./headless_haystack/build/webapplication
           cp -R ./headless_haystack/build/web ./headless_haystack/build/webapplication
-          cd ./headless_haystack/build/
+          cd ./headless_haystack/build/webapplication
           zip -r macos-webapplication.zip .
       - name: Upload Web Artifacts
         uses: actions/upload-artifact@v3
@@ -107,4 +106,4 @@ jobs:
             files: |
                 firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
                 ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
-                ./headless_haystack/build/macos-webapplication.zip      
+                ./headless_haystack/build/webapplication/macos-webapplication.zip      
