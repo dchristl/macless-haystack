@@ -105,8 +105,6 @@ jobs:
             draft: true
             prerelease: false
             files: |
-                firmware/ESP32/.pio/build/esp32dev/firmware.bin
-                firmware/ESP32/.pio/build/esp32dev/partitions.bin
-                firmware/ESP32/.pio/build/esp32dev/bootloader.bin
+                firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
                 ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
                 ./headless_haystack/build/macos-webapplication.zip      
