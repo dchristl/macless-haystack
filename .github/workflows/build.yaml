@@ -49,7 +49,8 @@ jobs:
           cp ./webserver/FindMy_proxy.py ./headless_haystack/build/webapplication
           cp ./webserver/apple_cryptography.py  ./headless_haystack/build/webapplication
           cp -R ./headless_haystack/build/web ./headless_haystack/build/webapplication
-          zip -r macos-webapplication.zip ./headless_haystack/build/webapplication
+          cd ./headless_haystack/build/
+          zip -r macos-webapplication.zip .
       - name: Upload Web Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -81,6 +82,8 @@ jobs:
       - name: Build ESP32 firmware
         run: |
           pio run -d firmware/ESP32/
+          cd firmware/ESP32/.pio/build/esp32dev/
+          zip -r esp32-firmware.zip firmware.bin partitions.bin bootloader.bin
       - name: Upload firmware
         uses: actions/upload-artifact@v3
         with:
@@ -106,4 +109,4 @@ jobs:
                 firmware/ESP32/.pio/build/esp32dev/partitions.bin
                 firmware/ESP32/.pio/build/esp32dev/bootloader.bin
                 ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
-                macos-webapplication.zip      
+                ./headless_haystack/build/macos-webapplication.zip      
