@@ -13,6 +13,8 @@ jobs:
       #   with:
       #     age: '90 seconds'
       #     skip-recent: 5
+      - name: Set environment variables
+        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV      
       - name: Prepare and checkout   
         uses: actions/setup-java@v2
         with:
@@ -23,13 +25,19 @@ jobs:
       - name: GH-Page Build
         working-directory: ./headless_haystack
         run: |
-          ls -al
           flutter pub get
           flutter build web --release --base-href "/headless-haystack/"
       - name: Deploy to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./headless_haystack/build/web
+
+      - name: Web Build
+        working-directory: ./headless_haystack
+        run: |
+          ls -al
+          flutter pub get
+          flutter build web --release    
       - name: Copy files to web application
         run: |
           mkdir -p ./headless_haystack/build/webapplication
@@ -44,7 +52,6 @@ jobs:
       - name: Android Build
         working-directory: ./headless_haystack
         run: |
-          flutter pub get
           flutter build apk --release
       - name: Rename Apk
         run: mv ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
@@ -75,3 +82,17 @@ jobs:
             firmware/ESP32/.pio/build/esp32dev/firmware.bin
             firmware/ESP32/.pio/build/esp32dev/partitions.bin
             firmware/ESP32/.pio/build/esp32dev/bootloader.bin                           
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@latest"         
+        with:
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            automatic_release_tag: v${{ env.VERSION }}
+            title: v${{ env.VERSION }}
+            draft: true
+            prerelease: false
+            files: |
+            firmware/ESP32/.pio/build/esp32dev/firmware.bin
+            firmware/ESP32/.pio/build/esp32dev/partitions.bin
+            firmware/ESP32/.pio/build/esp32dev/bootloader.bin      
+            ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+            ./headless_haystack/build/webapplication       
