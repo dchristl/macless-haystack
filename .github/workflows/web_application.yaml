@@ -4,6 +4,7 @@ on: [ push ]
 
 jobs:
   build:
+    needs: gh-pages
     runs-on: ubuntu-latest
     steps:    
       - uses: actions/setup-java@v2

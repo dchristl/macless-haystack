@@ -3,7 +3,7 @@ name: Github-Page-Deployment
 on: [ push ]
 
 jobs:
-  build:
+  gh-pages:
     runs-on: ubuntu-latest
     permissions:
       contents: write
