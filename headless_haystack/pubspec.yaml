@@ -90,6 +90,11 @@ flutter_icons:
   android: true
   ios: false
   image_path: "assets/OpenHaystackIcon.png"
+  web:
+    generate: true
+    image_path: "assets/OpenHaystackIcon.png"
+    background_color: "#0175C2"
+    theme_color: "#0175C2"
 
 
 # For information on the generic Dart part of this file, see the
