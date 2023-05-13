@@ -77,7 +77,7 @@ class _DashboardState extends State<Dashboard> {
 
     try {
       var count = await accessoryRegistry.loadLocationReports();
-      if (mounted) {
+      if (mounted && accessoryRegistry.accessories.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
