@@ -51,11 +51,19 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-
+    signingConfigs {
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('debug.store')
+            storePassword 'android'
+        }
+    }
     buildTypes {
         release {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+
         }
     }
     namespace 'de.dchristl.headlesshaystack'
