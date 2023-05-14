@@ -10,17 +10,17 @@ jobs:
         uses: c-hive/gha-remove-artifacts@v1
         with:
           age: '90 seconds'
-          skip-recent: 3     
-      - name: Prepare and checkout  
-        uses: actions/checkout@v3 
+          skip-recent: 3
+      - name: Prepare and checkout
+        uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
           cache: 'gradle'
 
       - name: Set environment variables
-        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV 
+        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV
       - name: Cache Flutter dependencies
         uses: actions/cache@v3
         with:
@@ -54,13 +54,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: macos-webapplication
-          path: ./headless_haystack/build/webapplication   
+          path: ./headless_haystack/build/webapplication
       - name: Android Build
         working-directory: ./headless_haystack
         run: |
-          flutter build apk --release
-      - name: Rename Apk
-        run: mv ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+          flutter build apk
+          mv ./headless_haystack/build/app/outputs/flutter-apk/app-debug.apk ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -94,16 +93,16 @@ jobs:
       - name: Delete old drafts
         uses: hugo19941994/delete-draft-releases@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}                                  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
-        uses: "marvinpinto/action-automatic-releases@latest"         
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-            repo_token: "${{ secrets.GITHUB_TOKEN }}"
-            automatic_release_tag: v${{ env.VERSION }}
-            title: v${{ env.VERSION }}
-            draft: true
-            prerelease: false
-            files: |
-                firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
-                ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
-                ./headless_haystack/build/webapplication/macos-webapplication.zip      
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: v${{ env.VERSION }}
+          title: v${{ env.VERSION }}
+          draft: true
+          prerelease: false
+          files: |
+            firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
+            ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+            ./headless_haystack/build/webapplication/macos-webapplication.zip
