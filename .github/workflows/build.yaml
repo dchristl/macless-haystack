@@ -59,7 +59,7 @@ jobs:
         working-directory: ./headless_haystack
         run: |
           flutter build apk  --release
-          mv ./headless_haystack/build/app/outputs/flutter-apk/app-release.apk ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/android-application.apk
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v3
         with:
