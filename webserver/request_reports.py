@@ -52,7 +52,6 @@ if __name__ == "__main__":
                     names[hashed_adv] = name
 
     startdate = unixEpoch - 60 * 60 * args.hours
-    startdate = unixEpoch - 60 * 60 * args.hours
 
     keys = '","'.join(ids.keys())
 
