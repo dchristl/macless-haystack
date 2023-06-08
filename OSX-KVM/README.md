@@ -2,9 +2,9 @@
 
 ### Requirements
 
+- If you already own a mac and just want to use headless haystack you can jump directly to [Install Headless Haystack](#install-headless-haystack)
 - [Docker](https://www.docker.com/) installed
 - If you are on Windows host, install (Windows Subsystem for Linux) and run all commands there
-- If you already own a mac and just want to use headless haystack you can jump directly to [Install Headless Haystack](#install-headless-haystack)
 
 ### Download and start your docker container
 
@@ -35,10 +35,10 @@ ___The default password for your Mac is 'alpine'___
 
 ### Prepare your Mac for running headless
 
-<!-- - Install [Homebrew](https://brew.sh/) in terminal
+- Install [Homebrew](https://brew.sh/) in terminal
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-``` -->
+``` 
 
 - Log in with your Apple ID. If you don't have any, [create a new one](https://appleid.apple.com/account). ***The default keyboard layout is en_US. If you have another one, change this in the system preferences.***
 ![Sign in](appleid_signin.png)
@@ -77,13 +77,18 @@ sed -i 's/DISPLAY=:0/DISPLAY=:99/g' config.v2.json
 
 ### Install headless haystack
 
-All commands will be executed in MacOs (virtual or real). <!-- Make sure [Homebrew](https://brew.sh/) is installed.  -->
+All commands will be executed in MacOs (virtual or real). Make sure [Homebrew](https://brew.sh/) is installed. 
 
 - Download and unzip latest headless haystack
 ```
 curl -L -O  https://github.com/dchristl/headless-haystack/releases/latest/download/macos-webapplication.zip
 unzip macos-webapplication.zip -d webserver
 ```
+- Install python dependencies
+```
+pip3 install cryptography pyobjc six --user
+```
+
 - Browse to webserver folder, change the password if not 'alpine' 
 ```
 cd webserver
