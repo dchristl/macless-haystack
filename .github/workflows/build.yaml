@@ -1,0 +1,108 @@
+name: Build, Release and Deploy
+
+on: [ push ]
+permissions: write-all
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '90 seconds'
+          skip-recent: 3
+      - name: Prepare and checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set environment variables
+        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v3
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache
+      - uses: subosito/flutter-action@v2
+      - name: GH-Page Build
+        working-directory: ./headless_haystack
+        run: |
+          flutter pub get
+          flutter build web --release --base-href "/headless-haystack/"
+      - name: Deploy to Github Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./headless_haystack/build/web
+
+      - name: Web Build
+        working-directory: ./headless_haystack
+        run: |
+          flutter pub get
+          flutter build web --release    
+      - name: Copy files to web application
+        run: |
+          mkdir -p ./headless_haystack/build/webapplication
+          cp ./webserver/FindMy_proxy.py ./headless_haystack/build/webapplication
+          cp ./webserver/apple_cryptography.py  ./headless_haystack/build/webapplication
+          cp -R ./headless_haystack/build/web ./headless_haystack/build/webapplication
+          cd ./headless_haystack/build/webapplication
+          zip -r macos-webapplication.zip .
+      - name: Upload Web Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-webapplication
+          path: ./headless_haystack/build/webapplication
+      - name: Android Build
+        working-directory: ./headless_haystack
+        run: |
+          flutter build apk  --release
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/android-application.apk
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-application
+          path: ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Build ESP32 firmware
+        run: |
+          pio run -d firmware/ESP32/
+          cd firmware/ESP32/.pio/build/esp32dev/
+          zip -r esp32-firmware.zip firmware.bin partitions.bin bootloader.bin
+      - name: Upload firmware
+        uses: actions/upload-artifact@v3
+        with:
+          name: esp32-firmware
+          path: |
+            firmware/ESP32/.pio/build/esp32dev/firmware.bin
+            firmware/ESP32/.pio/build/esp32dev/partitions.bin
+            firmware/ESP32/.pio/build/esp32dev/bootloader.bin     
+      - name: Delete old drafts
+        uses: hugo19941994/delete-draft-releases@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: v${{ env.VERSION }}
+          title: v${{ env.VERSION }}
+          draft: true
+          prerelease: false
+          files: |
+            firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
+            ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+            ./headless_haystack/build/webapplication/macos-webapplication.zip
