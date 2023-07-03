@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -17,18 +18,25 @@ class ReportsFetcher {
       [String? url]) async {
     var keys = hashedAdvertisementKeys.toList(growable: false);
     logger.i('Using ${keys.length} key(s) to ask webservice');
-    final response = await http.post(Uri.parse(url as String),
-        headers: <String, String>{
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(<String, dynamic>{
-          "ids": keys,
-          "days": daysToFetch,
-        }));
+    var httpClient = HttpClient();
+    /*Ignore certificate errors*/
+    httpClient.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+
+    final request = await httpClient.postUrl(Uri.parse(url as String));
+    var body = jsonEncode(<String, dynamic>{
+      "ids": keys,
+      "days": daysToFetch,
+    });
+    request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
+    request.headers
+        .set(HttpHeaders.contentLengthHeader, utf8.encode(body).length);
+    request.write(body);
+    final response = await request.close();
 
     if (response.statusCode == 200) {
-      var out = await jsonDecode(response.body)["results"];
-      logger.i('Found ${out.length} reports');
+      String body = await response.transform(utf8.decoder).join();
+      var out = await jsonDecode(body)["results"];
       return out;
     } else {
       throw Exception(

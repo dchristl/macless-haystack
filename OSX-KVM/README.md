@@ -107,7 +107,7 @@ nano apple_cryptography.py
 ```
 > You have now two options. You can use the application directly at [my GitHub-Page](https://dchristl.github.io/headless-haystack/) or you can host your own application on your Mac.
 
-If you want to use the Github-Pages, you just have to brows to the page and import your JSON-file. All inputs are local only, so no data will be transferred outside your client. 
+If you want to use the Github-Pages, you just have to browse to the page and import your JSON-file. All inputs are local only, so no data will be transferred outside your client. 
 
 For self hosting you can run a simple HTTP-Server in the 'web'- folder on port 6443
 ```
@@ -121,3 +121,18 @@ python -m http.server 6443
 ```
 
 You should now able to browse to [http://localhost:56443/](http://localhost:56443/) on your host and use headless haystack
+
+> **Note**
+> If you want to use Headless Haystack not on the same machine your MacOs is running or you want to use SSL, some extra steps are needed. You need a valid certificate, called certificate.pem in the server's folder (i.e. created with [Let's Encrypt](https://letsencrypt.org/) ) or you can rename the file rename_me.pem to certificate.pem and use my self signed one. After that restart the service: 
+```
+mv rename_me.pem certificate.pem
+./FindMy_proxy.py
+```
+Go to your client where you want to run Headless Haystack and point your browser to your FindMyProxy-Server (i.e. https://myserver:56176). You should see something like that:
+![Certificate error](firefox_cert.png)
+
+Go to 'Advanced' and 'Accept the Risk and continue'. You should see a directory listing now. Use Headless Haystack now normally, but change the Fetch location server setting, according to your needs. Use now https instead!
+
+![changed_setting](firefox_ok.png)
+
+This have to be repeated for every other client once!
