@@ -98,8 +98,15 @@ if __name__ == "__main__":
     Handler = ServerHandler
 
     httpd = six.moves.socketserver.TCPServer(("", PORT), Handler)
+    cert = 'certificate.pem'
+    if os.path.isfile(cert):
+        print("Certificate file "+ cert + " exists, so using SSL")
+        httpd.socket = ssl.wrap_socket(httpd.socket, certfile=cert, server_side=True)
+        print("serving at port " + str(PORT) + " over HTTPS")
+    else:
+       print("Certificate file "+ cert + " not found, so not using SSL") 
+       print("serving at port " + str(PORT) + " over HTTP")
 
-    print("serving at port " + str(PORT))
 
     try:
         httpd.serve_forever()
