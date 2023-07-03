@@ -73,7 +73,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
     return TextInputSettingsTile(
       initialValue: 'http://localhost:56176',
       settingKey: haystackurl,
-      title: 'Url to Headless Haystack server',
+      title: 'Url to Fetch location server',
       validator: (String? url) {
         if (url != null &&
             url.startsWith(RegExp('http[s]?://', caseSensitive: false))) {
