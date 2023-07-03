@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ReportsFetcher {
   /// Fetches the location reports corresponding to the given hashed advertisement
@@ -18,29 +19,49 @@ class ReportsFetcher {
       [String? url]) async {
     var keys = hashedAdvertisementKeys.toList(growable: false);
     logger.i('Using ${keys.length} key(s) to ask webservice');
-    var httpClient = HttpClient();
-    /*Ignore certificate errors*/
-    httpClient.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
+    if (kIsWeb) {
+      final response = await http.post(Uri.parse(url as String),
+          headers: <String, String>{
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode(<String, dynamic>{
+            "ids": keys,
+            "days": daysToFetch,
+          }));
 
-    final request = await httpClient.postUrl(Uri.parse(url as String));
-    var body = jsonEncode(<String, dynamic>{
-      "ids": keys,
-      "days": daysToFetch,
-    });
-    request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
-    request.headers
-        .set(HttpHeaders.contentLengthHeader, utf8.encode(body).length);
-    request.write(body);
-    final response = await request.close();
-
-    if (response.statusCode == 200) {
-      String body = await response.transform(utf8.decoder).join();
-      var out = await jsonDecode(body)["results"];
-      return out;
+      if (response.statusCode == 200) {
+        var out = await jsonDecode(response.body)["results"];
+        logger.i('Found ${out.length} reports');
+        return out;
+      } else {
+        throw Exception(
+            "Failed to fetch location reports with statusCode:${response.statusCode}\n\n Response:\n$response");
+      }
     } else {
-      throw Exception(
-          "Failed to fetch location reports with statusCode:${response.statusCode}\n\n Response:\n$response");
+      var httpClient = HttpClient();
+      /*Ignore certificate errors*/
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+
+      final request = await httpClient.postUrl(Uri.parse(url as String));
+      var body = jsonEncode(<String, dynamic>{
+        "ids": keys,
+        "days": daysToFetch,
+      });
+      request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
+      request.headers
+          .set(HttpHeaders.contentLengthHeader, utf8.encode(body).length);
+      request.write(body);
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        String body = await response.transform(utf8.decoder).join();
+        var out = await jsonDecode(body)["results"];
+        return out;
+      } else {
+        throw Exception(
+            "Failed to fetch location reports with statusCode:${response.statusCode}\n\n Response:\n$response");
+      }
     }
   }
 }
