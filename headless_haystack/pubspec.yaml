@@ -48,7 +48,7 @@ dependencies:
   # Location
 
   flutter_map: ^4.0.0
-  location: ^5.0.0-dev.8
+  location: ^5.0.3
   geocoding: ^2.0.1
 
   # Storage
@@ -66,11 +66,7 @@ dependencies:
   flutter_settings_screens: ^0.3.3-null-safety+2
   latlong2: ^0.8.1
   intl: ^0.18.0
-  logger: ^1.1.0
-
-# location_android is a transitive dep of location and throws NPE in dev3-Version.
-dependency_overrides:
-  location_android: 5.0.0-dev.2
+  logger: ^2.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
