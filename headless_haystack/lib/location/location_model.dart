@@ -12,6 +12,7 @@ class LocationModel extends ChangeNotifier {
   geocode.Placemark? herePlace;
   StreamSubscription<LocationData>? locationStream;
   bool initialLocationSet = false;
+  Location location = Location();
 
   var logger = Logger(
     printer: PrettyPrinter(methodCount: 0),
@@ -23,19 +24,25 @@ class LocationModel extends ChangeNotifier {
   /// access from the user if not granged.
   /// Returns if location access was granted.
   Future<bool> requestLocationAccess() async {
-    // Request location access from user if not permanently denied or already granted
-    var permissionGranted = await getPermissionStatus();
-    if (permissionGranted == PermissionStatus.notDetermined) {
-      permissionGranted = await requestPermission();
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return false;
+      }
     }
 
-    if (permissionGranted == PermissionStatus.authorizedAlways ||
-        permissionGranted == PermissionStatus.authorizedWhenInUse) {
-      return true;
-    } else {
-      // Permission not granted
-      return false;
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return false;
+      }
     }
+    return true;
   }
 
   /// Requests location updates from the platform.
@@ -45,10 +52,10 @@ class LocationModel extends ChangeNotifier {
     var permissionGranted = await requestLocationAccess();
     if (permissionGranted) {
       // Handle future location updates
-      locationStream ??= onLocationChanged().listen(_updateLocation);
+      locationStream ??= location.onLocationChanged.listen(_updateLocation);
 
+      var locationData = await location.getLocation();
       // Fetch the current location
-      var locationData = await getLocation();
       _updateLocation(locationData);
     } else {
       initialLocationSet = true;

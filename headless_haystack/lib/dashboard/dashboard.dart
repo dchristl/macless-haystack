@@ -91,7 +91,7 @@ class _DashboardState extends State<Dashboard> {
         );
       }
     } catch (e, stacktrace) {
-      logger.e('Error on fetching', e, stacktrace);
+      logger.e('Error on fetching', error: e, stackTrace: stacktrace);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).colorScheme.error,
