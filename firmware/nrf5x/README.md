@@ -1,13 +1,8 @@
-## HeadlessHaystack Firmware for NRF51 and NRF52
+## Headless Haystack Firmware for NRF51 and NRF52
 
 This project contains an battery-optimized firmware for the Nordic NRF5x chips from [acalatrava](https://github.com/acalatrava/openhaystack-firmware). So all credits goes to him. 
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 
-
-### Requirements
-
-- [Esptool](https://docs.espressif.com/projects/esptool/en/latest/esp32/installation.html) installed *or*
-- [Espressif's Flash Download Tools](https://www.espressif.com/en/support/download/other-tools) installed if you prefer a graphical way
 
 ### Deploy the Firmware
 
