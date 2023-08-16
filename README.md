@@ -38,7 +38,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 - Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and
 - Host: [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) 
 - *Optional*: Mobile: Install application
-- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/headless-haystack/)
+- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/headless-haystack/) (s. [Notes on SSL usage](OSX-KVM/README.md#notes-on-usage-on-other-machines-ssl))
 - *Optional*: Host: Browse to [http://localhost:56443/](http://localhost:56443/)
 - Mobile or Host: Import PREFIX_devices.json to your  application
 
