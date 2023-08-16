@@ -1,38 +1,41 @@
-OpenHaystack alternative firmware
-=================================
+## HeadlessHaystack Firmware for NRF51 and NRF52
 
-This is an alternative firmware to https://github.com/seemoo-lab/openhaystack/tree/main/Firmware/Microbit_v1/offline-finding but using the Softdevice from Nordic Semiconductors.
+This project contains an battery-optimized firmware for the Nordic NRF5x chips from [acalatrava](https://github.com/acalatrava/openhaystack-firmware). So all credits goes to him. 
+After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 
-It is using SDK 11 which uses the Softdevice S130/S132 v2.0.0 that is compatible with both nRF51 and nRF52 platforms. It has been tested with the following modules:
 
- - E104-BT5032A board from EBYTE which can be purchased here https://www.aliexpress.com/item/4000538644215.html
- - "AliExpress beacon" which can be purchased here https://www.aliexpress.com/item/32826502025.html
+### Requirements
 
-By default it will compile for nRF52 platform. If you want to make a firmware for nRF51822 you can add the `NRF_MODEL` environment variable like this
+- [Esptool](https://docs.espressif.com/projects/esptool/en/latest/esp32/installation.html) installed *or*
+- [Espressif's Flash Download Tools](https://www.espressif.com/en/support/download/other-tools) installed if you prefer a graphical way
 
-```
-NRF_MODEL=nrf51 make
-```
+### Deploy the Firmware
 
-Please keep in mind that, by default, the resulting binaries on `_build` will not include the Softdevice. You can generate a full binary by issuing
-
-```
-make build
-```
-or
-```
-NRF_MODEL=nrf51 make build
-```
-
-this command will create a full binary to be flashed on the `compiled` directory.
-
-A compiled binary for both platforms is included for convenience.
-
-In case you can't or don't want to build the firmware,
-you can just patch existing firmware with your advertisement key from OpenHaystack app:
+- Download firmware for your device
+- Copy your previously generated PREFIX_keyfile in the same folder 
+- Patch the firmware with your keyfile (Change the path if necessary!)
 
 ```
-NRF_MODEL=nrf51 BOARD=BOARD_ALIEXPRESS ADV_KEY_BASE64=YOUR_ADVERTISEMENT_KEY make patch
+# For the nrf51
+xxd -p -c 100000 PREFIX_keyfile | xxd -r -p | dd of=nrf51_firmware.bin bs=1 seek=$(grep -oba OFFLINEFINDINGPUBLICKEYHERE! nrf51_firmware.bin | cut -d ':' -f 1) conv=notrunc
+```
+or 
+```
+# For the nrf52
+xxd -p -c 100000 PREFIX_keyfile | xxd -r -p | dd of=nrf52_firmware.bin bs=1 seek=$(grep -oba OFFLINEFINDINGPUBLICKEYHERE! nrf52_firmware.bin | cut -d ':' -f 1) conv=notrunc
 ```
 
-this command will create the new patched binary (`nrf51_firmware_patched.bin`) with provided key on the `compiled` directory.
+The output should be something like this, depending on the count of your keys:
+```
+85+0 records in
+85+0 records out
+85 bytes copied, 0.00024581 s, 346 kB/s
+```
+
+- Patch the changed firmware file your firmware 
+
+> **Note:** You might need to reset your device after running the script before it starts sending advertisements.
+
+### Misc
+
+If you want to compile the firmware for yourself or need further informations have a look at [project documentation](https://github.com/acalatrava/openhaystack-firmware/blob/main/apps/openhaystack-alternative/README.md)
