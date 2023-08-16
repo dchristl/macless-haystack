@@ -13,12 +13,11 @@ jobs:
           skip-recent: 3
       - name: Prepare and checkout
         uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
-
+      # - uses: actions/setup-java@v3
+      #   with:
+      #     distribution: 'zulu'
+      #     java-version: '17'
+      #     cache: 'gradle'
       # - name: Set environment variables
       #   run: echo "VERSION=$(cat version)" >> $GITHUB_ENV
       # - name: Cache Flutter dependencies
@@ -66,19 +65,20 @@ jobs:
       #   with:
       #     name: android-application
       #     path: ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.platformio/.cache
-          key: ${{ runner.os }}-pio
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install PlatformIO Core
-        run: pip install --upgrade platformio
+      # - uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/.cache/pip
+      #       ~/.platformio/.cache
+      #     key: ${{ runner.os }}-pio
+      # - uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10'
+      # - name: Install PlatformIO Core
+      #   run: pip install --upgrade platformio
       - name: Build NRF5x firmware
         run: |
+          cd firmware/nrf5x/
           make build 
           make clean
           NRF_MODEL=nrf51 make build 
