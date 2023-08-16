@@ -12,6 +12,8 @@ Included projects are (Credits goes to them for the hard work):
     - The standalone python webserver for fetching the FindMy reports
 - [Positive security's Find you](https://github.com/positive-security/find-you)
     - ESP32 firmware customization for battery optimization 
+- [acalatrava's OpenHaystack-Fimware alternative](https://github.com/acalatrava/openhaystack-firmware)
+    - NRF5x firmware customization for battery optimization 
 - Optional: Dockerized MacOS by [Sickcodes](https://github.com/sickcodes/Docker-OSX)
 - Optional: mac OS serial generator by [Sickcodes](https://github.com/sickcodes/osx-serial-generator)
 
@@ -33,7 +35,8 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 - Host: [Set up your virtual or real MAC](OSX-KVM/README.md)
 - Install python dependencies `pip install cryptography argparse` (pip command depends on your version and installation)
 - Host or MacOS-Guest: Run `generate_keys.py` (check the projects webserver-folder) to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
-- Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md)
+- Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and
+- Host: [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) 
 - *Optional*: Mobile: Install application
 - *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/headless-haystack/)
 - *Optional*: Host: Browse to [http://localhost:56443/](http://localhost:56443/)

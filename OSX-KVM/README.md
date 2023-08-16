@@ -122,7 +122,10 @@ python -m http.server 6443
 
 You should now able to browse to [http://localhost:56443/](http://localhost:56443/) on your host and use headless haystack
 
-> **Note**
+
+### Notes on usage on other machines (SSL)
+
+> 
 > If you want to use Headless Haystack not on the same machine your MacOs is running or you want to use SSL, some extra steps are needed. You need a valid certificate, called certificate.pem in the server's folder (i.e. created with [Let's Encrypt](https://letsencrypt.org/) ) or you can rename the file rename_me.pem to certificate.pem and use my self signed one. After that restart the service: 
 ```
 mv rename_me.pem certificate.pem
