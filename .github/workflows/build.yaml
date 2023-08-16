@@ -17,7 +17,11 @@ jobs:
         run: |
           git submodule update --init --recursive
       - name: Install ARM Toolchain
-        run: sudo apt-get install -y gcc-arm-none-eabi
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+      - name: Install Nordic Toolchain
+        run: |
+          wget https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/desktop-software/nrf-command-line-tools/sw/versions-10-x-x/10-23-0/nrf-command-line-tools_10.23.0_amd64.deb
+          sudo dpkg -i nrf-command-line-tools_10.23.0_amd64.deb
       # - uses: actions/setup-java@v3
       #   with:
       #     distribution: 'zulu'
