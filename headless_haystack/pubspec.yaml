@@ -57,7 +57,7 @@ dependencies:
   file_picker: ^5.2.10
 
   # Sharing
-  share_plus: ^7.0.0
+  share_plus: ^7.1.0
   url_launcher: ^6.0.17
   path_provider: ^2.0.8
   maps_launcher: ^2.0.1
