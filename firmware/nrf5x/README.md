@@ -27,7 +27,11 @@ The output should be something like this, depending on the count of your keys:
 85 bytes copied, 0.00024581 s, 346 kB/s
 ```
 
-- Patch the changed firmware file your firmware 
+- Patch the changed firmware file your firmware, i.e with openocd:
+```
+openocd -f openocd.cfg -c "init; halt; nrf51 mass_erase; program nrf51_firmware.bin; reset; exit"
+```
+(Hint: If needed, the file openocd.cfg is in the root of this folder)
 
 > **Note:** You might need to reset your device after running the script before it starts sending advertisements.
 
