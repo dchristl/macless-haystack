@@ -13,6 +13,10 @@ jobs:
           skip-recent: 3
       - name: Prepare and checkout
         uses: actions/checkout@v3
+      - name: Initialize Submodules
+        run: |
+          git submodule update --init --recursive
+  
       # - uses: actions/setup-java@v3
       #   with:
       #     distribution: 'zulu'
