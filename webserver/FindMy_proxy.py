@@ -95,6 +95,10 @@ if __name__ == "__main__":
     print('Using python3' if isV3 else 'Using python2')
     retrieveICloudKey()
 
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+
+    os.chdir(script_directory)
+
     Handler = ServerHandler
 
     httpd = six.moves.socketserver.TCPServer(("", PORT), Handler)
