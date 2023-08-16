@@ -73,7 +73,7 @@ args = parser.parse_args()
 MAX_KEYS = 1
 
 if (args.thisisnotforstalking == 'i_agree'):
-    MAX_KEYS = 100
+    MAX_KEYS = 50
 
  
 if args.nkeys < 1 or args.nkeys > MAX_KEYS:

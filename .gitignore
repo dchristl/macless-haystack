@@ -123,3 +123,7 @@ openssl/release
 notes
 **/osx-serial-generator
 *.pyc
+
+
+firmware/nrf5x/_build
+firmware/nrf5x/compiled
