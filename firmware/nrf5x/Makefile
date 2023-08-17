@@ -59,17 +59,14 @@ e104install:
 	nrfjprog -f nrf52 --recover; while [ "$$?" -ne "0" ]; do echo "****** IMPORTANT: If you see this message for too long, please try to disconnect and connect VCC ******" && nrfjprog -f nrf52 --recover; done
 	nrfjprog -f nrf52 --program _build/full_firmware.bin --reset
 
-
-
 patch:
 ifneq ($(wildcard $(ADV_KEYS_FILE)),)
 	cp compiled/$(NRF_MODEL)_firmware.bin compiled/$(NRF_MODEL)_firmware_patched.bin
 	xxd -p -c 100000 $(ADV_KEYS_FILE) | xxd -r -p | \
-	dd of=compiled/$(NRF_MODEL)_firmware_patched.bin bs=1 seek=$(shell grep -oba OFFLINEFINDINGPUBLICKEYHERE! compiled/$(NRF_MODEL)_firmware.bin | cut -d ':' -f 1) conv=notrunc
+	dd of=compiled/$(NRF_MODEL)_firmware_patched.bin skip=1 bs=1 seek=$(shell grep -oba OFFLINEFINDINGPUBLICKEYHERE! compiled/$(NRF_MODEL)_firmware.bin | cut -d ':' -f 1) conv=notrunc
 else
 	$(error The file $(ADV_KEYS_FILE) does not exist!)
 endif
-
 
 LIBRARY_PATHS += .
 #SOURCE_PATHS += .

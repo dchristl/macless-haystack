@@ -64,13 +64,13 @@ void setAdvertisementData(uint8_t *data, uint8_t dlen) {
  * 
  * @param[in] interval advertising interval in milliseconds
  */
-void startAdvertisement(int interval) {
+void startAdvertisement() {
     ble_gap_adv_params_t m_adv_params;
     memset(&m_adv_params, 0, sizeof(m_adv_params));
     m_adv_params.type        = BLE_GAP_ADV_TYPE_ADV_NONCONN_IND;
     m_adv_params.p_peer_addr = NULL;
     m_adv_params.fp          = BLE_GAP_ADV_FP_ANY;
-    m_adv_params.interval    = MSEC_TO_UNITS(interval, UNIT_0_625_MS);
+    m_adv_params.interval    = BLE_GAP_ADV_INTERVAL_MIN;
     m_adv_params.timeout     = 0;
     sd_ble_gap_adv_start(&m_adv_params);
 }
