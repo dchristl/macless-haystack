@@ -4,9 +4,9 @@
 #include "ble_stack.h"
 #include "openhaystack.h"
 #include "nrf.h"
-#include "nrf51.h"
 #include "nrf_delay.h"
 #include "nrf_soc.h"
+#include <time.h>
 /**
  * advertising interval in milliseconds
  */
@@ -18,16 +18,17 @@ static char public_key[MAX_KEYS][28] = {
     "OFFLINEFINDINGPUBLICKEYHERE!",
 };
 
-void saveStringAsHex(const char *str, char *hexBuffer)
+char *getRandomKey(uint8_t last_filled_index)
 {
-    char *buf = hexBuffer;
+    uint8_t random_buffer[sizeof(int)];
+    int random_integer;
+    sd_rand_application_vector_get(random_buffer, sizeof(int));
+    memcpy(&random_integer, random_buffer, sizeof(int));
 
-    for (int i = 0; i < 28; i++)
-    {
-        buf += sprintf(buf, "H:0x%X_", (unsigned char)str[i]);
-    }
+    int randomValue = abs(random_integer % (last_filled_index + 1));
+
+    return public_key[randomValue];
 }
-
 void sleep_for_seconds(uint32_t seconds)
 {
     // Konfigurieren Sie den Timer
@@ -72,16 +73,14 @@ int main(void)
         }
         // Select a random string and copy its value
 
-        srand(NRF_RTC1->COUNTER);
+        char *selected_public_key = getRandomKey(last_filled_index);
 
-        int randomValue = rand() % (last_filled_index + 1);
-
-        char hexBuffer[1000];
-
-        saveStringAsHex(public_key[randomValue], hexBuffer);
+        // Kopiere den ausgewählten öffentlichen Schlüssel in die neue Variable
+        char buf[50];
+        sprintf(buf, "0x%X 0x%X 0x%X 0x%X ", (unsigned int)selected_public_key[0], (unsigned int)selected_public_key[1], (unsigned int)selected_public_key[2], (unsigned int)selected_public_key[27]);
 
         // Set key to be advertised
-        data_len = setAdvertisementKey(public_key[randomValue], &ble_address, &raw_data);
+        data_len = setAdvertisementKey(selected_public_key, &ble_address, &raw_data);
 
         // Init BLE stack
         init_ble();
@@ -94,7 +93,7 @@ int main(void)
 
         // Start advertising
         startAdvertisement();
-        //
+        // advertise for 200ms
         nrf_delay_ms(200);
 
         // Go to low power mode
