@@ -22,6 +22,9 @@ SHELL:=/bin/bash
 ADV_KEYS_FILE ?=
 BOARD ?= BOARD_SIMPLE
 
+ADV_KEY_BASE64 ?=
+NEW_ADV_KEY_HEX := $(if $(ADV_KEY_BASE64),$(shell base64 -d <<< $(ADV_KEY_BASE64) | xxd -p),)
+
 # Compile for nrf52 by default, use "NRF_MODEL=nrf51 make" to compile for nrf51 platform
 ifeq ($(NRF_MODEL), nrf51)
 SOFTDEVICE_MODEL = s130
@@ -84,6 +87,14 @@ ifneq ($(wildcard $(ADV_KEYS_FILE)),)
 	dd of=compiled/$(NRF_MODEL)_firmware_patched.bin skip=1 bs=1 seek=$(shell grep -oba OFFLINEFINDINGPUBLICKEYHERE! compiled/$(NRF_MODEL)_firmware.bin | cut -d ':' -f 1) conv=notrunc
 else
 	$(error The file $(ADV_KEYS_FILE) does not exist!)
+endif
+
+
+patch_old:
+ifneq ($(NEW_ADV_KEY_HEX),)
+	xxd -p -c 1000000 < compiled/$(NRF_MODEL)_firmware.bin | \
+		sed 's/$(shell echo -n 'OFFLINEFINDINGPUBLICKEYHERE!' | xxd -p)/$(NEW_ADV_KEY_HEX)/' | \
+		xxd -r -p > compiled/$(NRF_MODEL)_firmware_patched.bin
 endif
 
 LIBRARY_PATHS += .

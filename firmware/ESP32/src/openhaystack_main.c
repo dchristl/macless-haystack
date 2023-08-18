@@ -51,7 +51,6 @@ static uint8_t adv_data[31] = {
     0x00, /* Hint (0x00) */
 };
 
-
 /* https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/bluetooth/esp_gap_ble.html#_CPPv420esp_ble_adv_params_t */
 static esp_ble_adv_params_t ble_adv_params = {
     // Advertising min interval:
@@ -224,7 +223,7 @@ void app_main(void)
         if (cycle >= REUSE_CYCLES)
         {
             ESP_LOGI(LOG_TAG, "Max cycles %d are reached. Changing key ", cycle);
-            key_index = (key_index + 1) % (key_count); // Back to zero if out of range
+            key_index = (key_index + 1) % (key_count + 1); // Back to zero if out of range
             cycle = 0;
         }
         else

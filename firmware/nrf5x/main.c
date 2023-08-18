@@ -12,13 +12,29 @@
  */
 #define ADVERTISING_INTERVAL 5000
 
+#define KEY_CHANGE_INTERVAL 2 // FIXME
+
 #define MAX_KEYS 50
+
+int last_filled_index = -1;
+int key_index = -1;
 
 static char public_key[MAX_KEYS][28] = {
     "OFFLINEFINDINGPUBLICKEYHERE!",
 };
 
-char *getRandomKey(uint8_t last_filled_index)
+void setRandomIndex()
+{
+    uint8_t random_buffer[sizeof(int)];
+    int random_integer;
+    sd_rand_application_vector_get(random_buffer, sizeof(int));
+    memcpy(&random_integer, random_buffer, sizeof(int));
+
+    key_index = abs(random_integer % (last_filled_index + 1));
+    printf("%d", key_index);
+}
+
+char *getCurrentKey()
 {
     uint8_t random_buffer[sizeof(int)];
     int random_integer;
@@ -29,22 +45,84 @@ char *getRandomKey(uint8_t last_filled_index)
 
     return public_key[randomValue];
 }
-void sleep_for_seconds(uint32_t seconds)
+
+void TIMER2_IRQHandler(void)
 {
-    // Konfigurieren Sie den Timer
-    NRF_TIMER0->MODE = TIMER_MODE_MODE_Timer;
-    NRF_TIMER0->BITMODE = TIMER_BITMODE_BITMODE_32Bit;
-    NRF_TIMER0->PRESCALER = 4;             // Teiler für 1 MHz (2^4 = 16)
-    NRF_TIMER0->CC[0] = seconds * 1000000; // Konvertieren von Sekunden in Mikrosekunden
-    NRF_TIMER0->INTENSET = TIMER_INTENSET_COMPARE0_Msk;
-    NRF_TIMER0->TASKS_START = 1;
+    if ((NRF_TIMER2->EVENTS_COMPARE[0] != 0) && ((NRF_TIMER2->INTENSET & TIMER_INTENSET_COMPARE0_Msk) != 0))
+    {
+        NRF_TIMER2->EVENTS_COMPARE[0] = 0; // Clear compare register 0 event
+    }
 
-    // Setzen Sie den Mikrocontroller in den System-On-Sleep-Modus
+    if ((NRF_TIMER2->EVENTS_COMPARE[1] != 0) && ((NRF_TIMER2->INTENSET & TIMER_INTENSET_COMPARE1_Msk) != 0))
+    {
+        NRF_TIMER2->EVENTS_COMPARE[1] = 0; // Clear compare register 1 event
+    }
+}
+
+void sleep_and_awake_in_s(uint32_t seconds)
+{
+    /*     SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_RC_250_PPM_8000MS_CALIBRATION, NULL);
+
+        NRF_TIMER2->MODE = TIMER_MODE_MODE_Timer;          // Set the timer in Counter Mode
+        NRF_TIMER2->TASKS_CLEAR = 1;                       // clear the task first to be usable for later
+        NRF_TIMER2->PRESCALER = 6;                         // Set prescaler. Higher number gives slower timer. Prescaler = 0 gives 16MHz timer
+        NRF_TIMER2->BITMODE = TIMER_BITMODE_BITMODE_16Bit; // Set counter to 16 bit resolution
+        NRF_TIMER2->CC[0] = 25000;                         // Set value for TIMER2 compare register 0
+        NRF_TIMER2->CC[1] = 5;                             // Set value for TIMER2 compare register 1
+
+        // Enable interrupt on Timer 2, both for CC[0] and CC[1] compare match events
+        NRF_TIMER2->INTENSET = (TIMER_INTENSET_COMPARE0_Enabled << TIMER_INTENSET_COMPARE0_Pos) | (TIMER_INTENSET_COMPARE1_Enabled << TIMER_INTENSET_COMPARE1_Pos);
+        NVIC_EnableIRQ(TIMER2_IRQn);
+        SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_XTAL_20_PPM)
+
+        NRF_TIMER2->TASKS_START = 1; */
     APP_ERROR_CHECK(sd_app_evt_wait());
+}
 
-    // Mikrocontroller wurde aufgeweckt, Timer-Interrupt zurücksetzen
-    NRF_TIMER0->TASKS_STOP = 1;
-    NRF_TIMER0->EVENTS_COMPARE[0] = 0;
+void mainLoop()
+{
+
+    // Variable to hold the data to advertise
+    uint8_t *ble_address;
+    uint8_t *raw_data;
+    uint8_t data_len;
+    // Disable advertising
+    sd_ble_gap_adv_stop();
+    sd_ble_gap_adv_data_set(NULL, 0, NULL, 0);
+    key_index = (key_index + 1) % (last_filled_index + 1); // Back to zero if out of range
+    // Set key to be advertised
+    data_len = setAdvertisementKey(public_key[key_index], &ble_address, &raw_data);
+
+    // Set bluetooth address
+    setMacAddress(ble_address);
+
+    ble_gap_addr_t public_address;
+
+    // Lies die öffentliche MAC-Adresse mit der Funktion sd_ble_gap_addr_get
+    sd_ble_gap_address_get(&public_address);
+
+    char blubb[100];
+    sprintf(blubb, "Public MAC Address: %02X:%02X:%02X:%02X:%02X:%02X|",
+            public_address.addr[5], public_address.addr[4], public_address.addr[3],
+            public_address.addr[2], public_address.addr[1], public_address.addr[0]);
+
+    // Set advertisement data
+    setAdvertisementData(raw_data, data_len);
+
+    // Start advertising
+    startAdvertisement(ADVERTISING_INTERVAL);
+
+    // Do only wake up again if more than one key is used
+    if (last_filled_index == 0)
+    {
+        power_manage();
+    }
+    else
+    {
+        // Go to low power mode
+        // sleep_and_awake_in_s(KEY_CHANGE_INTERVAL);
+        nrf_delay_ms(KEY_CHANGE_INTERVAL * 1000);
+    }
 }
 
 /**
@@ -52,51 +130,25 @@ void sleep_for_seconds(uint32_t seconds)
  */
 int main(void)
 {
-    // Variable to hold the data to advertise
-    uint8_t *ble_address;
-    uint8_t *raw_data;
-    uint8_t data_len;
-
     // Find the last filled index
+    for (int i = MAX_KEYS - 1; i >= 0; i--)
+    {
+        if (strlen(public_key[i]) > 0)
+        {
+            last_filled_index = i;
+            break;
+        }
+    }
+
+    // Select a random index as start
+    setRandomIndex();
+
+    // Init BLE stack
+    init_ble();
+
     while (1)
     {
-
-        int last_filled_index = -1;
-
-        for (int i = MAX_KEYS - 1; i >= 0; i--)
-        {
-            if (strlen(public_key[i]) > 0)
-            {
-                last_filled_index = i;
-                break;
-            }
-        }
-        // Select a random string and copy its value
-
-        char *selected_public_key = getRandomKey(last_filled_index);
-
-        // Kopiere den ausgewählten öffentlichen Schlüssel in die neue Variable
-        char buf[50];
-        sprintf(buf, "0x%X 0x%X 0x%X 0x%X ", (unsigned int)selected_public_key[0], (unsigned int)selected_public_key[1], (unsigned int)selected_public_key[2], (unsigned int)selected_public_key[27]);
-
-        // Set key to be advertised
-        data_len = setAdvertisementKey(selected_public_key, &ble_address, &raw_data);
-
-        // Init BLE stack
-        init_ble();
-
-        // Set bluetooth address
-        setMacAddress(ble_address);
-
-        // Set advertisement data
-        setAdvertisementData(raw_data, data_len);
-
-        // Start advertising
-        startAdvertisement();
-        // advertise for 200ms
-        nrf_delay_ms(200);
-
-        // Go to low power mode
-        sleep_for_seconds(ADVERTISING_INTERVAL / 1000);
+        mainLoop();
     }
+    return 0;
 }
