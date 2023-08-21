@@ -14,11 +14,13 @@
  * advertising interval in milliseconds
  */
 #define ADVERTISING_INTERVAL 5000
-#define LED_GPIO 10
+#define LEDS_COUNT 10
 
 #define KEY_CHANGE_INTERVAL_MINUTES 30
 
 #define MAX_KEYS 50
+
+uint32_t LEDS_TO_FLASH_ON_START[LEDS_COUNT] = {10, 29};
 
 const nrf_drv_rtc_t rtc1 = NRF_DRV_RTC_INSTANCE(1);
 
@@ -104,11 +106,16 @@ static void lfclk_config(void)
 static void gpio_config(void)
 {
     // Configure LED-pin as outputs and clear.
-    nrf_gpio_cfg_output(LED_GPIO);
-    nrf_gpio_pin_clear(LED_GPIO);
-    nrf_gpio_pin_toggle(LED_GPIO);
-    nrf_delay_ms(200); // Flash the pin on startup
-    nrf_gpio_pin_clear(LED_GPIO);
+
+    for (int i = 0; i < 2; i++)
+    {
+        uint32_t currentValue = LEDS_TO_FLASH_ON_START[i];
+        nrf_gpio_cfg_output(currentValue);
+        nrf_gpio_pin_clear(currentValue);
+        nrf_gpio_pin_toggle(currentValue);
+        nrf_delay_ms(200); // Flash the pin on startup
+        nrf_gpio_pin_clear(currentValue);
+    }
 }
 
 /** @brief Function initialization and configuration of timer driver instance.
