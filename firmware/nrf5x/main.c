@@ -16,7 +16,7 @@
 #define ADVERTISING_INTERVAL 5000
 #define LED_GPIO 10
 
-#define KEY_CHANGE_INTERVAL_MINUTES 5 // FIXME
+#define KEY_CHANGE_INTERVAL_MINUTES 30
 
 #define MAX_KEYS 50
 
@@ -81,9 +81,9 @@ static void rtc1_handler(nrf_drv_rtc_int_type_t int_type)
     if (int_type == NRF_DRV_RTC_INT_COMPARE0)
     { // Interrupt from COMPARE0 event.
         // nrf_gpio_pin_toggle(LED_GPIO);
-        setAndAdvertiseNextKey(); //next key 
-        nrf_drv_rtc_int_enable(&rtc1, RTC_CHANNEL_INT_MASK(0));  //re-enable
-        nrf_drv_rtc_counter_clear(&rtc1); //reset the counter
+        setAndAdvertiseNextKey();                               // next key
+        nrf_drv_rtc_int_enable(&rtc1, RTC_CHANNEL_INT_MASK(0)); // re-enable
+        nrf_drv_rtc_counter_clear(&rtc1);                       // reset the counter
     }
     else if (int_type == NRF_DRV_RTC_INT_TICK)
     { // Tick off
