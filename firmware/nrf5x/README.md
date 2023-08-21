@@ -2,6 +2,7 @@
 
 This project contains an battery-optimized firmware for the Nordic NRF5x chips from [acalatrava](https://github.com/acalatrava/openhaystack-firmware). So all credits goes to him. 
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
+This firmware consumes slightly more power when more than 1 key is used. The controller wakes up every 30 minutes and switches the key.
 
 
 ### Deploy the Firmware
