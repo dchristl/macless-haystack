@@ -21,11 +21,11 @@ or
 xxd -p -c 100000 PREFIX_keyfile | xxd -r -p | dd of=nrf52_firmware.bin skip=1 bs=1 seek=$(grep -oba OFFLINEFINDINGPUBLICKEYHERE! nrf52_firmware.bin | cut -d ':' -f 1) conv=notrunc
 ```
 
-The output should be something like this, depending on the count of your keys:
+The output should be something like this, depending on the count of your keys (in this example 3 keys => 3*28=84 Bytes):
 ```
-85+0 records in
-85+0 records out
-85 bytes copied, 0.00024581 s, 346 kB/s
+84+0 records in
+84+0 records out
+84 bytes copied, 0.00024581 s, 346 kB/s
 ```
 
 - Patch the changed firmware file your firmware, i.e with openocd:
@@ -34,7 +34,12 @@ openocd -f openocd.cfg -c "init; halt; nrf51 mass_erase; program nrf51_firmware.
 ```
 (Hint: If needed, the file openocd.cfg is in the root of this folder)
 
-> **Note:** You might need to reset your device after running the script before it starts sending advertisements.
+
+> [!NOTE]  
+> You might need to reset your device after running the script before it starts sending advertisements.
+
+> [!WARNING]  
+> Critical content demanding immediate user attention due to potential risks.
 
 ### Misc
 
