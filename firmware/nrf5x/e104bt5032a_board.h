@@ -37,8 +37,6 @@ extern "C" {
 
 #define BUTTONS_LIST { }
 
-#define RX_PIN_NUMBER  11
-#define TX_PIN_NUMBER  12
 #define CTS_PIN_NUMBER UART_PIN_DISCONNECTED
 #define RTS_PIN_NUMBER UART_PIN_DISCONNECTED
 #define HWFC           false

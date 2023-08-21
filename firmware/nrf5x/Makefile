@@ -7,6 +7,8 @@ APPLICATION_SRCS += nrf_drv_common.c
 APPLICATION_SRCS += nrf_delay.c
 APPLICATION_SRCS += app_error.c
 APPLICATION_SRCS += app_error_weak.c
+APPLICATION_SRCS += nrf_drv_clock.c
+APPLICATION_SRCS += nrf_drv_rtc.c
 
 USE_NRF52 := $(filter nrf52,$(MAKECMDGOALS))
 

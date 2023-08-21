@@ -7,14 +7,20 @@
 #include "nrf_delay.h"
 #include "nrf_soc.h"
 #include <time.h>
+#include "nrf_drv_rtc.h"
+#include "nrf_drv_clock.h"
+#include "nrf_gpio.h"
 /**
  * advertising interval in milliseconds
  */
 #define ADVERTISING_INTERVAL 5000
+#define LED_GPIO 10
 
-#define KEY_CHANGE_INTERVAL 2 // FIXME
+#define KEY_CHANGE_INTERVAL_MINUTES 5 // FIXME
 
 #define MAX_KEYS 50
+
+const nrf_drv_rtc_t rtc1 = NRF_DRV_RTC_INSTANCE(1);
 
 int last_filled_index = -1;
 int key_index = -1;
@@ -46,42 +52,8 @@ char *getCurrentKey()
     return public_key[randomValue];
 }
 
-void TIMER2_IRQHandler(void)
+void setAndAdvertiseNextKey()
 {
-    if ((NRF_TIMER2->EVENTS_COMPARE[0] != 0) && ((NRF_TIMER2->INTENSET & TIMER_INTENSET_COMPARE0_Msk) != 0))
-    {
-        NRF_TIMER2->EVENTS_COMPARE[0] = 0; // Clear compare register 0 event
-    }
-
-    if ((NRF_TIMER2->EVENTS_COMPARE[1] != 0) && ((NRF_TIMER2->INTENSET & TIMER_INTENSET_COMPARE1_Msk) != 0))
-    {
-        NRF_TIMER2->EVENTS_COMPARE[1] = 0; // Clear compare register 1 event
-    }
-}
-
-void sleep_and_awake_in_s(uint32_t seconds)
-{
-    /*     SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_RC_250_PPM_8000MS_CALIBRATION, NULL);
-
-        NRF_TIMER2->MODE = TIMER_MODE_MODE_Timer;          // Set the timer in Counter Mode
-        NRF_TIMER2->TASKS_CLEAR = 1;                       // clear the task first to be usable for later
-        NRF_TIMER2->PRESCALER = 6;                         // Set prescaler. Higher number gives slower timer. Prescaler = 0 gives 16MHz timer
-        NRF_TIMER2->BITMODE = TIMER_BITMODE_BITMODE_16Bit; // Set counter to 16 bit resolution
-        NRF_TIMER2->CC[0] = 25000;                         // Set value for TIMER2 compare register 0
-        NRF_TIMER2->CC[1] = 5;                             // Set value for TIMER2 compare register 1
-
-        // Enable interrupt on Timer 2, both for CC[0] and CC[1] compare match events
-        NRF_TIMER2->INTENSET = (TIMER_INTENSET_COMPARE0_Enabled << TIMER_INTENSET_COMPARE0_Pos) | (TIMER_INTENSET_COMPARE1_Enabled << TIMER_INTENSET_COMPARE1_Pos);
-        NVIC_EnableIRQ(TIMER2_IRQn);
-        SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_XTAL_20_PPM)
-
-        NRF_TIMER2->TASKS_START = 1; */
-    APP_ERROR_CHECK(sd_app_evt_wait());
-}
-
-void mainLoop()
-{
-
     // Variable to hold the data to advertise
     uint8_t *ble_address;
     uint8_t *raw_data;
@@ -96,33 +68,68 @@ void mainLoop()
     // Set bluetooth address
     setMacAddress(ble_address);
 
-    ble_gap_addr_t public_address;
-
-    // Lies die öffentliche MAC-Adresse mit der Funktion sd_ble_gap_addr_get
-    sd_ble_gap_address_get(&public_address);
-
-    char blubb[100];
-    sprintf(blubb, "Public MAC Address: %02X:%02X:%02X:%02X:%02X:%02X|",
-            public_address.addr[5], public_address.addr[4], public_address.addr[3],
-            public_address.addr[2], public_address.addr[1], public_address.addr[0]);
-
     // Set advertisement data
     setAdvertisementData(raw_data, data_len);
 
     // Start advertising
     startAdvertisement(ADVERTISING_INTERVAL);
+}
 
-    // Do only wake up again if more than one key is used
-    if (last_filled_index == 0)
-    {
-        power_manage();
+static void rtc1_handler(nrf_drv_rtc_int_type_t int_type)
+{
+
+    if (int_type == NRF_DRV_RTC_INT_COMPARE0)
+    { // Interrupt from COMPARE0 event.
+        // nrf_gpio_pin_toggle(LED_GPIO);
+        setAndAdvertiseNextKey(); //next key 
+        nrf_drv_rtc_int_enable(&rtc1, RTC_CHANNEL_INT_MASK(0));  //re-enable
+        nrf_drv_rtc_counter_clear(&rtc1); //reset the counter
     }
-    else
-    {
-        // Go to low power mode
-        // sleep_and_awake_in_s(KEY_CHANGE_INTERVAL);
-        nrf_delay_ms(KEY_CHANGE_INTERVAL * 1000);
+    else if (int_type == NRF_DRV_RTC_INT_TICK)
+    { // Tick off
+      // This is an error
     }
+}
+
+/** @brief Function starting the HFCLK oscillator.
+ */
+static void lfclk_config(void)
+{
+    ret_code_t err_code = nrf_drv_clock_init();
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_clock_lfclk_request(NULL);
+}
+
+static void gpio_config(void)
+{
+    // Configure LED-pin as outputs and clear.
+    nrf_gpio_cfg_output(LED_GPIO);
+    nrf_gpio_pin_clear(LED_GPIO);
+    nrf_gpio_pin_toggle(LED_GPIO);
+    nrf_delay_ms(200); // Flash the pin on startup
+    nrf_gpio_pin_clear(LED_GPIO);
+}
+
+/** @brief Function initialization and configuration of timer driver instance.
+ */
+static void timer_config(void)
+{
+    uint32_t err_code;
+
+    // Initialize RTC instance
+    err_code = nrf_drv_rtc_init(&rtc1, NULL, rtc1_handler);
+    APP_ERROR_CHECK(err_code);
+
+    // Disable tick event & interrupt
+    nrf_drv_rtc_tick_enable(&rtc1, false);
+
+    // Set compare channel 0 to trigger interrupt after RTC1_CC_VALUE*125ms
+    err_code = nrf_drv_rtc_cc_set(&rtc1, 0, KEY_CHANGE_INTERVAL_MINUTES * 60 * RTC1_CONFIG_FREQUENCY, true);
+    APP_ERROR_CHECK(err_code);
+
+    // Power on RTC instance
+    nrf_drv_rtc_enable(&rtc1);
 }
 
 /**
@@ -145,10 +152,19 @@ int main(void)
 
     // Init BLE stack
     init_ble();
+    gpio_config();
+    if (last_filled_index > 0)
+    {
+        // Start timer
+        lfclk_config();
+        timer_config();
+    }
+
+    setAndAdvertiseNextKey();
 
     while (1)
     {
-        mainLoop();
+        power_manage();
     }
     return 0;
 }
