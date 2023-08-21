@@ -4,6 +4,8 @@ This project contains an battery-optimized firmware for the Nordic NRF5x chips f
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 This firmware consumes slightly more power when more than 1 key is used. The controller wakes up every 30 minutes and switches the key.
 
+> [!WARNING]  
+> Currently, only the NRF51 build has been tested, and the NRF52 build has not been tested yet, but it should work. Feedback on this is welcome. It has been tested with [this](https://www.aliexpress.com/item/1005003671695188.html?spm=a2g0o.order_list.order_list_main.55.72491802ZTaXKp) or [this](https://de.aliexpress.com/item/32860266105.html?spm=a2g0o.order_list.order_list_main.50.72491802ZTaXKp&gatewayAdapt=glo2deu) beacon from Aliexpress.
 
 ### Deploy the Firmware
 
@@ -38,8 +40,6 @@ openocd -f openocd.cfg -c "init; halt; nrf51 mass_erase; program nrf51_firmware.
 > [!NOTE]  
 > You might need to reset your device after running the script before it starts sending advertisements.
 
-> [!WARNING]  
-> Critical content demanding immediate user attention due to potential risks.
 
 ### Misc
 
