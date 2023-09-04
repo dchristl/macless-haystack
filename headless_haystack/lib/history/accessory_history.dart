@@ -74,7 +74,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 key: ValueKey(MediaQuery.of(context).orientation),
                 mapController: _mapController,
                 options: MapOptions(
-                  center: LatLng(49.874739, 8.656280),
+                  center: const LatLng(49.874739, 8.656280),
                   zoom: 13.0,
                   interactiveFlags: InteractiveFlag.pinchZoom |
                       InteractiveFlag.drag |
@@ -195,7 +195,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
       var historicLocations =
           widget.accessory.locationHistory.map((entry) => entry.a).toList();
       var bounds = LatLngBounds.fromPoints(historicLocations);
-      _mapController.fitBounds(bounds);
+      _mapController
+        ..fitBounds(bounds)
+        ..move(_mapController.center, _mapController.zoom + 0.00001);
     }
   }
 }
