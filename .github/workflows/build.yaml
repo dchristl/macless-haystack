@@ -107,10 +107,12 @@ jobs:
             firmware/ESP32/.pio/build/esp32dev/partitions.bin
             firmware/ESP32/.pio/build/esp32dev/bootloader.bin     
       - name: Delete old drafts
+        if: github.ref == 'refs/heads/main'  
         uses: hugo19941994/delete-draft-releases@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
+        if: github.ref == 'refs/heads/main'
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
