@@ -74,7 +74,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 key: ValueKey(MediaQuery.of(context).orientation),
                 mapController: _mapController,
                 options: MapOptions(
-                  center: LatLng(49.874739, 8.656280),
+                  center: const LatLng(49.874739, 8.656280),
                   zoom: 13.0,
                   interactiveFlags: InteractiveFlag.pinchZoom |
                       InteractiveFlag.drag |

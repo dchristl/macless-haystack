@@ -37,6 +37,7 @@ dependencies:
 
   # Networking
   http: ^1.1.0
+  universal_html: ^2.2.3
 
   # Cryptography
   # latest version of pointy castle for crypto functions

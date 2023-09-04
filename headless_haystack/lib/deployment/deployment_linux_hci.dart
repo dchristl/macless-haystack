@@ -23,10 +23,10 @@ class DeploymentInstructionsLinux extends StatelessWidget {
               'Low Energy Linux device, for example a Raspberry Pi. '
               'Additionally Pyhton 3 needs to be installed.'),
         ),
-        Step(
-          title: const Text('Download'),
+        const Step(
+          title: Text('Download'),
           content: Column(
-            children: const [
+            children: [
               Text('Next download the python script that '
                   'configures the HCI tool to send out BLE advertisements.'),
               Hyperlink(

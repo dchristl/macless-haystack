@@ -8,7 +8,9 @@ import 'package:headless_haystack/accessory/accessory_dto.dart';
 import 'package:headless_haystack/accessory/accessory_model.dart';
 import 'package:headless_haystack/accessory/accessory_registry.dart';
 import 'package:share_plus/share_plus.dart';
-import 'dart:html' as webFile;
+
+import 'package:universal_html/html.dart' as html;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ItemExportMenu extends StatelessWidget {
@@ -140,13 +142,24 @@ class ItemExportMenu extends StatelessWidget {
     String encodedAccessories = encoder.convert(exportAccessories);
 
     if (kIsWeb) {
-      var blob = webFile.Blob([encodedAccessories], 'application/json', 'native');
+      final blob =
+          html.Blob([encodedAccessories], 'application/json', 'native');
+      final url = html.Url.createObjectUrlFromBlob(blob);
 
-      var anchorElement = webFile.AnchorElement(
-        href: webFile.Url.createObjectUrlFromBlob(blob).toString(),
-      )
-        ..setAttribute("download", filename)
+      html.AnchorElement(href: url)
+        ..setAttribute('download', filename)
         ..click();
+
+      html.Url.revokeObjectUrl(url);
+
+      // var blob =
+      //     dom.html.Blob([encodedAccessories], 'application/json', 'native');
+      //
+      // dart.dom.html.AnchorElement(
+      //   href: dart.dom.html.Url.createObjectUrlFromBlob(blob).toString(),
+      // )
+      //   ..setAttribute("download", filename)
+      //   ..click();
     } else {
       // Create temporary directory to store export file
       Directory tempDir = await getTemporaryDirectory();
@@ -173,9 +186,9 @@ class ItemExportMenu extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Key Overview'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Private Key:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text('Secret key used for location report decryption.'),
