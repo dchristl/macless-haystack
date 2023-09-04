@@ -103,7 +103,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
       return FlutterMap(
         mapController: _mapController,
         options: MapOptions(
-          center: locationModel.here ?? const LatLng(49.874739, 8.656280),
+          center: locationModel.here ?? const LatLng(51.1657, 10.4515),
           maxZoom: 18.0,
           minZoom: 2.0,
           zoom: 13.0,
