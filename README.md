@@ -33,7 +33,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 ## Instructions
 
 - Host: [Set up your virtual or real MAC](OSX-KVM/README.md)
-- Install python dependencies `pip install cryptography argparse` (pip command depends on your version and installation)
+- Install python dependencies `pip install cryptography argparse pyobjc six` (pip command depends on your version and installation)
 - Host or MacOS-Guest: Run `generate_keys.py` (check the projects webserver-folder) to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
 - Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and
 - Host: [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) 
