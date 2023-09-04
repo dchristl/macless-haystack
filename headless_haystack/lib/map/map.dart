@@ -15,6 +15,7 @@ class AccessoryMap extends StatefulWidget {
     Key? key,
     this.mapController,
   }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _AccessoryMapState();
@@ -66,7 +67,9 @@ class _AccessoryMapState extends State<AccessoryMap> {
 
     List<LatLng> points = [];
     if (hereLocation != null) {
-      _mapController.move(hereLocation, _mapController.zoom);
+      _mapController
+        ..move(hereLocation, _mapController.zoom)
+        ..move(_mapController.center, _mapController.zoom + 0.00001);
       points = [hereLocation];
     }
 
@@ -75,11 +78,12 @@ class _AccessoryMapState extends State<AccessoryMap> {
         .map((accessory) => accessory.lastLocation!)
         .toList();
     if (accessoryPoints.isNotEmpty) {
-      _mapController.fitBounds(
-          LatLngBounds.fromPoints([...points, ...accessoryPoints]),
-          options: const FitBoundsOptions(
-            padding: EdgeInsets.all(25),
-          ));
+      _mapController
+        ..fitBounds(LatLngBounds.fromPoints([...points, ...accessoryPoints]),
+            options: const FitBoundsOptions(
+              padding: EdgeInsets.all(25),
+            ))
+        ..move(_mapController.center, _mapController.zoom + 0.00001);
     }
   }
 
@@ -100,6 +104,8 @@ class _AccessoryMapState extends State<AccessoryMap> {
         mapController: _mapController,
         options: MapOptions(
           center: locationModel.here ?? const LatLng(49.874739, 8.656280),
+          maxZoom: 18.0,
+          minZoom: 2.0,
           zoom: 13.0,
           interactiveFlags: InteractiveFlag.pinchZoom |
               InteractiveFlag.drag |
