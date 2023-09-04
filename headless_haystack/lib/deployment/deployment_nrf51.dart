@@ -22,10 +22,10 @@ class DeploymentInstructionsNRF51 extends StatelessWidget {
           content: Text('To build the firmware the GNU Arm Embedded '
               'Toolchain is required.'),
         ),
-        Step(
-          title: const Text('Download'),
+        const Step(
+          title: Text('Download'),
           content: Column(
-            children: const [
+            children: [
               Text('Download the firmware source code from GitHub '
                   'and navigate to the given folder.'),
               Hyperlink(target: 'https://github.com/seemoo-lab/openhaystack'),
@@ -49,10 +49,10 @@ class DeploymentInstructionsNRF51 extends StatelessWidget {
             ],
           ),
         ),
-        Step(
-          title: const Text('Firmware Deployment'),
+        const Step(
+          title: Text('Firmware Deployment'),
           content: Column(
-            children: const [
+            children: [
               Text('If the firmware is built successfully it can '
                   'be deployed to the microcontroller with the following '
                   'command.'),

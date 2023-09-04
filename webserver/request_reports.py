@@ -3,6 +3,7 @@
 import argparse, json, ssl
 
 from apple_cryptography import *
+from cryptography.hazmat.primitives.asymmetric import ec
 
 OUTPUT_FOLDER = 'output/'
 

@@ -23,10 +23,10 @@ class DeploymentInstructionsESP32 extends StatelessWidget {
               'IoT Development Framework (ESP-IDF) is required. Additionally '
               'Python 3 and the venv module need to be installed.'),
         ),
-        Step(
-          title: const Text('Download'),
+        const Step(
+          title: Text('Download'),
           content: Column(
-            children: const  [
+            children: [
               Text('Download the firmware source code from GitHub '
                   'and navigate to the given folder.'),
               Hyperlink(target: 'https://github.com/seemoo-lab/openhaystack'),
@@ -36,10 +36,10 @@ class DeploymentInstructionsESP32 extends StatelessWidget {
             ],
           ),
         ),
-        Step(
-          title: const Text('Build'),
+        const Step(
+          title: Text('Build'),
           content: Column(
-            children: const [
+            children: [
               Text(
                   'Execute the ESP-IDF build command to create the ESP32 firmware.'),
               CodeBlock(text: 'idf.py build'),

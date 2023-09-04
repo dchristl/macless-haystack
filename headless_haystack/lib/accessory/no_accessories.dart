@@ -10,10 +10,10 @@ class NoAccessoriesPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Text(
             'There\'s Nothing Here Yet\nAdd an accessory to get started.',
             style: TextStyle(
