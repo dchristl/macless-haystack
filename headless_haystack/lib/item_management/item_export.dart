@@ -8,6 +8,8 @@ import 'package:headless_haystack/accessory/accessory_dto.dart';
 import 'package:headless_haystack/accessory/accessory_model.dart';
 import 'package:headless_haystack/accessory/accessory_registry.dart';
 import 'package:share_plus/share_plus.dart';
+import 'dart:html' as webFile;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ItemExportMenu extends StatelessWidget {
   /// The accessory to export from
@@ -104,9 +106,7 @@ class ItemExportMenu extends StatelessWidget {
   /// The OpenHaystack export format is used for interoperability with
   /// the desktop app.
   Future<void> _exportAccessoriesAsJSON(List<Accessory> accessories) async {
-    // Create temporary directory to store export file
-    Directory tempDir = await getTemporaryDirectory();
-    String path = tempDir.path;
+    const filename = 'accessories.json';
     // Convert accessories to export format
     List<AccessoryDTO> exportAccessories = [];
     for (Accessory accessory in accessories) {
@@ -136,18 +136,34 @@ class ItemExportMenu extends StatelessWidget {
           isActive: accessory.isActive,
           additionalKeys: additionalPrivateKeys));
     }
-    // Create file and write accessories as json
-    const filename = 'accessories.json';
-    File file = File('$path/$filename');
     JsonEncoder encoder = const JsonEncoder.withIndent('  '); // format output
     String encodedAccessories = encoder.convert(exportAccessories);
-    await file.writeAsString(encodedAccessories);
-    // Share export file over os share dialog
 
-    Share.shareXFiles(
-      [XFile(file.path)],
-      subject: filename,
-    );
+    if (kIsWeb) {
+      var blob = webFile.Blob([encodedAccessories], 'application/json', 'native');
+
+      var anchorElement = webFile.AnchorElement(
+        href: webFile.Url.createObjectUrlFromBlob(blob).toString(),
+      )
+        ..setAttribute("download", filename)
+        ..click();
+    } else {
+      // Create temporary directory to store export file
+      Directory tempDir = await getTemporaryDirectory();
+      String path = tempDir.path;
+
+      // Create file and write accessories as json
+
+      File file = File('$path/$filename');
+
+      await file.writeAsString(encodedAccessories);
+      // Share export file over os share dialog
+
+      Share.shareXFiles(
+        [XFile(file.path)],
+        subject: filename,
+      );
+    }
   }
 
   /// Show an explanation how the different key types are used.

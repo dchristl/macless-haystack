@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.1.0
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -36,7 +36,7 @@ dependencies:
   flutter_slidable: ^3.0.0
 
   # Networking
-  http: ^0.13.4
+  http: ^1.1.0
 
   # Cryptography
   # latest version of pointy castle for crypto functions
@@ -47,13 +47,13 @@ dependencies:
 
   # Location
 
-  flutter_map: ^4.0.0
+  flutter_map: ^5.0.0
   location: ^5.0.3
   geocoding: ^2.0.1
 
   # Storage
   shared_preferences: ^2.0.9
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^9.0.0
   file_picker: ^5.2.10
 
   # Sharing
@@ -64,7 +64,7 @@ dependencies:
 
 
   flutter_settings_screens: ^0.3.3-null-safety+2
-  latlong2: ^0.8.1
+  latlong2: ^0.9.0
   intl: ^0.18.0
   logger: ^2.0.1
 
