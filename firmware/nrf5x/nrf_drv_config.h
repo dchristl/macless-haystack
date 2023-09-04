@@ -105,7 +105,7 @@
 #define RTC1_ENABLED 1
 
 #if (RTC1_ENABLED == 1)
-#define RTC1_CONFIG_FREQUENCY 8 /* Slowest possible value, least power consumption */
+#define RTC1_CONFIG_FREQUENCY 4 /* Slowest possible value, least power consumption */
 #define RTC1_CONFIG_IRQ_PRIORITY APP_IRQ_PRIORITY_LOW
 #define RTC1_CONFIG_RELIABLE false
 
