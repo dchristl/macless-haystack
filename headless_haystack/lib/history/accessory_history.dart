@@ -142,7 +142,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   MarkerLayer(
                     markers: locationHistory
                         .map((entry) => Marker(
-                              point: entry.a,
+                              point: entry.a ,
                               builder: (ctx) => GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -168,6 +168,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                         LocationPopup(
                           location: popupEntry!.a,
                           time: popupEntry!.b,
+                          end: popupEntry!.c,
                         ),
                     ],
                   ),

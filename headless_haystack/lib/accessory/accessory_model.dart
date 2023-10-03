@@ -4,17 +4,25 @@ import 'package:latlong2/latlong.dart';
 import 'package:headless_haystack/accessory/accessory_icon_model.dart';
 import 'package:headless_haystack/findMy/find_my_controller.dart';
 import 'package:headless_haystack/location/location_model.dart';
+import 'package:logger/logger.dart';
+
+import '../findMy/models.dart';
 
 class Pair<T1, T2> {
   final T1 a;
   final T2 b;
+  T2 c;
 
-  Pair(this.a, this.b);
+  Pair(this.a, this.b, this.c);
 }
 
 const defaultIcon = Icons.push_pin;
 
 class Accessory {
+  static final logger = Logger(
+    printer: PrettyPrinter(methodCount: 0),
+  );
+
   /// The ID of the accessory key.
   String id;
 
@@ -182,8 +190,8 @@ class Accessory {
         lastDerivationTimestamp = json['lastDerivationTimestamp'],
         updateInterval = json['updateInterval'],
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'],
-        additionalKeys = json['additionalKeys']?.cast<String>() ?? List.empty()       
-         {
+        additionalKeys =
+            json['additionalKeys']?.cast<String>() ?? List.empty() {
     _init();
   }
 
@@ -213,7 +221,6 @@ class Accessory {
         'updateInterval': updateInterval,
         'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
         'additionalKeys': additionalKeys,
-
       };
 
   /// Returns the Base64 encoded hash of the advertisement key
@@ -234,8 +241,8 @@ class Accessory {
   Future<String> getPrivateKey() async {
     var keyPair = await FindMyController.getKeyPair(hashedPublicKey);
     return keyPair.getBase64PrivateKey();
-  }  
-  
+  }
+
   Future<String> getHashedPublicKey() async {
     return hashedPublicKey;
   }
@@ -246,5 +253,58 @@ class Accessory {
             (hashedPublicKey) => FindMyController.getKeyPair(hashedPublicKey))
         .map((event) => event.getBase64PrivateKey())
         .toList();
+  }
+
+  void addLocationHistoryEntry(FindMyLocationReport report) {
+    var reportDate = report.timestamp ?? report.published!;
+    logger.d(
+        '#### Trying to add report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
+    Pair<LatLng, DateTime>? closest;
+    //Find the closest history report by time
+    for (int i = 0; i < locationHistory.length; i++) {
+      Pair<LatLng, DateTime> currentPair = locationHistory[i];
+      //closest already set, but is earlier than current one
+      if (closest != null &&
+          currentPair.b.isBefore(reportDate) &&
+          reportDate.isAfter(closest.b)) {
+        closest = currentPair;
+        continue;
+      }
+      if (closest == null && currentPair.b.isBefore(reportDate)) {
+        closest = currentPair;
+        continue;
+      }
+    }
+
+    if (closest != null) {
+      logger.d(
+          '#### Found closest with ts ${closest.b} - ${closest.c} and ${closest.a.longitude} - ${closest.a.latitude}');
+      bool latIsClose = (closest.a.latitude - report.latitude!).abs() <= 0.001;
+      bool lonIsClose =
+          (closest.a.longitude - report.longitude!).abs() <= 0.001;
+      if (latIsClose && lonIsClose) {
+        //similar
+        if (reportDate.isAfter(closest.c)) {
+          logger.d('#### Changing closest end date to $reportDate');
+          closest.c = reportDate;
+        } else {
+          logger.d('#### Date not changed, because is before current date.');
+        }
+      } else {
+        logger.d('#### Adding new one, because closest is too far away');
+        //not like before, so add new one
+        Pair<LatLng, DateTime> pair = Pair(
+            LatLng(report.latitude!, report.longitude!),
+            reportDate,
+            reportDate);
+        locationHistory.add(pair);
+      }
+    } else {
+      logger.d('#### Closest not found. Adding to list.');
+      //no report before
+      Pair<LatLng, DateTime> pair = Pair(
+          LatLng(report.latitude!, report.longitude!), reportDate, reportDate);
+      locationHistory.add(pair);
+    }
   }
 }

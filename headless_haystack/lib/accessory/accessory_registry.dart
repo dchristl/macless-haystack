@@ -135,18 +135,23 @@ class AccessoryRegistry extends ChangeNotifier {
 
   Future<void> fillLocationHistory(
       List<FindMyLocationReport> reports, Accessory accessory) async {
-    accessory.locationHistory.clear();
+    for (var i = 0; i < reports.length; i++) {
+      await reports[i].decrypt();
+    }
+//Sort by date
+    reports.sort((a, b) {
+      var aDate = a.timestamp ?? a.published!;
+      var bDate = b.timestamp ?? b.published!;
+      return aDate.compareTo(bDate);
+    });
+//add to history in correct order
     for (var i = 0; i < reports.length; i++) {
       FindMyLocationReport report = reports[i];
-      reports[i].decrypt().whenComplete(() {
-        if (report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
-          Pair<LatLng, DateTime> pair = Pair(
-              LatLng(report.latitude!, report.longitude!),
-              report.timestamp ?? report.published!);
-          accessory.locationHistory.add(pair);
-        }
-      });
+      if (report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
+        accessory.addLocationHistoryEntry(report);
+      }
     }
-    _storeAccessories();
+
+    _storeAccessories(); //TODO
   }
 }
