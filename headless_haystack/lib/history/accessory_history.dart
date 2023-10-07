@@ -158,7 +158,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                                 },
                                 child: Icon(
                                   Icons.circle,
-                                  size: 15,
+                                  size: calculateSize(entry),
                                   color: entry == popupEntry
                                       ? Colors.red
                                       : Theme.of(context).indicatorColor,
@@ -197,6 +197,12 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
         ),
       ),
     );
+  }
+
+  double calculateSize(Pair<dynamic, dynamic> entry) {
+    //Point gets larger every 6 hours
+    var d = (entry.end.difference(entry.start).inHours / 6).floor() + 1;
+    return min(d * 10, 40); // 4 steps is enough
   }
 
   mapReady() {
