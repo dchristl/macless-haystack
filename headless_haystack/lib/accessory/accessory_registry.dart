@@ -104,13 +104,13 @@ class AccessoryRegistry extends ChangeNotifier {
       if (reports.where((element) => !element.isEncrypted()).isNotEmpty) {
         var lastReport =
             reports.where((element) => !element.isEncrypted()).first;
-        accessory.lastLocation =
-            LatLng(lastReport.latitude!, lastReport.longitude!);
         var reportDate = lastReport.timestamp ?? lastReport.published;
-        accessory.datePublished = accessory.datePublished != null &&
-                reportDate!.isAfter(accessory.datePublished!)
-            ? reportDate
-            : accessory.datePublished;
+        if (accessory.datePublished != null &&
+            reportDate!.isAfter(accessory.datePublished!)) {
+          accessory.datePublished = reportDate;
+          accessory.lastLocation =
+              LatLng(lastReport.latitude!, lastReport.longitude!);
+        }
       }
       historyEntries[accessory] = fillLocationHistory(reports, accessory);
     }
