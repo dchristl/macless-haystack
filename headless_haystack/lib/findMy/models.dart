@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:logger/logger.dart';
 import 'package:pointycastle/ecc/api.dart';
+
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
 import 'package:headless_haystack/findMy/find_my_controller.dart';
@@ -13,7 +14,7 @@ class FindMyLocationReport {
   static final logger = Logger(
     printer: PrettyPrinter(methodCount: 0),
   );
-
+  static const pointCorrection = 0xFFFFFFFF / 10000000;
   double? latitude;
   double? longitude;
   int? accuracy;
@@ -43,7 +44,8 @@ class FindMyLocationReport {
 
   Future<void> decrypt() async {
     {
-      await Future.delayed(const Duration(milliseconds: 1)); //Is needed otherwise is executed synchron
+      await Future.delayed(const Duration(
+          milliseconds: 1)); //Is needed otherwise is executed synchron
       if (isEncrypted()) {
         logger.d('Decrypting report with private key of ${getId()}');
         final unixTimestampInMillis = result["datePublished"];
@@ -55,8 +57,8 @@ class FindMyLocationReport {
         FindMyLocationReport decryptedReport =
             await DecryptReports.decryptReport(
                 report, base64Decode(base64privateKey!));
-        latitude = decryptedReport.latitude;
-        longitude = decryptedReport.longitude;
+        latitude = correctCoordinate(decryptedReport.latitude!, 90);
+        longitude = correctCoordinate(decryptedReport.longitude!, 180);
         accuracy = decryptedReport.accuracy;
         timestamp = decryptedReport.timestamp;
         confidence = decryptedReport.confidence;
@@ -64,6 +66,17 @@ class FindMyLocationReport {
         base64privateKey = null;
       }
     }
+  }
+
+  /// Correction caused by overflow, when point is outside range
+  double correctCoordinate(double coordinate, int threshold) {
+    if (coordinate > threshold) {
+      coordinate = coordinate - pointCorrection;
+    }
+    if (coordinate < -threshold) {
+      coordinate = coordinate + pointCorrection;
+    }
+    return coordinate;
   }
 }
 

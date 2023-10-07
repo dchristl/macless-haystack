@@ -55,7 +55,6 @@ class AccessoryRegistry extends ChangeNotifier {
   Future<void> loadHistory() async {
     String? history = await _storage.read(key: historStorageKey);
     if (history != null) {
-      //HIER
       Map<String, dynamic> jsonDecoded = jsonDecode(history);
       for (var item in _accessories) {
         var currElement = jsonDecoded[item.id];
