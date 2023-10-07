@@ -188,7 +188,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 numberOfDays: numberOfDays.toDouble(),
                 onChanged: (double newValue) {
                   setState(() {
-                    numberOfDays = newValue as int;
+                    numberOfDays = newValue.toInt();
                   });
                 },
               ),
