@@ -343,4 +343,11 @@ class Accessory {
       return Pair.fromJson(item);
     }).toList();
   }
+
+  DateTime latestHistoryEntry() {
+    if (locationHistory.isEmpty) {
+      return DateTime.fromMicrosecondsSinceEpoch(0);
+    }
+    return locationHistory.first.end;
+  }
 }

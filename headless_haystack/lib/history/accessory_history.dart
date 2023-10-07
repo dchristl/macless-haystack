@@ -7,7 +7,7 @@ import 'package:headless_haystack/history/days_selection_slider.dart';
 import 'package:headless_haystack/history/location_popup.dart';
 
 import '../preferences/user_preferences_model.dart';
-
+import 'dart:math';
 class AccessoryHistory extends StatefulWidget {
   final Accessory accessory;
 
@@ -31,16 +31,15 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   bool showPopup = false;
   Pair<dynamic, dynamic>? popupEntry;
 
-  double numberOfDays =
-      Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!.toDouble();
+  int numberOfDays = 7;
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
-    if (numberOfDays < 1) {
-      numberOfDays = 7;
-    }
+
+    DateTime latest = widget.accessory.latestHistoryEntry();
+    numberOfDays = min(latest.difference(DateTime.now()).inDays + 1, numberOfDays);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mapReady();
     });
@@ -49,16 +48,6 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   @override
   Widget build(BuildContext context) {
     // Filter for the locations after the specified cutoff date (now - number of days)
-    var now = DateTime.now();
-    List<Pair> locationHistory =
-        widget.accessory.locationHistory
-            .where(
-              (element) => element.start.isAfter(
-                now.subtract(Duration(days: numberOfDays.round())),
-              ),
-            )
-            .toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -131,8 +120,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   PolylineLayer(
                     polylines: [
                       Polyline(
-                        points:
-                            locationHistory.map((entry) => entry.location).toList(),
+                        points: widget.accessory.locationHistory
+                            .map((entry) => entry.location)
+                            .toList(),
                         strokeWidth: 4,
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -140,9 +130,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   ),
                   // The markers for the historic locations
                   MarkerLayer(
-                    markers: locationHistory
+                    markers: widget.accessory.locationHistory
                         .map((entry) => Marker(
-                              point: entry.location ,
+                              point: entry.location,
                               builder: (ctx) => GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -179,10 +169,10 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
               flex: 1,
               fit: FlexFit.tight,
               child: DaysSelectionSlider(
-                numberOfDays: numberOfDays,
+                numberOfDays: numberOfDays.toDouble(),
                 onChanged: (double newValue) {
                   setState(() {
-                    numberOfDays = newValue;
+                    numberOfDays = newValue as int;
                   });
                 },
               ),
@@ -195,8 +185,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
 
   mapReady() {
     if (widget.accessory.locationHistory.isNotEmpty) {
-      var historicLocations =
-          widget.accessory.locationHistory.map((entry) => entry.location).toList();
+      var historicLocations = widget.accessory.locationHistory
+          .map((entry) => entry.location)
+          .toList();
       var bounds = LatLngBounds.fromPoints(historicLocations);
       _mapController
         ..fitBounds(bounds)
