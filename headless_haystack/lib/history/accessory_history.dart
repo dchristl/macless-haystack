@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:headless_haystack/accessory/accessory_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:headless_haystack/history/days_selection_slider.dart';
 import 'package:headless_haystack/history/location_popup.dart';
 
-import '../preferences/user_preferences_model.dart';
 import 'dart:math';
 class AccessoryHistory extends StatefulWidget {
   final Accessory accessory;
