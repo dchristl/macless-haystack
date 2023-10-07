@@ -96,7 +96,7 @@ class _DashboardState extends State<Dashboard> {
         SnackBar(
           backgroundColor: Theme.of(context).colorScheme.error,
           content: Text(
-            'Could not find location reports. Try again later.',
+            'Could not find location reports. Try again later. Error: ${e.toString()}',
             style: TextStyle(
               color: Theme.of(context).colorScheme.onError,
             ),

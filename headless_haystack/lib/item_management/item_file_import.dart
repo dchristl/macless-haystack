@@ -73,7 +73,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
 
   /// Parse the JSON encoded accessories from the file stored at [filePath].
   Future<List<AccessoryDTO>> _parseAccessories(Uint8List bytes) async {
-    String encodedContent = String.fromCharCodes(bytes);
+    String encodedContent = utf8.decode(bytes);
 
     List<dynamic> content = jsonDecode(encodedContent);
     var accessoryDTOs =

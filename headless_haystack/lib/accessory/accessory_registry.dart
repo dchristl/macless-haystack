@@ -193,7 +193,7 @@ class AccessoryRegistry extends ChangeNotifier {
         accessory.addLocationHistoryEntry(report);
       }
     }
-
+    _storeAccessories();
     return accessory.locationHistory;
   }
 }
