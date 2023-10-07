@@ -6,6 +6,7 @@ import 'package:headless_haystack/history/days_selection_slider.dart';
 import 'package:headless_haystack/history/location_popup.dart';
 
 import 'dart:math';
+
 class AccessoryHistory extends StatefulWidget {
   final Accessory accessory;
 
@@ -37,7 +38,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
     _mapController = MapController();
 
     DateTime latest = widget.accessory.latestHistoryEntry();
-    numberOfDays = min(latest.difference(DateTime.now()).inDays + 1, numberOfDays);
+    numberOfDays =
+        min(latest.difference(DateTime.now()).inDays + 1, numberOfDays);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mapReady();
     });
@@ -45,11 +47,35 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
 
   @override
   Widget build(BuildContext context) {
+    var historyEntries = widget.accessory.locationHistory;
+    var historyLength = historyEntries.length - 1;
+    List<Polyline> polylines = [];
+
+    if (historyLength > 255) {
+      historyLength = 255;
+    }
+    int delta = (255 ~/ historyLength).ceil();
+    var blue = delta;
+
+    for (int i = 0; i < historyEntries.length - 1; i++) {
+      var entry = historyEntries[i];
+      var nextEntry = historyEntries[i + 1];
+      List<LatLng> points = [];
+      points.add(entry.location);
+      points.add(nextEntry.location);
+      polylines.add(Polyline(
+        points: points,
+        strokeWidth: 4,
+        color: Color.fromRGBO(33, 150, blue, 1),
+      ));
+      blue += min(delta.toInt(), 255);
+    }
+
     // Filter for the locations after the specified cutoff date (now - number of days)
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            "${widget.accessory.name} (${widget.accessory.locationHistory.length} history reports)"),
+        title:
+            Text("${widget.accessory.name} ($historyLength history reports)"),
       ),
       body: SafeArea(
         child: Column(
@@ -116,15 +142,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                       subdomains: const ['a', 'b', 'c']),
                   // The line connecting the locations chronologically
                   PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: widget.accessory.locationHistory
-                            .map((entry) => entry.location)
-                            .toList(),
-                        strokeWidth: 4,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ],
+                    polylines: polylines,
                   ),
                   // The markers for the historic locations
                   MarkerLayer(
