@@ -106,7 +106,11 @@ class AccessoryRegistry extends ChangeNotifier {
             reports.where((element) => !element.isEncrypted()).first;
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);
-        accessory.datePublished = lastReport.timestamp ?? lastReport.published;
+        var reportDate = lastReport.timestamp ?? lastReport.published;
+        accessory.datePublished = accessory.datePublished != null &&
+                reportDate!.isAfter(accessory.datePublished!)
+            ? reportDate
+            : accessory.datePublished;
       }
       historyEntries[accessory] = fillLocationHistory(reports, accessory);
     }
@@ -129,7 +133,8 @@ class AccessoryRegistry extends ChangeNotifier {
       Future<List<Pair<dynamic, dynamic>>> future = entry.value;
       List<Pair<dynamic, dynamic>> result = await future;
       var nowMinusDays = DateTime.now().subtract(const Duration(days: 7));
-      var upperDayLimit = DateTime(nowMinusDays.year, nowMinusDays.month, nowMinusDays.day);
+      var upperDayLimit =
+          DateTime(nowMinusDays.year, nowMinusDays.month, nowMinusDays.day);
       var filtered = result
           .where((element) => element.end.isAfter(upperDayLimit))
           .toList();
@@ -185,6 +190,15 @@ class AccessoryRegistry extends ChangeNotifier {
       var bDate = b.timestamp ?? b.published!;
       return aDate.compareTo(bDate);
     });
+
+    //Update the latest timestamp
+    if (reports.isNotEmpty) {
+      var lastReport = reports[reports.length - 1];
+      accessory.lastLocation =
+          LatLng(lastReport.latitude!, lastReport.longitude!);
+      accessory.datePublished = lastReport.timestamp ?? lastReport.published;
+    }
+
 //add to history in correct order
     for (var i = 0; i < reports.length; i++) {
       FindMyLocationReport report = reports[i];
