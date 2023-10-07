@@ -54,7 +54,8 @@ class AccessoryRegistry extends ChangeNotifier {
 
   Future<void> loadHistory() async {
     String? history = await _storage.read(key: historStorageKey);
-    if (history != null) { //HIER
+    if (history != null) {
+      //HIER
       Map<String, dynamic> jsonDecoded = jsonDecode(history);
       for (var item in _accessories) {
         var currElement = jsonDecoded[item.id];
@@ -128,8 +129,16 @@ class AccessoryRegistry extends ChangeNotifier {
       Accessory key = entry.key;
       Future<List<Pair<dynamic, dynamic>>> future = entry.value;
       List<Pair<dynamic, dynamic>> result = await future;
-
-      historyEntriesAsJson[key.id] = result;
+      var nowMinusDays = DateTime.now().subtract(const Duration(days: 7));
+      var upperDayLimit = DateTime(nowMinusDays.year, nowMinusDays.month, nowMinusDays.day);
+      var filtered = result
+          .where((element) => element.end.isAfter(upperDayLimit))
+          .toList();
+      if (filtered.length != result.length) {
+        logger.i(
+            '${result.length - filtered.length} history elements have been filtered out and will be deleted due to age.');
+      }
+      historyEntriesAsJson[key.id] = filtered;
     }
     var historyJson = jsonEncode(historyEntriesAsJson);
     _storage.write(key: historStorageKey, value: historyJson);
