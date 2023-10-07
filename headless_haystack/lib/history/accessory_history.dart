@@ -29,7 +29,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   late MapController _mapController;
 
   bool showPopup = false;
-  Pair<LatLng, DateTime>? popupEntry;
+  Pair<dynamic, dynamic>? popupEntry;
 
   double numberOfDays =
       Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!.toDouble();
@@ -50,10 +50,10 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   Widget build(BuildContext context) {
     // Filter for the locations after the specified cutoff date (now - number of days)
     var now = DateTime.now();
-    List<Pair<LatLng, DateTime>> locationHistory =
+    List<Pair> locationHistory =
         widget.accessory.locationHistory
             .where(
-              (element) => element.b.isAfter(
+              (element) => element.start.isAfter(
                 now.subtract(Duration(days: numberOfDays.round())),
               ),
             )
@@ -132,7 +132,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                     polylines: [
                       Polyline(
                         points:
-                            locationHistory.map((entry) => entry.a).toList(),
+                            locationHistory.map((entry) => entry.location).toList(),
                         strokeWidth: 4,
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -142,7 +142,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   MarkerLayer(
                     markers: locationHistory
                         .map((entry) => Marker(
-                              point: entry.a ,
+                              point: entry.location ,
                               builder: (ctx) => GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -166,9 +166,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                     markers: [
                       if (showPopup)
                         LocationPopup(
-                          location: popupEntry!.a,
-                          time: popupEntry!.b,
-                          end: popupEntry!.c,
+                          location: popupEntry!.location,
+                          time: popupEntry!.start,
+                          end: popupEntry!.end,
                         ),
                     ],
                   ),
@@ -196,7 +196,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   mapReady() {
     if (widget.accessory.locationHistory.isNotEmpty) {
       var historicLocations =
-          widget.accessory.locationHistory.map((entry) => entry.a).toList();
+          widget.accessory.locationHistory.map((entry) => entry.location).toList();
       var bounds = LatLngBounds.fromPoints(historicLocations);
       _mapController
         ..fitBounds(bounds)

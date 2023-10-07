@@ -11,6 +11,7 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:headless_haystack/preferences/user_preferences_model.dart';
 
 const accessoryStorageKey = 'ACCESSORIES';
+const historStorageKey = 'HISTORY';
 
 class AccessoryRegistry extends ChangeNotifier {
   final _storage = const FlutterSecureStorage();
@@ -44,10 +45,24 @@ class AccessoryRegistry extends ChangeNotifier {
     } else {
       _accessories = [];
     }
+    await loadHistory();
 
     loading = false;
 
     notifyListeners();
+  }
+
+  Future<void> loadHistory() async {
+    String? history = await _storage.read(key: historStorageKey);
+    if (history != null) { //HIER
+      Map<String, dynamic> jsonDecoded = jsonDecode(history);
+      for (var item in _accessories) {
+        var currElement = jsonDecoded[item.id];
+        if (currElement != null) {
+          item.addLocationHistory(currElement);
+        }
+      }
+    }
   }
 
   /// Fetches new location reports and matches them to their accessory.
@@ -78,6 +93,7 @@ class AccessoryRegistry extends ChangeNotifier {
 
     var reportsForAccessories = await Future.wait(runningLocationRequests);
     int out = 0;
+    Map<Accessory, Future<List<Pair<dynamic, dynamic>>>> historyEntries = {};
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
       var reports = reportsForAccessories.elementAt(i);
@@ -92,14 +108,31 @@ class AccessoryRegistry extends ChangeNotifier {
             LatLng(lastReport.latitude!, lastReport.longitude!);
         accessory.datePublished = lastReport.timestamp ?? lastReport.published;
       }
-      fillLocationHistory(reports, accessory);
+      historyEntries[accessory] = fillLocationHistory(reports, accessory);
     }
     // Store updated lastLocation and datePublished for accessories
     _storeAccessories();
 
+    _storeHistory(historyEntries);
+
     initialLoadFinished = true;
     notifyListeners();
     return Future.value(out);
+  }
+
+  Future<void> _storeHistory(
+      Map<Accessory, Future<List<Pair<dynamic, dynamic>>>>
+          historyEntries) async {
+    Map<String, List<Pair<dynamic, dynamic>>> historyEntriesAsJson = {};
+    for (var entry in historyEntries.entries) {
+      Accessory key = entry.key;
+      Future<List<Pair<dynamic, dynamic>>> future = entry.value;
+      List<Pair<dynamic, dynamic>> result = await future;
+
+      historyEntriesAsJson[key.id] = result;
+    }
+    var historyJson = jsonEncode(historyEntriesAsJson);
+    _storage.write(key: historStorageKey, value: historyJson);
   }
 
   /// Stores the user's accessories in persistent storage.
@@ -133,7 +166,7 @@ class AccessoryRegistry extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fillLocationHistory(
+  Future<List<Pair<dynamic, dynamic>>> fillLocationHistory(
       List<FindMyLocationReport> reports, Accessory accessory) async {
     for (var i = 0; i < reports.length; i++) {
       await reports[i].decrypt();
@@ -152,6 +185,6 @@ class AccessoryRegistry extends ChangeNotifier {
       }
     }
 
-    _storeAccessories(); //TODO
+    return accessory.locationHistory;
   }
 }

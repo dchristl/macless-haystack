@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:headless_haystack/accessory/accessory_icon_model.dart';
 import 'package:headless_haystack/findMy/find_my_controller.dart';
 import 'package:headless_haystack/location/location_model.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:logger/logger.dart';
 
 import '../findMy/models.dart';
 
 class Pair<T1, T2> {
-  final T1 a;
-  final T2 b;
-  T2 c;
+  final LatLng location;
+  final DateTime start;
+  DateTime end;
 
-  Pair(this.a, this.b, this.c);
+  Pair(this.location, this.start, this.end);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'lat': location.latitude,
+      'lon': location.longitude,
+      'start': start.toIso8601String(),
+      'end': end.toIso8601String(),
+    };
+  }
+
+  static Pair fromJson(Map<String, dynamic> json) {
+    return Pair(
+      LatLng(json['lat'], json['lon']),
+      DateTime.parse(json['start'] as String),
+      DateTime.parse(json['end'] as String),
+    );
+  }
 }
 
 const defaultIcon = Icons.push_pin;
@@ -65,7 +82,7 @@ class Accessory {
   LatLng? _lastLocation;
 
   /// A list of known locations over time.
-  List<Pair<LatLng, DateTime>> locationHistory = [];
+  List<Pair<dynamic, dynamic>> locationHistory = [];
 
   /// Stores address information about the current location.
   Future<Placemark?> place = Future.value(null);
@@ -259,18 +276,30 @@ class Accessory {
     var reportDate = report.timestamp ?? report.published!;
     logger.d(
         '#### Trying to add report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
-    Pair<LatLng, DateTime>? closest;
+    Pair? closest;
     //Find the closest history report by time
     for (int i = 0; i < locationHistory.length; i++) {
-      Pair<LatLng, DateTime> currentPair = locationHistory[i];
+      Pair currentPair = locationHistory[i];
+      //If it is between the first pair, we have the closest one and will finish
+      if (reportDate.isAtSameMomentAs(currentPair.start) ||
+          reportDate.isAtSameMomentAs(currentPair.end) ||
+          (reportDate.isAfter(locationHistory[0].start) &&
+              reportDate.isBefore(locationHistory[0].end))) {
+        //new element is after latest history entry, so break directly
+        closest = currentPair;
+        break;
+      }
       //closest already set, but is earlier than current one
-      if (closest != null &&
-          currentPair.b.isBefore(reportDate) &&
-          reportDate.isAfter(closest.b)) {
+      if (reportDate.isAtSameMomentAs(currentPair.start) ||
+          reportDate.isAtSameMomentAs(currentPair.end) ||
+          (closest != null &&
+              currentPair.start.isBefore(reportDate) &&
+              reportDate.isAfter(closest.start))) {
         closest = currentPair;
         continue;
       }
-      if (closest == null && currentPair.b.isBefore(reportDate)) {
+      if (reportDate.isAtSameMomentAs(currentPair.start) ||
+          (closest == null && currentPair.start.isBefore(reportDate))) {
         closest = currentPair;
         continue;
       }
@@ -278,15 +307,16 @@ class Accessory {
 
     if (closest != null) {
       logger.d(
-          '#### Found closest with ts ${closest.b} - ${closest.c} and ${closest.a.longitude} - ${closest.a.latitude}');
-      bool latIsClose = (closest.a.latitude - report.latitude!).abs() <= 0.001;
+          '#### Found closest with ts ${closest.start} - ${closest.end} and ${closest.location.longitude} - ${closest.location.latitude}');
+      bool latIsClose =
+          (closest.location.latitude - report.latitude!).abs() <= 0.001;
       bool lonIsClose =
-          (closest.a.longitude - report.longitude!).abs() <= 0.001;
+          (closest.location.longitude - report.longitude!).abs() <= 0.001;
       if (latIsClose && lonIsClose) {
         //similar
-        if (reportDate.isAfter(closest.c)) {
+        if (reportDate.isAfter(closest.end)) {
           logger.d('#### Changing closest end date to $reportDate');
-          closest.c = reportDate;
+          closest.end = reportDate;
         } else {
           logger.d('#### Date not changed, because is before current date.');
         }
@@ -306,5 +336,11 @@ class Accessory {
           LatLng(report.latitude!, report.longitude!), reportDate, reportDate);
       locationHistory.add(pair);
     }
+  }
+
+  void addLocationHistory(List<dynamic> historyList) {
+    locationHistory = historyList.map((item) {
+      return Pair.fromJson(item);
+    }).toList();
   }
 }
