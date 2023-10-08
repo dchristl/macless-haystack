@@ -37,7 +37,7 @@ class AccessoryListItem extends StatelessWidget {
         //   * Coordinates (latitude & longitude) if known
         //   * `Unknown` if unknown
         String locationString = accessory.lastLocation != null
-          ? '${accessory.lastLocation!.latitude}, ${accessory.lastLocation!.longitude}'
+          ? '${accessory.lastLocation!.latitude.toStringAsFixed(4)}, ${accessory.lastLocation!.longitude.toStringAsFixed(4)}'
           : 'Unknown';
         if (snapshot.hasData && snapshot.data != null) {
           Placemark place = snapshot.data!;
