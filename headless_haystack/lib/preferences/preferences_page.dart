@@ -38,7 +38,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   getLocationTile() {
     return SwitchSettingsTile(
-      settingKey: locationPreferenceKnownKey,
+      settingKey: locationAccessWantedKey,
       title: 'Show this devices location',
       onChange: (showLocation) {
         var locationModel = Provider.of<LocationModel>(context, listen: false);

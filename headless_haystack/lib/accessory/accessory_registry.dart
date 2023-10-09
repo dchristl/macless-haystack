@@ -42,6 +42,10 @@ class AccessoryRegistry extends ChangeNotifier {
       List<Accessory> loadedAccessories =
           accessoryJson.map((val) => Accessory.fromJson(val)).toList();
       _accessories = loadedAccessories;
+      clearInvalidAccessories(_accessories);
+      if (_accessories.length != loadedAccessories.length) {
+        _storeAccessories();
+      }
     } else {
       _accessories = [];
     }
@@ -212,5 +216,20 @@ class AccessoryRegistry extends ChangeNotifier {
     oldAccessory.update(newAccessory);
     _storeAccessories();
     notifyListeners();
+  }
+
+  void clearInvalidAccessories(List<Accessory> loadedAccessories) async {
+    List<int> indicesToRemove = [];
+    for (int i = 0; i < accessories.length; i++) {
+      bool containsKey =
+          await _storage.containsKey(key: accessories[i].hashedPublicKey);
+      if (containsKey) {
+        // Invalid Element should be removed
+        indicesToRemove.add(i);
+      }
+    }
+    for (int index in indicesToRemove.reversed) {
+      loadedAccessories.removeAt(index);
+    }
   }
 }
