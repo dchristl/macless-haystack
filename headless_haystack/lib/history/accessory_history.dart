@@ -48,13 +48,13 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   @override
   Widget build(BuildContext context) {
     var historyEntries = widget.accessory.locationHistory;
-    var historyLength = historyEntries.length - 1;
+    var historyLength = historyEntries.length;
     List<Polyline> polylines = [];
 
     if (historyLength > 255) {
       historyLength = 255;
     }
-    int delta = (255 ~/ historyLength).ceil();
+    int delta = (255 ~/ (historyLength - 1)).ceil();
     var blue = delta;
 
     for (int i = 0; i < historyEntries.length - 1; i++) {
