@@ -101495,9 +101495,9 @@ r.d=new A.Fk(A.Id(null,null,t.aj))
 s=r.a.c.ayY()
 r.r=Math.min(B.d.bb(A.d2(0,Date.now()-s.a,0).a,864e8)+1,r.r)
 $.aw.k2$.push(new A.ayE(r))},
-D(a2){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=this,b=null,a=c.a.c.ay,a0=a.length-1,a1=A.a([],t.fL)
+D(a2){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=this,b=null,a=c.a.c.ay,a0=a.length,a1=A.a([],t.fL)
 if(a0>255)a0=255
-s=B.d.d_(B.d.ht(255,a0))
+s=B.d.d_(B.d.ht(255,a0-1))
 for(r=t.q_,q=s,p=0;p<a.length-1;){o=a[p];++p
 n=a[p]
 m=A.a([],r)
