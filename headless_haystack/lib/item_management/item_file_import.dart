@@ -116,7 +116,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
   }
 
   /// Import a specific [accessory] by converting the DTO to the internal representation.
-  Future<void> _importAccessory(
+  Future<bool> _importAccessory(
       AccessoryRegistry registry, AccessoryDTO accessoryDTO) async {
     Color color = Colors.grey;
     if (accessoryDTO.colorSpaceName == 'kCGColorSpaceSRGB' &&
@@ -142,6 +142,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
 
     var keyPair = await FindMyController.importKeyPair(accessoryDTO.privateKey);
 
+
     Accessory newAccessory = Accessory(
         datePublished: DateTime.now(),
         hashedPublicKey: keyPair.hashedPublicKey,
@@ -160,6 +161,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
         additionalKeys: additionalPublicKeys);
 
     registry.addAccessory(newAccessory);
+    return true;
   }
 
   @override

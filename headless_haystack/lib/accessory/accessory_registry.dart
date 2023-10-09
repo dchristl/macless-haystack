@@ -223,7 +223,7 @@ class AccessoryRegistry extends ChangeNotifier {
     for (int i = 0; i < accessories.length; i++) {
       bool containsKey =
           await _storage.containsKey(key: accessories[i].hashedPublicKey);
-      if (containsKey) {
+      if (!containsKey) {
         // Invalid Element should be removed
         indicesToRemove.add(i);
       }
