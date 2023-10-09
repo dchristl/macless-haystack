@@ -39,7 +39,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
 
     DateTime latest = widget.accessory.latestHistoryEntry();
     numberOfDays =
-        min(latest.difference(DateTime.now()).inDays + 1, numberOfDays);
+        min(DateTime.now().difference(latest).inDays + 1, numberOfDays);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mapReady();
     });
