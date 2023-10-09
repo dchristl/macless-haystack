@@ -54,7 +54,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
     if (historyLength > 255) {
       historyLength = 255;
     }
-    int delta = (255 ~/ (historyLength - 1)).ceil();
+    int delta = (255 ~/ max(1, (historyLength - 1))).ceil();
     var blue = delta;
 
     for (int i = 0; i < historyEntries.length - 1; i++) {

@@ -26,7 +26,6 @@ class _AccessoryMapState extends State<AccessoryMap> {
   late MapController _mapController;
   void Function()? cancelLocationUpdates;
   void Function()? cancelAccessoryUpdates;
-  bool accessoryInitialized = false;
 
   @override
   void initState() {
@@ -94,11 +93,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
             LocationModel locationModel, Widget? child) {
       // Zoom map to fit all accessories on first accessory update
       var accessories = accessoryRegistry.accessories;
-      if (!accessoryInitialized && accessoryRegistry.initialLoadFinished) {
-        fitToContent(accessories, locationModel.here);
-
-        accessoryInitialized = true;
-      }
+      fitToContent(accessories, locationModel.here);
 
       return FlutterMap(
         mapController: _mapController,
