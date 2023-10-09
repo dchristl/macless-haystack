@@ -172,13 +172,6 @@ class AccessoryRegistry extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Updates [oldAccessory] with the values from [newAccessory].
-  void editAccessory(Accessory oldAccessory, Accessory newAccessory) {
-    oldAccessory.update(newAccessory);
-    _storeAccessories();
-    notifyListeners();
-  }
-
   Future<List<Pair<dynamic, dynamic>>> fillLocationHistory(
       List<FindMyLocationReport> reports, Accessory accessory) async {
     for (var i = 0; i < reports.length; i++) {
@@ -194,9 +187,13 @@ class AccessoryRegistry extends ChangeNotifier {
     //Update the latest timestamp
     if (reports.isNotEmpty) {
       var lastReport = reports[reports.length - 1];
+      var oldTs = accessory.datePublished;
       accessory.lastLocation =
           LatLng(lastReport.latitude!, lastReport.longitude!);
       accessory.datePublished = lastReport.timestamp ?? lastReport.published;
+      if (oldTs == null || !oldTs.isAtSameMomentAs(accessory.datePublished!)) {
+        notifyListeners(); //redraw the UI, if the timestamp has changed
+      }
     }
 
 //add to history in correct order
@@ -208,5 +205,12 @@ class AccessoryRegistry extends ChangeNotifier {
     }
     _storeAccessories();
     return accessory.locationHistory;
+  }
+
+  /// Updates [oldAccessory] with the values from [newAccessory].
+  void editAccessory(Accessory oldAccessory, Accessory newAccessory) {
+    oldAccessory.update(newAccessory);
+    _storeAccessories();
+    notifyListeners();
   }
 }
