@@ -47,8 +47,15 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
 
   @override
   Widget build(BuildContext context) {
-    var historyEntries = widget.accessory.locationHistory;
-    var historyLength = historyEntries.length;
+    var now = DateTime.now();
+    var filteredEntries = widget.accessory.locationHistory
+        .where(
+          (element) => element.end.isAfter(
+            now.subtract(Duration(days: numberOfDays.round())),
+          ),
+        )
+        .toList();
+    var historyLength = filteredEntries.length;
     List<Polyline> polylines = [];
 
     if (historyLength > 255) {
@@ -57,9 +64,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
     int delta = (255 ~/ max(1, (historyLength - 1))).ceil();
     var blue = delta;
 
-    for (int i = 0; i < historyEntries.length - 1; i++) {
-      var entry = historyEntries[i];
-      var nextEntry = historyEntries[i + 1];
+    for (int i = 0; i < filteredEntries.length - 1; i++) {
+      var entry = filteredEntries[i];
+      var nextEntry = filteredEntries[i + 1];
       List<LatLng> points = [];
       points.add(entry.location);
       points.add(nextEntry.location);
@@ -146,7 +153,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   ),
                   // The markers for the historic locations
                   MarkerLayer(
-                    markers: widget.accessory.locationHistory
+                    markers: filteredEntries
                         .map((entry) => Marker(
                               point: entry.location,
                               builder: (ctx) => GestureDetector(
