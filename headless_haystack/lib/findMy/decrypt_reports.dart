@@ -38,7 +38,7 @@ class DecryptReports {
       Uint8List payloadData, FindMyReport report) {
     final seenTimeStamp =
         payloadData.sublist(0, 4).buffer.asByteData().getInt32(0, Endian.big);
-    final timestamp = DateTime(2001).add(Duration(seconds: seenTimeStamp));
+    final timestamp = DateTime.utc(2001).add(Duration(seconds: seenTimeStamp)).toLocal();
     final confidence = payloadData.elementAt(4);
     report.timestamp = timestamp;
     report.confidence = confidence;
