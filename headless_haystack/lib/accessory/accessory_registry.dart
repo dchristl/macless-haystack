@@ -160,6 +160,17 @@ class AccessoryRegistry extends ChangeNotifier {
 
   /// Adds a new accessory to this registry.
   void addAccessory(Accessory accessory) {
+    Accessory? foundOne;
+    for (var acc in _accessories) {
+      if (accessory.hashedPublicKey == acc.hashedPublicKey) {
+        foundOne = acc;
+        break; // There is already one with this id
+      }
+    }
+    if (foundOne != null) {
+      _accessories.remove(foundOne);
+    }
+
     _accessories.add(accessory);
     _storeAccessories();
     notifyListeners();
