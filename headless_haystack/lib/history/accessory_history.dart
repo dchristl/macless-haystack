@@ -47,14 +47,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
 
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
-    var filteredEntries = widget.accessory.locationHistory
-        .where(
-          (element) => element.end.isAfter(
-            now.subtract(Duration(days: numberOfDays.round())),
-          ),
-        )
-        .toList();
+    List<Pair<dynamic, dynamic>> filteredEntries = filterHistoryEntries();
     var historyLength = filteredEntries.length;
     List<Polyline> polylines = [];
 
@@ -196,6 +189,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 onChanged: (double newValue) {
                   setState(() {
                     numberOfDays = newValue.toInt();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      mapReady();
+                    });
                   });
                 },
               ),
@@ -213,14 +209,26 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
   }
 
   mapReady() {
-    if (widget.accessory.locationHistory.isNotEmpty) {
-      var historicLocations = widget.accessory.locationHistory
-          .map((entry) => entry.location)
-          .toList();
+    List<Pair<dynamic, dynamic>> filteredEntries = filterHistoryEntries();
+    if (filteredEntries.isNotEmpty) {
+      var historicLocations =
+          filteredEntries.map((entry) => entry.location).toList();
       var bounds = LatLngBounds.fromPoints(historicLocations);
       _mapController
         ..fitBounds(bounds)
         ..move(_mapController.center, _mapController.zoom + 0.00001);
     }
+  }
+
+  List<Pair<dynamic, dynamic>> filterHistoryEntries() {
+    var now = DateTime.now();
+    var filteredEntries = widget.accessory.locationHistory
+        .where(
+          (element) => element.end.isAfter(
+            now.subtract(Duration(days: numberOfDays.round())),
+          ),
+        )
+        .toList();
+    return filteredEntries;
   }
 }
