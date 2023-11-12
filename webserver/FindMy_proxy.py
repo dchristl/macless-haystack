@@ -39,33 +39,37 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         startdate = (unixEpoch - 60 * 60 * 24 * days) * 1000
         data = { "search": [{"startDate": startdate *1000, "endDate": unixEpoch *1000, "ids": body['ids']}] }
 
-        r = requests.post("https://gateway.icloud.com/acsnservice/fetch", auth=self.getAuth(), headers=json.loads(requests.get('http://localhost:6969').text), json=data)
-        result = json.loads(r.content.decode())
-        results = result['results']
+        try:
+            r = requests.post("https://gateway.icloud.com/acsnservice/fetch", auth=self.getAuth(), headers=json.loads(requests.get('http://' + anisette + ':' + port, timeout=10).text), json=data)
+            result = json.loads(r.content.decode())
+            results = result['results']
 
-        newResults = [] 
-        latestEntry = None
-        
-        for idx, entry in enumerate(results):
-            if (int(entry["datePublished"]) > startdate):  
-                newResults.append(entry)
-            if latestEntry is None:
-                latestEntry = entry
-            elif latestEntry["datePublished"] < entry["datePublished"]:
-                latestEntry = entry
+            newResults = [] 
+            latestEntry = None
+            
+            for idx, entry in enumerate(results):
+                if (int(entry["datePublished"]) > startdate):  
+                    newResults.append(entry)
+                if latestEntry is None:
+                    latestEntry = entry
+                elif latestEntry["datePublished"] < entry["datePublished"]:
+                    latestEntry = entry
 
-        if days < 1 and latestEntry is not None:
-            newResults.append(latestEntry)         
-        result["results"] = newResults
-        self.send_response(200)
-        # send response headers
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        # send the body of the response
-        responseBody = json.dumps(result)
-        self.wfile.write(responseBody.encode())
+            if days < 1 and latestEntry is not None:
+                newResults.append(latestEntry)         
+            result["results"] = newResults
+            self.send_response(200)
+            # send response headers
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            # send the body of the response
+            responseBody = json.dumps(result)
+            self.wfile.write(responseBody.encode())
 
-        # print(responseBody)
+            # print(responseBody)
+        except requests.exceptions.ConnectTimeout:
+            print("Timeout to " + anisette + ", is your anisette running and accepting Connections?")
+            self.send_response(504)
 
     def getCurrentTimes(self):
         clientTime = datetime.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
@@ -73,13 +77,13 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         return clientTime, time.tzname[1], clientTimestamp
 
     def getAuth(self):
-        CONFIG_PATH = "../../pypush/config/openhaystack.json"
+        CONFIG_PATH = "openhaystack.json"
         if os.path.exists(CONFIG_PATH):
             with open(CONFIG_PATH, "r") as f:
                 j = json.load(f)
                 return (j['ds_prs_id'], j['search_party_token'])
         else:
-            print(f'No search-party-token found, please run pypush/examples/openhaystack.py as described in the README')
+            print(f'No search-party-token found, please run ../token-generator/pypush/examples/openhaystack.py as described in the README or use the docker container in ../token-generator/')
             exit(1)
 
 
@@ -91,6 +95,9 @@ if __name__ == "__main__":
     script_directory = os.path.dirname(os.path.abspath(__file__))
 
     os.chdir(script_directory)
+
+    anisette = os.environ.get("ANISETTE_IP", "localhost")
+    port = os.environ.get("ANISETTE_PORT", "6969")
 
     Handler = ServerHandler
 
