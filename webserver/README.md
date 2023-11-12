@@ -49,3 +49,4 @@ Run the Server
 docker-compose up -d
 ~~~
 
+*Note: you may close the port anisette is listening on, since the container can connect to anisette anyway*

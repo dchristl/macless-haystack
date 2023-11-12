@@ -4,6 +4,16 @@
 
 To be able to fetch data from the servers, you need a working anisette Server and a working access token.
 
+**Important:** the anisette server needs to cast the same static information as at the registration!
+
+If you dont have an anisette server running, you may go to [../webserver](../webserver) and run
+
+~~~
+docker compose up -d anisette
+~~~
+
+that will only start anisette so you can register and anisette generates the needed files in the right directory
+
 ## Prequisites
 
 like mentioned, you'll need a anisette server which accepts Connections from `0.0.0.0:6969`
