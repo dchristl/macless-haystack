@@ -1,3 +1,6 @@
 [submodule "firmware/nrf5x/nrf5x-base"]
 	path = firmware/nrf5x/nrf5x-base
 	url = https://github.com/lab11/nrf5x-base.git
+[submodule "token-generator/pypush"]
+	path = token-generator/pypush
+	url = https://github.com/beeper/pypush.git
