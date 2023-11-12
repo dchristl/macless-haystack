@@ -129,3 +129,4 @@ firmware/nrf5x/_build
 firmware/nrf5x/compiled
 
 token-generator/config/
+webserver/anisette-data/
