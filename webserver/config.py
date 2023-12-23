@@ -1,10 +1,11 @@
+import logging
 import os
 
 PORT = 6176
 CONFIG_PATH = "data"
 CONFIG_FILE = "auth.json"
-CERT_FILE = "certificate.pem" #optional
-KEY_FILE = "privkey.pem" # optional
+CERT_FILE = "certificate.pem"  # optional
+KEY_FILE = "privkey.pem"  # optional
 
 
 def getConfigPath():
@@ -19,5 +20,10 @@ def getConfigFile():
 def getCertFile():
     return getConfigPath() + '/' + CERT_FILE
 
+
 def getKeyFile():
     return getConfigPath() + '/' + KEY_FILE
+
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')

@@ -9,6 +9,7 @@ import hashlib
 import hmac
 import base64
 import locale
+import logging
 from datetime import datetime
 import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
@@ -26,8 +27,9 @@ srp.no_username_in_x()
 # Disable SSL Warning
 urllib3.disable_warnings()
 
-# https://github.com/Dadoum/anisette-v3-server
 ANISETTE_URL = 'http://localhost:6969'
+
+logger = logging.getLogger()
 
 
 def icloud_login_mobileme(username='', password='', second_factor='sms'):
@@ -72,7 +74,7 @@ def gsa_authenticate(username, password, second_factor='sms'):
         {"A2k": A, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
 
     if r["sp"] != "s2k":
-        print(
+        logger.warn(
             f"This implementation only supports s2k. Server returned {r['sp']}")
         return
 
@@ -83,7 +85,7 @@ def gsa_authenticate(username, password, second_factor='sms'):
 
     # Make sure we processed the challenge correctly
     if M is None:
-        print("Failed to process challenge")
+        logger.error("Failed to process challenge")
         return
 
     r = gsa_authenticated_request(
@@ -92,7 +94,7 @@ def gsa_authenticate(username, password, second_factor='sms'):
     # Make sure that the server's session key matches our session key (and thus that they are not an imposter)
     usr.verify_session(r["M2"])
     if not usr.authenticated():
-        print("Failed to verify session")
+        logger.error("Failed to verify session")
         return
 
     spd = decrypt_cbc(usr, r["spd"])
@@ -104,7 +106,7 @@ def gsa_authenticate(username, password, second_factor='sms'):
     spd = plist.loads(PLISTHEADER + spd)
 
     if "au" in r["Status"] and r["Status"]["au"] in ["trustedDeviceSecondaryAuth", "secondaryAuth"]:
-        print("2FA required, requesting code")
+        logger.info("2FA required, requesting code")
         # Replace bytes with strings
         for k, v in spd.items():
             if isinstance(v, bytes):
@@ -115,7 +117,7 @@ def gsa_authenticate(username, password, second_factor='sms'):
             trusted_second_factor(spd["adsid"], spd["GsIdmsToken"])
         return gsa_authenticate(username, password)
     elif "au" in r["Status"]:
-        print(f"Unknown auth value {r['Status']['au']}")
+        logger.error(f"Unknown auth value {r['Status']['au']}")
         return
     else:
         return spd
@@ -161,35 +163,12 @@ def generate_cpd():
 
 
 def generate_anisette_headers():
-    try:
-        import pyprovision
-        from ctypes import c_ulonglong
-        import secrets
-        adi = pyprovision.ADI("./anisette/")
-        adi.provisioning_path = "./anisette/"
-        device = pyprovision.Device("./anisette/device.json")
-        if not device.initialized:
-            # Pretend to be a MacBook Pro
-            device.server_friendly_description = "<MacBookPro13,2> <macOS;13.1;22C65> <com.apple.AuthKit/1 (com.apple.dt.Xcode/3594.4.19)>"
-            device.unique_device_identifier = str(uuid.uuid4()).upper()
-            device.adi_identifier = secrets.token_hex(8).lower()
-            device.local_user_uuid = secrets.token_hex(32).upper()
-        adi.identifier = device.adi_identifier
-        dsid = c_ulonglong(-2).value
-        is_prov = adi.is_machine_provisioned(dsid)
-        if not is_prov:
-            print("provisioning...")
-            provisioning_session = pyprovision.ProvisioningSession(adi, device)
-            provisioning_session.provision(dsid)
-        otp = adi.request_otp(dsid)
-        a = {"X-Apple-I-MD": base64.b64encode(bytes(otp.one_time_password)).decode(
-        ), "X-Apple-I-MD-M": base64.b64encode(bytes(otp.machine_identifier)).decode()}
-    except ImportError:
-        print(
-            f'pyprovision is not installed, querying {ANISETTE_URL} for an anisette server')
-        h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
-        a = {"X-Apple-I-MD": h["X-Apple-I-MD"],
-             "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
+
+    logger.info(
+        f'Querying {ANISETTE_URL} for an anisette server')
+    h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
+    a = {"X-Apple-I-MD": h["X-Apple-I-MD"],
+         "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
     a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))
     return a
 
@@ -273,7 +252,7 @@ def trusted_second_factor(dsid, idms_token):
         timeout=10,
     )
     if resp.ok:
-        print("2FA successful")
+        logger.info("2FA successful")
 
 
 def sms_second_factor(dsid, idms_token):
@@ -323,4 +302,4 @@ def sms_second_factor(dsid, idms_token):
         timeout=5,
     )
     if resp.ok:
-        print("2FA successful")
+        logger.info("2FA successful")
