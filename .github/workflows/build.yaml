@@ -56,9 +56,13 @@ jobs:
       - name: Copy files to web application
         run: |
           mkdir -p ./headless_haystack/build/webapplication
-          cp ./webserver/FindMy_proxy.py ./headless_haystack/build/webapplication
-          cp ./webserver/rename_me.pem  ./headless_haystack/build/webapplication
-          cp ./webserver/apple_cryptography.py  ./headless_haystack/build/webapplication
+          mkdir -p ./headless_haystack/build/webapplication/data
+          mkdir -p ./headless_haystack/build/webapplication/register
+          cp ./webserver/mh_endpoint.py ./headless_haystack/build/webapplication
+          cp ./webserver/config.py ./headless_haystack/build/webapplication
+          cp ./webserver/data/rename_me.pem  ./headless_haystack/build/webapplication/data
+          cp ./webserver/register/apple_cryptography.py  ./headless_haystack/build/webapplication/register
+          cp ./webserver/register/apple_cryptography.py  ./headless_haystack/build/webapplication/register
           cp -R ./headless_haystack/build/web ./headless_haystack/build/webapplication
           cd ./headless_haystack/build/webapplication
           zip -r macos-webapplication.zip .
