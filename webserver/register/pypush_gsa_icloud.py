@@ -164,7 +164,7 @@ def generate_cpd():
 
 def generate_anisette_headers():
 
-    logger.info(
+    logger.debug(
         f'Querying {ANISETTE_URL} for an anisette server')
     h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
     a = {"X-Apple-I-MD": h["X-Apple-I-MD"],

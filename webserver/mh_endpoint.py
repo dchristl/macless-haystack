@@ -19,6 +19,7 @@ from register import apple_cryptography, pypush_gsa_icloud
 import logging
 logger = logging.getLogger()
 
+
 class ServerHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200, "ok")
@@ -42,20 +43,19 @@ class ServerHandler(BaseHTTPRequestHandler):
 
         post_body = self.rfile.read(content_len)
 
-        print('Getting with post: ' + str(post_body))
+        logger.debug('Getting with post: ' + str(post_body))
         body = json.loads(post_body)
         if "days" in body:
             days = body['days']
         else:
             days = 7
-        print('Querying for ' + str(days) + ' days')
+        logger.debug('Querying for ' + str(days) + ' days')
         unixEpoch = int(datetime.now().strftime('%s'))
         startdate = unixEpoch - (60 * 60 * 24 * days)
 
         dt_object = datetime.fromtimestamp(startdate)
 
-        print(dt_object.strftime('%Y-%m-%d %H:%M:%S'))
-        # Date is always one, because it has no effect
+        # Date is always 1, because it has no effect
         data = {"search": [
             {"startDate": 1, "ids": list(body['ids'])}]}
 
@@ -63,8 +63,8 @@ class ServerHandler(BaseHTTPRequestHandler):
             r = requests.post("https://gateway.icloud.com/acsnservice/fetch",  auth=getAuth(regenerate=False, second_factor='sms'),
                               headers=pypush_gsa_icloud.generate_anisette_headers(),
                               json=data)
-            print(r.status_code)
-
+            logger.debug('Return from fetch service:')
+            logger.debug(r)
             result = json.loads(r.content.decode())
             results = result['results']
 
@@ -82,10 +82,6 @@ class ServerHandler(BaseHTTPRequestHandler):
                     newResults[timestamp] = entry
 
             sorted_map = OrderedDict(sorted(newResults.items(), reverse=True))
-            for key, value in sorted_map.items():
-                dt_object = datetime.fromtimestamp(key)
-                human_readable_format = dt_object.strftime('%Y-%m-%d %H:%M:%S')
-                print(f"Key: {human_readable_format}")
 
             result["results"] = list(sorted_map.values())
             self.send_response(200)
@@ -98,8 +94,8 @@ class ServerHandler(BaseHTTPRequestHandler):
             self.wfile.write(responseBody.encode())
 
         except requests.exceptions.ConnectTimeout:
-            print("Timeout to " + anisette +
-                  ", is your anisette running and accepting Connections?")
+            logger.error("Timeout to " + anisette +
+                         ", is your anisette running and accepting Connections?")
             self.send_response(504)
 
     def getCurrentTimes(self):
@@ -115,7 +111,7 @@ def getAuth(regenerate=False, second_factor='sms'):
     else:
         mobileme = pypush_gsa_icloud.icloud_login_mobileme(
             second_factor=second_factor)
-        print('Mobileme' + mobileme)
+        logger.debug('Mobileme result: ' + mobileme)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
              ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
         with open(config.getConfigFile(), "w") as f:
@@ -136,18 +132,18 @@ if __name__ == "__main__":
     Handler = ServerHandler
     httpd = HTTPServer(('localhost', config.PORT), Handler)
     if os.path.isfile(config.getCertFile()):
-        print("Certificate file " + config.getCertFile() + " exists, so using SSL")
+        logger.info("Certificate file " + config.getCertFile() + " exists, so using SSL")
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ssl_context.load_cert_chain(certfile=config.getCertFile(
         ), keyfile=config.getKeyFile() if os.path.isfile(config.getKeyFile()) else None)
 
         httpd.socket = ssl_context.wrap_socket(httpd.socket, server_side=True)
 
-        print("serving at port " + str(config.PORT) + " over HTTPS")
+        logger.info("serving at port " + str(config.PORT) + " over HTTPS")
     else:
-        print("Certificate file " + config.getCertFile() +
+        logger.info("Certificate file " + config.getCertFile() +
               " not found, so not using SSL")
-        print("serving at port " + str(config.PORT) + " over HTTP")
+        logger.info("serving at port " + str(config.PORT) + " over HTTP")
 
     try:
         httpd.serve_forever()
@@ -155,4 +151,4 @@ if __name__ == "__main__":
         pass
     finally:
         httpd.server_close()
-        print('Server stopped')
+        logger.info('Server stopped')
