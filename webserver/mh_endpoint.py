@@ -149,7 +149,7 @@ if __name__ == "__main__":
     if os.path.isfile(config.getCertFile()):
         print("Certificate file " + config.getCertFile() + " exists, so using SSL")
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        ssl_context.load_cert_chain(certfile=config.getCertFile())
+        ssl_context.load_cert_chain(certfile=config.getCertFile(), keyfile=config.getKeyFile() if os.path.isfile(config.getKeyFile()) else None)
       
         httpd.socket = ssl_context.wrap_socket(httpd.socket, server_side=True)
 
