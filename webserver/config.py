@@ -6,6 +6,7 @@ CONFIG_PATH = "data"
 CONFIG_FILE = "auth.json"
 CERT_FILE = "certificate.pem"  # optional
 KEY_FILE = "privkey.pem"  # optional
+LOG_LEVEL = logging.INFO
 
 
 def getConfigPath():
@@ -25,5 +26,5 @@ def getKeyFile():
     return getConfigPath() + '/' + KEY_FILE
 
 
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level= LOG_LEVEL,
                     format='%(asctime)s - %(levelname)s - %(message)s')

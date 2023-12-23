@@ -64,8 +64,8 @@ class ServerHandler(BaseHTTPRequestHandler):
                               headers=pypush_gsa_icloud.generate_anisette_headers(),
                               json=data)
             logger.debug('Return from fetch service:')
-            logger.debug(r)
             result = json.loads(r.content.decode())
+            logger.debug(result)
             results = result['results']
 
             latestTimestamp = None
