@@ -7,6 +7,8 @@ CONFIG_FILE = "auth.json"
 CERT_FILE = "certificate.pem"  # optional
 KEY_FILE = "privkey.pem"  # optional
 LOG_LEVEL = logging.INFO
+USER = None
+PASS = None
 
 
 def getConfigPath():

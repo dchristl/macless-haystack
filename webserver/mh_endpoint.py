@@ -109,7 +109,7 @@ def getAuth(regenerate=False, second_factor='sms'):
         with open(config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
-        mobileme = pypush_gsa_icloud.icloud_login_mobileme(
+        mobileme = pypush_gsa_icloud.icloud_login_mobileme(username=config.USER, password= config.PASS,
             second_factor=second_factor)
         logger.debug('Mobileme result: ' + mobileme)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']

@@ -46,7 +46,8 @@ def getAuth(regenerate=False, second_factor='sms'):
         with open(config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
-        mobileme = icloud_login_mobileme(second_factor=second_factor)
+        mobileme = icloud_login_mobileme(
+            username=config.USER, password=config.PASS, second_factor=second_factor)
 
         logger.debug('Answer from icloud login')
         logger.debug(mobileme)
@@ -61,9 +62,10 @@ def getAuth(regenerate=False, second_factor='sms'):
             logger.error('Invalid status: ' + str(status))
             logger.error('Error message: ' + msg)
             if 'blocking' in msg:
-                logger.error('It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it.')
+                logger.error(
+                    'It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it.')
             logger.error('Unable to proceed, program will be terminated.')
-            
+
             sys.exit()
     return (j['dsid'], j['searchPartyToken'])
 
