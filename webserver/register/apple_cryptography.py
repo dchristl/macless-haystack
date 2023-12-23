@@ -29,15 +29,15 @@ def decode_tag(data):
     return {'lat': latitude, 'lon': longitude, 'conf': confidence, 'status':status}
 
 def getAuth(regenerate=False, second_factor='sms'):
-    print(config.getConfig())
-    if os.path.exists(config.getConfig()) and not regenerate:
-        with open(config.getConfig(), "r") as f: j = json.load(f)
+    print(config.getConfigFile())
+    if os.path.exists(config.getConfigFile()) and not regenerate:
+        with open(config.getConfigFile(), "r") as f: j = json.load(f)
     else:
         mobileme = icloud_login_mobileme(second_factor=second_factor)
 
         print(mobileme)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
-        with open(config.getConfig(), "w") as f: json.dump(j, f)
+        with open(config.getConfigFile(), "w") as f: json.dump(j, f)
     return (j['dsid'], j['searchPartyToken'])
 
 

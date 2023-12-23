@@ -3,7 +3,6 @@
 import json
 import ssl
 import sys
-import six
 import os
 import requests
 from datetime import datetime
@@ -13,6 +12,8 @@ import config
 from http.client import HTTPConnection
 import base64
 from collections import OrderedDict
+
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from register import apple_cryptography, pypush_gsa_icloud
 
@@ -24,7 +25,7 @@ from register import apple_cryptography, pypush_gsa_icloud
 # requests_log.propagate = True
 
 
-class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
+class ServerHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200, "ok")
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -32,7 +33,12 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
+    def do_GET(self):
+        self.send_response(404)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
 
+        self.wfile.write(b"Nothing to see here")
     def do_POST(self):
         if hasattr(self.headers, 'getheader'):
             content_len = int(self.headers.getheader('content-length', 0))
@@ -111,8 +117,8 @@ class ServerHandler(six.moves.SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 def getAuth(regenerate=False, second_factor='sms'):
-    if os.path.exists(config.getConfig()) and not regenerate:
-        with open(config.getConfig(), "r") as f:
+    if os.path.exists(config.getConfigFile()) and not regenerate:
+        with open(config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
         mobileme = pypush_gsa_icloud.icloud_login_mobileme(
@@ -120,7 +126,7 @@ def getAuth(regenerate=False, second_factor='sms'):
         print('Mobileme' + mobileme)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
              ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
-        with open(config.getConfig(), "w") as f:
+        with open(config.getConfigFile(), "w") as f:
             json.dump(j, f)
     return (j['dsid'], j['searchPartyToken'])
 
@@ -131,7 +137,7 @@ if __name__ == "__main__":
 
     os.chdir(script_directory)
 
-    if not os.path.exists(config.getConfig()):
+    if not os.path.exists(config.getConfigFile()):
         print(f'No token found.')
         apple_cryptography.registerDevice()
 
@@ -139,16 +145,17 @@ if __name__ == "__main__":
     port = os.environ.get("ANISETTE_PORT", "6969")
 
     Handler = ServerHandler
+    httpd = HTTPServer(('localhost', config.PORT), Handler)
+    if os.path.isfile(config.getCertFile()):
+        print("Certificate file " + config.getCertFile() + " exists, so using SSL")
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        ssl_context.load_cert_chain(certfile=config.getCertFile())
+      
+        httpd.socket = ssl_context.wrap_socket(httpd.socket, server_side=True)
 
-    httpd = six.moves.socketserver.TCPServer(("", config.PORT), Handler)
-    cert = 'certificate.pem'
-    if os.path.isfile(cert):
-        print("Certificate file " + cert + " exists, so using SSL")
-        httpd.socket = ssl.wrap_socket(
-            httpd.socket, certfile=cert, server_side=True)
         print("serving at port " + str(config.PORT) + " over HTTPS")
     else:
-        print("Certificate file " + cert + " not found, so not using SSL")
+        print("Certificate file " + config.getCertFile() + " not found, so not using SSL")
         print("serving at port " + str(config.PORT) + " over HTTP")
 
     try:
