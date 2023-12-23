@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend
 import sqlite3
+import sys
 from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
 
 import config
@@ -47,13 +48,23 @@ def getAuth(regenerate=False, second_factor='sms'):
     else:
         mobileme = icloud_login_mobileme(second_factor=second_factor)
 
-        logger.warn('Answer from icloud login')
-        logger.warn(mobileme)
-        
-        j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
-             ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
-        with open(config.getConfigFile(), "w") as f:
-            json.dump(j, f)
+        logger.debug('Answer from icloud login')
+        logger.debug(mobileme)
+        status = mobileme['delegates']['com.apple.mobileme']['status']
+        if status == 0:
+            j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
+                 ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
+            with open(config.getConfigFile(), "w") as f:
+                json.dump(j, f)
+        else:
+            msg = mobileme['delegates']['com.apple.mobileme']['status-message']
+            logger.error('Invalid status: ' + str(status))
+            logger.error('Error message: ' + msg)
+            if 'blocking' in msg:
+                logger.error('It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it.')
+            logger.error('Unable to proceed, program will be terminated.')
+            
+            sys.exit()
     return (j['dsid'], j['searchPartyToken'])
 
 
