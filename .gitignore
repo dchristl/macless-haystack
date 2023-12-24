@@ -128,5 +128,5 @@ notes
 firmware/nrf5x/_build
 firmware/nrf5x/compiled
 webserver/data/*.json
-webserver/anisette-data/
-webserver/mh_data
+webserver/anisette-data/*
+webserver/mh_data/*
