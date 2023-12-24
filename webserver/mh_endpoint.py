@@ -30,7 +30,7 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        self.send_response(404)
+        self.send_response(200)
         self.send_header('Content-type', 'text/plain')
         self.end_headers()
         self.wfile.write(b"Nothing to see here")
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     port = os.environ.get("ANISETTE_PORT", "6969")
 
     Handler = ServerHandler
-    httpd = HTTPServer(('localhost', config.PORT), Handler)
+    httpd = HTTPServer(('0.0.0.0', config.PORT), Handler)
     if os.path.isfile(config.getCertFile()):
         logger.info("Certificate file " + config.getCertFile() + " exists, so using SSL")
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)

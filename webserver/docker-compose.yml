@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  anisette:
+    image: dadoum/anisette-v3-server
+    container_name: anisette-haystack
+    restart: unless-stopped
+    healthcheck:
+      test: curl -s localhost:6969 > /dev/null || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    ports:
+      - 6969:6969
+    volumes:
+      - ./anisette-data/:/home/Alcoholic/.config/anisette-v3:rw
+
+  headless-haystack:
+    build: .
+    container_name: macless-haystack
+    restart: unless-stopped
+    healthcheck:
+      test: curl --fail http://localhost:6176 || exit 1 
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    depends_on:
+      - anisette
+    ports:
+      - 6176:6176
+    environment:
+      - ANISETTE_IP=anisette
+    volumes:
+      - ./mh_data:/webserver/data:rw
