@@ -33,7 +33,7 @@ jobs:
         with:
           context: "{{defaultContext}}:endpoint"
           push: true
-          tags: user/app:latest-dev
+          tags: christld/macless-haystack:latest-dev
       - name: Install ARM Toolchain
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with: 
