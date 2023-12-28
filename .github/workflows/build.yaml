@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.OS }}-flutter-install-cache
       - uses: subosito/flutter-action@v2
       - name: GH-Page Build
-        working-directory: ./headless_haystack
+        working-directory: ./macless_haystack
         run: |
           flutter pub get
           flutter build web --release --base-href "/headless-haystack/"
@@ -46,33 +46,33 @@ jobs:
         if: github.ref == 'refs/heads/dev'  
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./headless_haystack/build/web
+          folder: ./macless_haystack/build/web
 
       - name: Web Build
-        working-directory: ./headless_haystack
+        working-directory: ./macless_haystack
         run: |
           flutter pub get
           flutter build web --release    
       - name: Copy files to web application
         run: |
-          mkdir -p ./headless_haystack/build/webapplication
-          mkdir -p ./headless_haystack/build/webapplication/data
-          mkdir -p ./headless_haystack/build/webapplication/register
-          cp ./webserver/mh_endpoint.py ./headless_haystack/build/webapplication
-          cp ./webserver/config.py ./headless_haystack/build/webapplication
-          cp ./webserver/data/rename_me.pem  ./headless_haystack/build/webapplication/data
-          cp ./webserver/register/apple_cryptography.py  ./headless_haystack/build/webapplication/register
-          cp ./webserver/register/apple_cryptography.py  ./headless_haystack/build/webapplication/register
-          cp -R ./headless_haystack/build/web ./headless_haystack/build/webapplication
-          cd ./headless_haystack/build/webapplication
+          mkdir -p ./macless_haystack/build/webapplication
+          mkdir -p ./macless_haystack/build/webapplication/data
+          mkdir -p ./macless_haystack/build/webapplication/register
+          cp ./webserver/mh_endpoint.py ./macless_haystack/build/webapplication
+          cp ./webserver/config.py ./macless_haystack/build/webapplication
+          cp ./webserver/data/rename_me.pem  ./macless_haystack/build/webapplication/data
+          cp ./webserver/register/apple_cryptography.py  ./macless_haystack/build/webapplication/register
+          cp ./webserver/register/apple_cryptography.py  ./macless_haystack/build/webapplication/register
+          cp -R ./macless_haystack/build/web ./macless_haystack/build/webapplication
+          cd ./macless_haystack/build/webapplication
           zip -r macos-webapplication.zip .
       - name: Upload Web Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: macos-webapplication
-          path: ./headless_haystack/build/webapplication
+          path: ./macless_haystack/build/webapplication
       - name: Android Build
-        working-directory: ./headless_haystack
+        working-directory: ./macless_haystack
         run: |
           flutter build apk  --release
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/android-application.apk
@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: android-application
-          path: ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
+          path: ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
       - uses: actions/cache@v3
         with:
           path: |
@@ -128,5 +128,5 @@ jobs:
           files: |
             firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
             firmware/nrf5x/compiled/*.bin
-            ./headless_haystack/build/app/outputs/flutter-apk/android-application.apk
-            ./headless_haystack/build/webapplication/macos-webapplication.zip
+            ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
+            ./macless_haystack/build/webapplication/macos-webapplication.zip

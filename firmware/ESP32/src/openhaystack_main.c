@@ -29,7 +29,7 @@ Smaller number of cycles = key changes more often, but more keys needed.
  */
 #define REUSE_CYCLES 30
 
-static const char *LOG_TAG = "headless_haystack";
+static const char *LOG_TAG = "macless_haystack";
 
 /** Callback function for BT events */
 static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
