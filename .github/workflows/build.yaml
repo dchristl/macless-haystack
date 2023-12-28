@@ -56,20 +56,13 @@ jobs:
       - name: Copy files to web application
         run: |
           mkdir -p ./macless_haystack/build/webapplication
-          mkdir -p ./macless_haystack/build/webapplication/data
-          mkdir -p ./macless_haystack/build/webapplication/register
-          cp ./webserver/mh_endpoint.py ./macless_haystack/build/webapplication
-          cp ./webserver/config.py ./macless_haystack/build/webapplication
-          cp ./webserver/data/rename_me.pem  ./macless_haystack/build/webapplication/data
-          cp ./webserver/register/apple_cryptography.py  ./macless_haystack/build/webapplication/register
-          cp ./webserver/register/apple_cryptography.py  ./macless_haystack/build/webapplication/register
           cp -R ./macless_haystack/build/web ./macless_haystack/build/webapplication
           cd ./macless_haystack/build/webapplication
-          zip -r macos-webapplication.zip .
+          zip -r webapplication.zip .
       - name: Upload Web Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: macos-webapplication
+          name: webapplication
           path: ./macless_haystack/build/webapplication
       - name: Android Build
         working-directory: ./macless_haystack
@@ -126,7 +119,8 @@ jobs:
           draft: true
           prerelease: false
           files: |
+            generate_keys.py
             firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
             firmware/nrf5x/compiled/*.bin
             ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
-            ./macless_haystack/build/webapplication/macos-webapplication.zip
+            ./macless_haystack/build/webapplication/webapplication.zip
