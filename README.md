@@ -1,6 +1,6 @@
 ## Introduction
 
-This project tries to unify several projects for simpler handling of custom BT-devices with Apple's FindMy network. The goal is to run a headless MacOS without the need to have a real Mac and have to install mail plugins or openhaystack itself.
+This project tries to unify several projects for simpler handling of custom BT-devices with Apple's FindMy network. The goal is to run a without the need to own a real Mac or setup a virtual Mac. Also you don't have to install the mail plugin or openhaystack itself.
 
 ![Dashboard](screenshots/dashboard_mobile.png)
 ![Dashboard](screenshots/dashboard_web.png)
@@ -17,8 +17,6 @@ Included projects are (Credits goes to them for the hard work):
     - ESP32 firmware customization for battery optimization 
 - [acalatrava's OpenHaystack-Fimware alternative](https://github.com/acalatrava/openhaystack-firmware)
     - NRF5x firmware customization for battery optimization 
-- Optional: Dockerized MacOS by [Sickcodes](https://github.com/sickcodes/Docker-OSX)
-- Optional: mac OS serial generator by [Sickcodes](https://github.com/sickcodes/osx-serial-generator)
 
 
 ## Changes to the original projects
@@ -35,18 +33,33 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 ## Instructions
 
-- Host: [Set up your virtual or real MAC](OSX-KVM/README.md)
-- Install python dependencies `pip install cryptography argparse pyobjc six` (pip command depends on your version and installation)
-- Host or MacOS-Guest: Run `generate_keys.py` (check the projects webserver-folder) to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
-- Host: [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and (see note)
-- Host: [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) (see note)
-- *Optional*: Mobile: Install application
-- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/headless-haystack/) (s. [Notes on SSL usage](OSX-KVM/README.md#notes-on-usage-on-other-machines-ssl))
-- *Optional*: Host: Browse to [http://localhost:56443/](http://localhost:56443/)
-- Mobile or Host: Import PREFIX_devices.json to your  application
 
+### Prerequisites
+
+- [Docker](https://www.docker.com/) installed
+- [Python 3](https://www.python.org/) installed
+
+### Set up device
+
+- Run `generate_keys.py` to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
+- [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and (see note)
+- [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) (see note)
 > [!NOTE]  
 > In general, any OpenHaystack-compatible device or its firmware is also compatible with HeadlessHaystack (i.e. [the ST17H66](https://github.com/biemster/FindMy/tree/main/Lenze_ST17H66)). Typically, only the Base64-encoded advertisement key is required, which can be found in the .keys file after key generation.
+
+
+### Set up endpoint/fetch location server
+
+
+### Configure and install frontend
+
+You can either use the frontend, provided by GitHub, host the webserver for yourself or use the Android application 
+
+- *Optional*: Mobile: Install application
+- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/headless-haystack/) (s. [Notes on SSL usage](OSX-KVM/README.md#notes-on-usage-on-other-machines-ssl))
+- Import PREFIX_devices.json to your application
+- *Optional*: If you run the frontend not on the same machine as your endpoint, you have to configure your Url in the settings
+
 
 ## Screenshots
 
