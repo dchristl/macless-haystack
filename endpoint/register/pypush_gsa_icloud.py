@@ -27,7 +27,7 @@ srp.no_username_in_x()
 # Disable SSL Warning
 urllib3.disable_warnings()
 
-ANISETTE_URL = 'http://localhost:6969'
+ANISETTE_URL = 'http://anisette:6969'
 
 logger = logging.getLogger()
 
