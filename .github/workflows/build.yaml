@@ -32,10 +32,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:endpoint"
-          # platforms: linux/amd64,linux/arm64,linux/arm,linux/ppc64le
-          platforms: linux/ppc64le
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: christld/macless-haystack:latest-ppc
+          tags: christld/macless-haystack:latest-test-platform
       - name: Install ARM Toolchain
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with: 
