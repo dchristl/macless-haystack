@@ -7,7 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Set up QEMU
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '90 seconds'
+          skip-recent: 3
+      - name: Prepare and checkout
+        uses: actions/checkout@v3
+      - name: Initialize Submodules
+        run: |
+          git submodule update --init --recursive
+                - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
       - name: Set up Docker Buildx
@@ -24,16 +34,6 @@ jobs:
           context: "{{defaultContext}}:endpoint"
           push: false
           tags: user/app:latest
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '90 seconds'
-          skip-recent: 3
-      - name: Prepare and checkout
-        uses: actions/checkout@v3
-      - name: Initialize Submodules
-        run: |
-          git submodule update --init --recursive
       - name: Install ARM Toolchain
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with: 
