@@ -18,6 +18,12 @@ config = configparser.ConfigParser()
 config.read(getConfigPath() + '/config.ini')
 
 
+def getAnisetteServer():
+    return config.get('Settings', 'anisette_url', fallback='http://anisette:6969')
+
+def getPort():
+    return int(config.get('Settings', 'port', fallback='6176'))
+
 def getUser():
     return config.get('Settings', 'user', fallback=None)
 
@@ -25,8 +31,6 @@ def getUser():
 def getPass():
     return config.get('Settings', 'pass', fallback=None)
 
-def getAnisetteServer():
-    return config.get('Settings', 'anisette_url', fallback='http://anisette:6969')
 
 
 def getConfigFile():

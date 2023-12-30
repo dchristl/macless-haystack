@@ -109,8 +109,8 @@ def getAuth(regenerate=False, second_factor='sms'):
         with open(config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
-        mobileme = pypush_gsa_icloud.icloud_login_mobileme(username=config.USER, password= config.PASS,
-            second_factor=second_factor)
+        mobileme = pypush_gsa_icloud.icloud_login_mobileme(username=config.USER, password=config.PASS,
+                                                           second_factor=second_factor)
         logger.debug('Mobileme result: ' + mobileme)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
              ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
@@ -126,22 +126,22 @@ if __name__ == "__main__":
         logging.info(f'No auth-token found.')
         apple_cryptography.registerDevice()
 
-
     Handler = ServerHandler
-    httpd = HTTPServer(('0.0.0.0', config.PORT), Handler)
+    httpd = HTTPServer(('0.0.0.0', config.getPort()), Handler)
     if os.path.isfile(config.getCertFile()):
-        logger.info("Certificate file " + config.getCertFile() + " exists, so using SSL")
+        logger.info("Certificate file " + config.getCertFile() +
+                    " exists, so using SSL")
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ssl_context.load_cert_chain(certfile=config.getCertFile(
         ), keyfile=config.getKeyFile() if os.path.isfile(config.getKeyFile()) else None)
 
         httpd.socket = ssl_context.wrap_socket(httpd.socket, server_side=True)
 
-        logger.info("serving at port " + str(config.PORT) + " over HTTPS")
+        logger.info("serving at port " + str(config.getPort()) + " over HTTPS")
     else:
         logger.info("Certificate file " + config.getCertFile() +
-              " not found, so not using SSL")
-        logger.info("serving at port " + str(config.PORT) + " over HTTP")
+                    " not found, so not using SSL")
+        logger.info("serving at port " + str(config.getPort()) + " over HTTP")
 
     try:
         httpd.serve_forever()
