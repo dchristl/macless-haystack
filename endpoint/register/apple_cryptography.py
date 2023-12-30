@@ -47,7 +47,7 @@ def getAuth(regenerate=False, second_factor='sms'):
             j = json.load(f)
     else:
         mobileme = icloud_login_mobileme(
-            username=config.USER, password=config.PASS, second_factor=second_factor)
+            username=config.getUser(), password=config.getPass(), second_factor=second_factor)
 
         logger.debug('Answer from icloud login')
         logger.debug(mobileme)

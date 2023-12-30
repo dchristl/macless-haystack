@@ -16,7 +16,7 @@ services:
       - ./anisette-data/:/home/Alcoholic/.config/anisette-v3:rw
 
   headless-haystack:
-    build: .
+    image: christld/macless-haystack
     container_name: macless-haystack
     restart: unless-stopped
     healthcheck:
@@ -28,7 +28,5 @@ services:
       - anisette
     ports:
       - 6176:6176
-    environment:
-      - ANISETTE_IP=anisette
     volumes:
       - ./mh_data:/webserver/data:rw

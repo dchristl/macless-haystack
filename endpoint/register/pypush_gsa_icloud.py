@@ -15,6 +15,7 @@ import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from Crypto.Hash import SHA256
+import config
 
 # Created here so that it is consistent
 USER_ID = uuid.uuid4()
@@ -27,7 +28,6 @@ srp.no_username_in_x()
 # Disable SSL Warning
 urllib3.disable_warnings()
 
-ANISETTE_URL = 'http://anisette:6969'
 
 logger = logging.getLogger()
 
@@ -163,10 +163,11 @@ def generate_cpd():
 
 
 def generate_anisette_headers():
+    
 
     logger.debug(
-        f'Querying {ANISETTE_URL} for an anisette server')
-    h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
+        f'Querying {config.getAnisetteServer()} for an anisette server')
+    h = json.loads(requests.get(config.getAnisetteServer(), timeout=5).text)
     a = {"X-Apple-I-MD": h["X-Apple-I-MD"],
          "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
     a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))

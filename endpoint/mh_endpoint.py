@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import json
 import ssl
@@ -94,7 +94,7 @@ class ServerHandler(BaseHTTPRequestHandler):
             self.wfile.write(responseBody.encode())
 
         except requests.exceptions.ConnectTimeout:
-            logger.error("Timeout to " + anisette +
+            logger.error("Timeout to " + config.getAnisetteServer() +
                          ", is your anisette running and accepting Connections?")
             self.send_response(504)
 
@@ -126,8 +126,6 @@ if __name__ == "__main__":
         logging.info(f'No auth-token found.')
         apple_cryptography.registerDevice()
 
-    anisette = os.environ.get("ANISETTE_IP", "localhost")
-    port = os.environ.get("ANISETTE_PORT", "6969")
 
     Handler = ServerHandler
     httpd = HTTPServer(('0.0.0.0', config.PORT), Handler)
