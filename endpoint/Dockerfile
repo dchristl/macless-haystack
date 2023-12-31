@@ -14,8 +14,9 @@ RUN git pull origin macless
 # Configure python
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r endpoint/requirements.txt
-# Update server files daily
-RUN echo "* * * * * root /app/endpoint/cronjob" > /etc/cron.d/cronjob
-RUN chmod 0644 /etc/cron.d/cronjob
-# RUN endpoint/cronjob
+# Update server files on startup
+
+RUN date > /tmp/last_update.log
+RUN git pull origin macless >> /tmp/last_update.log
+RUN git merge origin/macless >> /tmp/last_update.log
 CMD ["python", "endpoint/mh_endpoint.py"]
