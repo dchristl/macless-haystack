@@ -17,7 +17,5 @@ RUN pip install --no-cache-dir -r endpoint/requirements.txt
 # Update server files daily
 RUN echo "* * * * * root /app/endpoint/cronjob" > /etc/cron.d/cronjob
 RUN chmod 0644 /etc/cron.d/cronjob
-RUN ls -alR
 # RUN endpoint/cronjob
-
 CMD ["python", "endpoint/mh_endpoint.py"]

@@ -1,4 +1,8 @@
+#!/bin/bash
+
+curr_dir="$(cd "$(dirname "$0")" && pwd)"
+cd "$curr_dir" || exit
 cd ..
 date > /tmp/update.log
 git pull origin macless >> /tmp/update.log
-git merge origin/macless >> > /tmp/update.log
+git merge origin/macless >> /tmp/update.log
