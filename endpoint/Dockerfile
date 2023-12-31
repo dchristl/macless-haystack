@@ -7,7 +7,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y curl nano iproute2 git cron
 # Clone endpoint-folder
 RUN git init
-RUN git remote add origin https://github.com/dchristl/headless-haystack.git
+RUN git remote add origin https://github.com/dchristl/macless-haystack.git
 RUN git config core.sparseCheckout true
 RUN echo "endpoint" >> .git/info/sparse-checkout
 RUN git pull origin macless
