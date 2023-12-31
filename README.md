@@ -52,15 +52,15 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 - Create a docker network
 
-`docker network create macless_haystack`
+`docker network create mh-network`
 
 - Install [Anisette Server](https://github.com/Dadoum/anisette-v3-server):
 
-`docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network macless_haystack dadoum/anisette-v3-server`
+`docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server`
 
 - Install Macless Haystack endpoint:
 
-`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/webserver/data/ --network macless_haystack christld/macless-haystack`
+`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/webserver/data/ --network mh-network christld/macless-haystack`
 
 ### Configure and install frontend
 
