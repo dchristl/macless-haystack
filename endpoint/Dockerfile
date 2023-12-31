@@ -2,11 +2,20 @@ FROM python:slim
 
 
 ENV TERM xterm
-WORKDIR /endpoint
+WORKDIR /app
 
-COPY . /endpoint
-RUN apt-get update && apt-get install -y curl nano iproute2 
+RUN apt-get update && apt-get install -y curl nano iproute2 git cron
+# Clone endpoint-folder
+RUN git init
+RUN git remote add origin https://github.com/dchristl/headless-haystack.git
+RUN git config core.sparseCheckout true
+RUN echo "endpoint" >> .git/info/sparse-checkout
+RUN git pull origin macless
+# Configure python
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r endpoint/requirements.txt
+# Update server files daily
+# COPY cronjob /etc/cron.d/cronjob
 
-CMD ["python", "mh_endpoint.py"]
+
+CMD ["python", "endpoint/mh_endpoint.py"]
