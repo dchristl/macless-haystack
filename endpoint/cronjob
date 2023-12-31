@@ -1,1 +1,4 @@
-* * * * * root /app/dein-skript.sh
+cd ..
+date > /tmp/update.log
+git pull origin macless >> /tmp/update.log
+git merge origin/macless >> > /tmp/update.log
