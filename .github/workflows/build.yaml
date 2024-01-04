@@ -60,7 +60,7 @@ jobs:
         working-directory: ./macless_haystack
         run: |
           flutter pub get
-          flutter build web --release --base-href "/headless-haystack/"
+          flutter build web --release --base-href "/macless-haystack/"
       - name: Deploy to Github Pages
         if: github.ref == 'refs/heads/dev'  
         uses: JamesIves/github-pages-deploy-action@v4
