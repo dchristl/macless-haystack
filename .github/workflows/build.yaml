@@ -62,7 +62,7 @@ jobs:
           flutter pub get
           flutter build web --release --base-href "/macless-haystack/"
       - name: Deploy to Github Pages
-        if: github.ref == 'refs/heads/macless'  
+        if: github.ref == 'refs/heads/dev'  
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./macless_haystack/build/web
