@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:headless_haystack/accessory/accessory_model.dart';
-import 'package:headless_haystack/accessory/accessory_registry.dart';
-import 'package:headless_haystack/findMy/find_my_controller.dart';
-import 'package:headless_haystack/item_management/accessory_color_input.dart';
-import 'package:headless_haystack/item_management/accessory_icon_input.dart';
-import 'package:headless_haystack/item_management/accessory_id_input.dart';
-import 'package:headless_haystack/item_management/accessory_name_input.dart';
-import 'package:headless_haystack/item_management/accessory_pk_input.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
+import 'package:macless_haystack/findMy/find_my_controller.dart';
+import 'package:macless_haystack/item_management/accessory_color_input.dart';
+import 'package:macless_haystack/item_management/accessory_icon_input.dart';
+import 'package:macless_haystack/item_management/accessory_id_input.dart';
+import 'package:macless_haystack/item_management/accessory_name_input.dart';
+import 'package:macless_haystack/item_management/accessory_pk_input.dart';
 
 class AccessoryImport extends StatefulWidget {
   /// Displays an input form to manually import an accessory.

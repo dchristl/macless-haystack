@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:headless_haystack/accessory/accessory_icon_selector.dart';
+import 'package:macless_haystack/accessory/accessory_icon_selector.dart';
 
 class AccessoryIconInput extends StatelessWidget {
   /// The initial icon

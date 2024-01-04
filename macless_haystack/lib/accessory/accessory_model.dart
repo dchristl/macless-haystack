@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:headless_haystack/accessory/accessory_icon_model.dart';
-import 'package:headless_haystack/findMy/find_my_controller.dart';
-import 'package:headless_haystack/location/location_model.dart';
+import 'package:macless_haystack/accessory/accessory_icon_model.dart';
+import 'package:macless_haystack/findMy/find_my_controller.dart';
+import 'package:macless_haystack/location/location_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logger/logger.dart';
 

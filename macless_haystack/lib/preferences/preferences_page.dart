@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:headless_haystack/location/location_model.dart';
-import 'package:headless_haystack/preferences/user_preferences_model.dart';
+import 'package:macless_haystack/location/location_model.dart';
+import 'package:macless_haystack/preferences/user_preferences_model.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 class PreferencesPage extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:headless_haystack/deployment/code_block.dart';
-import 'package:headless_haystack/deployment/deployment_details.dart';
-import 'package:headless_haystack/deployment/hyperlink.dart';
+import 'package:macless_haystack/deployment/code_block.dart';
+import 'package:macless_haystack/deployment/deployment_details.dart';
+import 'package:macless_haystack/deployment/hyperlink.dart';
 
 class DeploymentInstructionsLinux extends StatelessWidget {
   final String advertisementKey;

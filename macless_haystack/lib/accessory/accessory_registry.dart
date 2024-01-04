@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
-import 'package:headless_haystack/accessory/accessory_model.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:headless_haystack/findMy/find_my_controller.dart';
-import 'package:headless_haystack/findMy/models.dart';
+import 'package:macless_haystack/findMy/find_my_controller.dart';
+import 'package:macless_haystack/findMy/models.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
-import 'package:headless_haystack/preferences/user_preferences_model.dart';
+import 'package:macless_haystack/preferences/user_preferences_model.dart';
 
 const accessoryStorageKey = 'ACCESSORIES';
 const historStorageKey = 'HISTORY';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:headless_haystack/accessory/accessory_icon.dart';
-import 'package:headless_haystack/accessory/accessory_model.dart';
-import 'package:headless_haystack/accessory/accessory_registry.dart';
-import 'package:headless_haystack/location/location_model.dart';
+import 'package:macless_haystack/accessory/accessory_icon.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
+import 'package:macless_haystack/location/location_model.dart';
 import 'package:provider/provider.dart';
 
 class AccessoryMap extends StatefulWidget {

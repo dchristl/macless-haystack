@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:headless_haystack/item_management/refresh_action.dart';
+import 'package:macless_haystack/item_management/refresh_action.dart';
 import 'package:provider/provider.dart';
-import 'package:headless_haystack/accessory/accessory_registry.dart';
-import 'package:headless_haystack/dashboard/accessory_map_list_vert.dart';
-import 'package:headless_haystack/item_management/item_management.dart';
-import 'package:headless_haystack/item_management/new_item_action.dart';
-import 'package:headless_haystack/location/location_model.dart';
-import 'package:headless_haystack/preferences/preferences_page.dart';
-import 'package:headless_haystack/preferences/user_preferences_model.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
+import 'package:macless_haystack/dashboard/accessory_map_list_vert.dart';
+import 'package:macless_haystack/item_management/item_management.dart';
+import 'package:macless_haystack/item_management/new_item_action.dart';
+import 'package:macless_haystack/location/location_model.dart';
+import 'package:macless_haystack/preferences/preferences_page.dart';
+import 'package:macless_haystack/preferences/user_preferences_model.dart';
 
 class Dashboard extends StatefulWidget {
   /// Displays the layout for the mobile view of the app.

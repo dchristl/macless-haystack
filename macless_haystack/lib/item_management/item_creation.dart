@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:headless_haystack/accessory/accessory_model.dart';
-import 'package:headless_haystack/accessory/accessory_registry.dart';
-import 'package:headless_haystack/findMy/find_my_controller.dart';
-import 'package:headless_haystack/item_management/accessory_color_input.dart';
-import 'package:headless_haystack/item_management/accessory_icon_input.dart';
-import 'package:headless_haystack/item_management/accessory_name_input.dart';
-import 'package:headless_haystack/deployment/deployment_instructions.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
+import 'package:macless_haystack/findMy/find_my_controller.dart';
+import 'package:macless_haystack/item_management/accessory_color_input.dart';
+import 'package:macless_haystack/item_management/accessory_icon_input.dart';
+import 'package:macless_haystack/item_management/accessory_name_input.dart';
+import 'package:macless_haystack/deployment/deployment_instructions.dart';
 
 class AccessoryGeneration extends StatefulWidget {
   /// Displays a page to create a new accessory.

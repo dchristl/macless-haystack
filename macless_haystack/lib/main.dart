@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:headless_haystack/dashboard/dashboard.dart';
+import 'package:macless_haystack/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
-import 'package:headless_haystack/accessory/accessory_registry.dart';
-import 'package:headless_haystack/location/location_model.dart';
-import 'package:headless_haystack/preferences/user_preferences_model.dart';
-import 'package:headless_haystack/splashscreen.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
+import 'package:macless_haystack/location/location_model.dart';
+import 'package:macless_haystack/preferences/user_preferences_model.dart';
+import 'package:macless_haystack/splashscreen.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 void main() {

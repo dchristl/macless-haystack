@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:headless_haystack/item_management/new_item_action.dart';
+import 'package:macless_haystack/item_management/new_item_action.dart';
 
 class NoAccessoriesPlaceholder extends StatelessWidget {
 

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:headless_haystack/accessory/accessory_icon_model.dart';
+import 'package:macless_haystack/accessory/accessory_icon_model.dart';
 
 typedef IconChangeListener = void Function(String? newValue);
 

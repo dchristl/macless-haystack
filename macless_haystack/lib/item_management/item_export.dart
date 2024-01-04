@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:headless_haystack/accessory/accessory_dto.dart';
-import 'package:headless_haystack/accessory/accessory_model.dart';
-import 'package:headless_haystack/accessory/accessory_registry.dart';
+import 'package:macless_haystack/accessory/accessory_dto.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:universal_html/html.dart' as html;

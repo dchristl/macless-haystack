@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
-import 'package:headless_haystack/findMy/models.dart';
-import 'package:headless_haystack/findMy/reports_fetcher.dart';
+import 'package:macless_haystack/findMy/models.dart';
+import 'package:macless_haystack/findMy/reports_fetcher.dart';
 import 'package:logger/logger.dart';
 import 'package:pointycastle/export.dart';
 // ignore: implementation_imports
