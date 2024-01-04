@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => LocationModel()),
       ],
       child: MaterialApp(
-        title: 'HeadlessHaystack',
+        title: 'MaclessHaystack',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
