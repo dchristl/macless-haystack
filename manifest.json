@@ -1,6 +1,6 @@
 {
-    "name": "Headless Haystack",
-    "short_name": "Headless Haystack",
+    "name": "Macless Haystack",
+    "short_name": "Macless Haystack",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

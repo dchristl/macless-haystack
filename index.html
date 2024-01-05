@@ -26,7 +26,7 @@
   <meta name="apple-mobile-web-app-title" content="openhaystack_mobile">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <title>Headless Haystack</title>
+  <title>Macless Haystack</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -34,7 +34,7 @@
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
   <script>
-    const serviceWorkerVersion = "1157951978";
+    const serviceWorkerVersion = "4063215436";
     var scriptLoaded = false;
     function loadMainDartJs() {
       if (scriptLoaded) {
@@ -58,7 +58,7 @@
           .then((reg) => {
             function waitForActivation(serviceWorker) {
               serviceWorker.addEventListener('statechange', () => {
-                if (serviceWorker.state == 'activated') {
+                if (serviceWorker.state === 'activated') {
                   console.log('Installed new service worker.');
                   loadMainDartJs();
                 }
