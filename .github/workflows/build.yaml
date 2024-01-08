@@ -36,10 +36,8 @@ jobs:
         with:         
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
             type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern=${{ env.VERSION }}
+            type=semver,pattern={{version}},value=v${{ env.VERSION }}
             type=sha     
       - name: Build and push docker image
         if: github.ref == 'refs/heads/dev'  
@@ -50,6 +48,7 @@ jobs:
           push: true
           # tags: christld/macless-haystack:latest-dev        
           tags: ${{ steps.meta.outputs.tags }}     
+          labels: christld/macless-haystack
       - name: Install ARM Toolchain
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with: 
