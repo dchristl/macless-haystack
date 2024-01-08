@@ -33,7 +33,7 @@ jobs:
         if: github.ref == 'refs/heads/dev'  
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:endpoint"
+          context: ./endpoint
           platforms: linux/amd64,linux/arm64
           push: true
           file: ./endpoint/Dockerfile_dev
