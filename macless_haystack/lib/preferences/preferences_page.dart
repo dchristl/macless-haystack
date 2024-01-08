@@ -71,7 +71,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   getUrlTile() {
     return TextInputSettingsTile(
-      initialValue: 'http://localhost:56176',
+      initialValue: 'http://localhost:6176',
       settingKey: haystackurl,
       title: 'Url to Fetch location server',
       validator: (String? url) {
