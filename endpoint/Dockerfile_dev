@@ -10,7 +10,7 @@ RUN git init
 RUN git remote add origin https://github.com/dchristl/macless-haystack.git
 RUN git config core.sparseCheckout true
 RUN echo "endpoint" >> .git/info/sparse-checkout
-RUN git pull origin main
+RUN git pull origin dev
 # Configure python
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r endpoint/requirements.txt

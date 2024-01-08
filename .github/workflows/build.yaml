@@ -24,11 +24,6 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Create Dockerfile for development builds (switch to dev branch)
-        if: github.ref == 'refs/heads/dev'   
-        run: | 
-          sed -i 's/RUN git pull origin/RUN git pull origin dev/' endpoint/Dockerfile 
-          cat endpoint/Dockerfile  
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -41,6 +36,7 @@ jobs:
           context: "{{defaultContext}}:endpoint"
           platforms: linux/amd64,linux/arm64
           push: true
+          file: {context}/Dockerfile_dev
           tags: christld/macless-haystack:latest-dev,christld/macless-haystack:v${{ env.VERSION }}-${{ github.sha }},   
       - name: Build and push docker development image
         if: github.ref == 'refs/heads/main'  
