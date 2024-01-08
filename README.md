@@ -67,7 +67,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 You can either use the frontend, provided by GitHub, host the webserver for yourself or use the Android application 
 
 - *Optional*: Mobile: Install application
-- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](OSX-KVM/README.md#notes-on-usage-on-other-machines-ssl))
+- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](endpoint/README.md#notes-on-usage-on-other-machines-ssl))
 - Import PREFIX_devices.json to your application
 - *Optional*: If you run the frontend not on the same machine as your endpoint, you have to configure your Url in the settings
 
