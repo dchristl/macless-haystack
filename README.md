@@ -38,6 +38,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 - [Docker](https://www.docker.com/) installed
 - [Python 3](https://www.python.org/) installed
+- Apple-ID with second factor (mobile/sms) enabled
 
 ### Set up device
 
@@ -58,9 +59,12 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 `docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server`
 
-- Install Macless Haystack endpoint:
+- Start Macless Haystack endpoint in interactive mode:
 
 `docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/webserver/data/ --network mh-network christld/macless-haystack`
+
+- You will be asked for your Apple-ID, password and your 2FA
+
 
 ### Configure and install frontend
 
