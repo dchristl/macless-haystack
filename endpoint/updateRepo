@@ -4,5 +4,5 @@ curr_dir="$(cd "$(dirname "$0")" && pwd)"
 cd "$curr_dir" || exit
 cd ..
 date > /tmp/last_update.log
-git pull origin macless >> /tmp/last_update.log
-git merge origin/macless >> /tmp/last_update.log
+git pull origin "$(git branch --show-current)" >> /tmp/last_update.log
+git merge origin/"$(git branch --show-current)" >> /tmp/last_update.log
