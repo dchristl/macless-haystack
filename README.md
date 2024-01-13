@@ -61,7 +61,7 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 - Start Macless Haystack endpoint in interactive mode:
 
-`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/webserver/data/ --network mh-network christld/macless-haystack`
+`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/webserver/data --network mh-network christld/macless-haystack`
 
 - You will be asked for your Apple-ID, password and your 2FA
 
