@@ -82,8 +82,8 @@ class _AccessoryMapState extends State<AccessoryMap> {
       _mapController
         ..fitCamera(CameraFit.bounds(
             bounds: LatLngBounds.fromPoints([...points, ...accessoryPoints])))
-        ..move(
-            _mapController.camera.center, _mapController.camera.zoom + 0.00001);
+        /*..move(
+            _mapController.camera.center, _mapController.camera.zoom + 0.00001)*/;
     }
   }
 

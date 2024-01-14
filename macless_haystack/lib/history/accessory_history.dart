@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:logger/logger.dart';
 import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:macless_haystack/history/days_selection_slider.dart';
@@ -41,9 +42,6 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
     DateTime latest = widget.accessory.latestHistoryEntry();
     numberOfDays =
         min(DateTime.now().difference(latest).inDays + 1, numberOfDays);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      mapReady();
-    });
   }
 
   @override
@@ -71,7 +69,6 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
       ));
       blue += min(delta.toInt(), 255);
     }
-
     // Filter for the locations after the specified cutoff date (now - number of days)
     return Scaffold(
       appBar: AppBar(
@@ -93,6 +90,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   maxZoom: 18.0,
                   minZoom: 2.0,
                   initialZoom: 13.0,
+                  onMapReady: mapReadyInit,
                   interactionOptions: const InteractionOptions(
                       flags: InteractiveFlag.pinchZoom |
                           InteractiveFlag.drag |
@@ -141,8 +139,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                                 child: child,
                               )
                             : child;
-                      },
-                      subdomains: const ['a', 'b', 'c']),
+                      }),
                   // The line connecting the locations chronologically
                   PolylineLayer(
                     polylines: polylines,
@@ -217,11 +214,14 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
       var historicLocations =
           filteredEntries.map((entry) => entry.location).toList();
       var bounds = LatLngBounds.fromPoints(historicLocations);
-      _mapController
-        ..fitCamera(CameraFit.bounds(bounds: bounds))
-        ..move(
-            _mapController.camera.center, _mapController.camera.zoom + 0.00001);
+      _mapController.fitCamera(CameraFit.bounds(bounds: bounds));
     }
+  }
+
+  mapReadyInit() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      mapReady();
+    });
   }
 
   List<Pair<dynamic, dynamic>> filterHistoryEntries() {
@@ -235,4 +235,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
         .toList();
     return filteredEntries;
   }
+
+  var logger = Logger(
+    printer: PrettyPrinter(methodCount: 0),
+  );
 }
