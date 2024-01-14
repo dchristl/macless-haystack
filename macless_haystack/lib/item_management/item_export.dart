@@ -22,9 +22,9 @@ class ItemExportMenu extends StatelessWidget {
   /// The accessory can be exported to a JSON file or the
   /// key parameters can be exported separately.
   const ItemExportMenu({
-    Key? key,
+    super.key,
     required this.accessory,
-  }) : super(key: key);
+  });
 
   /// Shows the export options for the [accessory].
   void showKeyExportSheet(BuildContext context, Accessory accessory) {

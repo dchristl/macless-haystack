@@ -8,11 +8,11 @@ class AccessoryNameInput extends StatelessWidget {
 
   /// Displays an input field with validation for an accessory name.
   const AccessoryNameInput({
-    Key? key,
+    super.key,
     this.onSaved,
     this.initialValue,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

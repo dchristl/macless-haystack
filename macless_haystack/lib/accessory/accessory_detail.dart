@@ -15,9 +15,9 @@ class AccessoryDetail extends StatefulWidget {
   /// This shows the editable information of a specific [accessory] and
   /// allows the user to edit them.
   const AccessoryDetail({
-    Key? key,
+    super.key,
     required this.accessory,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

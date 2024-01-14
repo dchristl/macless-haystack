@@ -14,12 +14,12 @@ class AccessoryIconInput extends StatelessWidget {
 
   /// Displays an icon selection input that previews the current selection.
   const AccessoryIconInput({
-    Key? key,
+    super.key,
     required this.initialIcon,
     required this.iconString,
     required this.color,
     required this.changeListener,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -14,9 +14,9 @@ class AccessoryMapListVertical extends StatefulWidget {
 
   /// Displays a map view and the accessory list in a vertical alignment.
   const AccessoryMapListVertical({
-    Key? key,
+    super.key,
     required this.loadLocationUpdates,
-  }) : super(key: key);
+  });
 
   @override
   State<AccessoryMapListVertical> createState() =>

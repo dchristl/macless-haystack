@@ -6,9 +6,9 @@ class CodeBlock extends StatelessWidget {
 
   /// Displays a code block that can easily copied by the user.
   const CodeBlock({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

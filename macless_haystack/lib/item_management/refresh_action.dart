@@ -5,7 +5,7 @@ class RefreshAction extends StatefulWidget {
   final AsyncCallback callback;
 
   /// A new accessory can be created or an existing one imported manually.
-  const RefreshAction({Key? key, required this.callback}) : super(key: key);
+  const RefreshAction({super.key, required this.callback});
 
   @override
   State<StatefulWidget> createState() {

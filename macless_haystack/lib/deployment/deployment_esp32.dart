@@ -8,9 +8,9 @@ class DeploymentInstructionsESP32 extends StatelessWidget {
 
   /// Displays a deployment guide for the ESP32 platform.
   const DeploymentInstructionsESP32({
-    Key? key,
+    super.key,
     this.advertisementKey = '<ADVERTISEMENT_KEY>',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

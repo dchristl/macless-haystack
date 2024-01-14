@@ -6,7 +6,7 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 class PreferencesPage extends StatefulWidget {
   /// Displays this preferences page with information about the app.
-  const PreferencesPage({Key? key}) : super(key: key);
+  const PreferencesPage({super.key});
 
   @override
   State<StatefulWidget> createState() {

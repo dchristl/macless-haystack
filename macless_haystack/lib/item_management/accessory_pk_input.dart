@@ -7,9 +7,9 @@ class AccessoryPrivateKeyInput extends StatelessWidget {
 
   /// Displays an input field with validation for a Base64 encoded accessory private key.
   const AccessoryPrivateKeyInput({
-    Key? key,
+    super.key,
     required this.changeListener,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

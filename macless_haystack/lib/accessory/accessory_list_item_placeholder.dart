@@ -7,8 +7,8 @@ class AccessoryListItemPlaceholder extends StatelessWidget {
 
   /// A placeholder for an [AccessoryListItem] showing a loading animation.
   const AccessoryListItemPlaceholder({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

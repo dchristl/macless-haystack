@@ -12,11 +12,11 @@ class AccessoryIcon extends StatelessWidget {
   /// 
   /// The default size can be adjusted by setting the [size] parameter.
   const AccessoryIcon({
-    Key? key,
+    super.key,
     this.icon = Icons.help,
     this.color = Colors.grey,
     this.size = 24,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

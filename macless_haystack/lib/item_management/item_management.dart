@@ -12,8 +12,8 @@ class KeyManagement extends StatelessWidget {
   ///
   /// Each accessory can be exported and is linked to a detail page.
   const KeyManagement({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

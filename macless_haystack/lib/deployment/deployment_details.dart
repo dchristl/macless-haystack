@@ -11,10 +11,10 @@ class DeploymentDetails extends StatefulWidget {
   ///
   /// The actual steps depend on the target platform and are provided in [steps].
   const DeploymentDetails({
-    Key? key,
+    super.key,
     required this.title,
     required this.steps,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

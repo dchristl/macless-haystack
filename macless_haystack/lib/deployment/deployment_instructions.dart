@@ -17,9 +17,9 @@ class DeploymentInstructions extends StatefulWidget {
   ///
   /// The deployment instructions are customized with the [advertisementKey].
   const DeploymentInstructions({
-    Key? key,
+    super.key,
     this.advertisementKey = '<ADVERTISEMENT_KEY>',
-  }) : super(key: key);
+  });
   @override
   State<StatefulWidget> createState() {
     return _DeploymentInstructionsState();

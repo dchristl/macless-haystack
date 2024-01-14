@@ -10,10 +10,10 @@ class DaysSelectionSlider extends StatefulWidget {
   /// Display a slider that allows to define how many days to go back
   /// (range 1 to 7).
   const DaysSelectionSlider({
-    Key? key,
+    super.key,
     required this.numberOfDays,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

@@ -5,9 +5,9 @@ class AvatarPlaceholder extends StatelessWidget {
 
   /// Displays a placeholder for the actual avatar, occupying the same layout space.
   const AvatarPlaceholder({
-    Key? key,
+    super.key,
     this.size = 24,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

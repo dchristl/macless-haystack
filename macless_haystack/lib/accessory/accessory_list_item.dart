@@ -19,13 +19,13 @@ class AccessoryListItem extends StatelessWidget {
   /// Shows the icon and name of the accessory, as well as the current
   /// location and distance to the user's location (if known; `distance != null`)
   const AccessoryListItem({
-    Key? key,
+    super.key,
     required this.accessory,
     required this.onTap,
     this.onLongPress,
     this.distance,
     this.herePlace,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

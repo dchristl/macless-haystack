@@ -18,11 +18,11 @@ class AccessoryIconSelector extends StatelessWidget {
   /// The icon can be selected from a list of available icons.
   /// The icons are handled by the cupertino icon names.
   const AccessoryIconSelector({
-    Key? key,
+    super.key,
     required this.icon,
     required this.color,
     required this.iconChanged,
-  }) : super(key: key);
+  });
 
   /// Displays the icon selector with the [currentIcon] preselected in the [highlighColor].
   /// 

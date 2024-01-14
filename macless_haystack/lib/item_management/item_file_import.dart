@@ -19,9 +19,9 @@ class ItemFileImport extends StatefulWidget {
   /// Displays the accessories contained in the import file.
   /// The user can then select the accessories to import.
   const ItemFileImport({
-    Key? key,
+    super.key,
     required this.bytes,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LoadingSpinner extends StatelessWidget {
 
   /// Displays a centered loading spinner.
-  const LoadingSpinner({ Key? key }) : super(key: key);
+  const LoadingSpinner({ super.key });
 
   @override
   Widget build(BuildContext context) {

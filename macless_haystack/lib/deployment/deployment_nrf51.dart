@@ -8,9 +8,9 @@ class DeploymentInstructionsNRF51 extends StatelessWidget {
 
   /// Displays a deployment guide for the NRF51 platform.
   const DeploymentInstructionsNRF51({
-    Key? key,
+    super.key,
     this.advertisementKey = '<ADVERTISEMENT_KEY>',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

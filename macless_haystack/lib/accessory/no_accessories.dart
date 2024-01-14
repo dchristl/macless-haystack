@@ -6,7 +6,7 @@ class NoAccessoriesPlaceholder extends StatelessWidget {
   /// Displays a message that no accessories are present.
   /// 
   /// Allows the user to quickly add a new accessory.
-  const NoAccessoriesPlaceholder({ Key? key }) : super(key: key);
+  const NoAccessoriesPlaceholder({ super.key });
 
   @override
   Widget build(BuildContext context) {

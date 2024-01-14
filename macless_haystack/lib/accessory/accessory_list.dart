@@ -22,10 +22,10 @@ class AccessoryList extends StatefulWidget {
   /// For each accessory the name and last known locaiton information is shown.
   /// Uses the accessories in the [AccessoryRegistry].
   const AccessoryList({
-    Key? key,
+    super.key,
     required this.loadLocationUpdates,
     this.centerOnPoint,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

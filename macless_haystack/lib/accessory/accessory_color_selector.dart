@@ -7,7 +7,7 @@ class AccessoryColorSelector extends StatelessWidget {
   /// 
   /// The color can be selected via a color field or by inputing explicit
   /// RGB values.
-  const AccessoryColorSelector({ Key? key }) : super(key: key);
+  const AccessoryColorSelector({ super.key });
 
   /// Displays the color selector with the [initialColor] preselected.
   /// 

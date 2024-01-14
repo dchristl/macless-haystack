@@ -8,9 +8,9 @@ class DeploymentInstructionsLinux extends StatelessWidget {
 
   /// Displays a deployment guide for the generic Linux HCI platform.
   const DeploymentInstructionsLinux({
-    Key? key,
+    super.key,
     this.advertisementKey = '<ADVERTISEMENT_KEY>',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

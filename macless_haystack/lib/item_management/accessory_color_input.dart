@@ -10,10 +10,10 @@ class AccessoryColorInput extends StatelessWidget {
 
   /// Displays a color selection input that previews the current selection.
   const AccessoryColorInput({
-    Key? key,
+    super.key,
     required this.color,
     required this.changeListener,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

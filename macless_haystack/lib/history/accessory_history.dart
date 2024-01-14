@@ -15,9 +15,9 @@ class AccessoryHistory extends StatefulWidget {
   /// The locations are connected by a chronological line.
   /// The number of days to go back can be adjusted with a slider.
   const AccessoryHistory({
-    Key? key,
+    super.key,
     required this.accessory,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

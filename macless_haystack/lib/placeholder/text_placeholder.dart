@@ -10,12 +10,12 @@ class TextPlaceholder extends StatefulWidget {
   ///
   /// An optional loading animation is provided.
   const TextPlaceholder({
-    Key? key,
+    super.key,
     this.maxWidth = double.infinity,
     this.width,
     this.height = 10,
     this.animated = true,
-  }) : super(key: key);
+  });
   @override
   State<StatefulWidget> createState() {
     return _TextPlaceholderState();

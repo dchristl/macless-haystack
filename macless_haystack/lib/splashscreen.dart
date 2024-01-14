@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Splashscreen extends StatelessWidget {
 
   /// Display a fullscreen splashscreen to cover loading times.
-  const Splashscreen({ Key? key }) : super(key: key);
+  const Splashscreen({ super.key });
 
   @override
   Widget build(BuildContext context) {

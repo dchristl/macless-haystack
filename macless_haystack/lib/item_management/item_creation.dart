@@ -12,7 +12,7 @@ class AccessoryGeneration extends StatefulWidget {
   /// Displays a page to create a new accessory.
   ///
   /// The parameters of the new accessory can be input in text fields.
-  const AccessoryGeneration({Key? key}) : super(key: key);
+  const AccessoryGeneration({super.key});
   @override
   State<StatefulWidget> createState() {
     return _AccessoryGenerationState();

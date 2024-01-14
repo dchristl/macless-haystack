@@ -10,11 +10,10 @@ class Hyperlink extends StatelessWidget {
 
   /// Displays a hyperlink that can be opened by a tap.
   const Hyperlink({
-    Key? key,
+    super.key,
     required this.target,
     text,
-  })  : _text = text ?? target,
-        super(key: key);
+  })  : _text = text ?? target;
 
   @override
   Widget build(BuildContext context) {

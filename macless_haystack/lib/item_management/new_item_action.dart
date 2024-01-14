@@ -14,9 +14,9 @@ class NewKeyAction extends StatelessWidget {
   ///
   /// A new accessory can be created or an existing one imported manually.
   const NewKeyAction({
-    Key? key,
+    super.key,
     this.mini = false,
-  }) : super(key: key);
+  });
 
   /// Display a bottom sheet with creation options.
   void showCreationSheet(BuildContext context) {

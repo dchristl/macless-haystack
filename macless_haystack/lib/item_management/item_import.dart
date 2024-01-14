@@ -11,7 +11,7 @@ import 'package:macless_haystack/item_management/accessory_pk_input.dart';
 
 class AccessoryImport extends StatefulWidget {
   /// Displays an input form to manually import an accessory.
-  const AccessoryImport({Key? key}) : super(key: key);
+  const AccessoryImport({super.key});
 
   @override
   State<AccessoryImport> createState() => _AccessoryImportState();

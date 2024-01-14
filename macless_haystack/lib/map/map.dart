@@ -13,9 +13,9 @@ class AccessoryMap extends StatefulWidget {
 
   /// Displays a map with all accessories at their latest position.
   const AccessoryMap({
-    Key? key,
+    super.key,
     this.mapController,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

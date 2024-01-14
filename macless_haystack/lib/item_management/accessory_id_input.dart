@@ -5,9 +5,9 @@ class AccessoryIdInput extends StatelessWidget {
 
   /// Displays an input field with validation for an accessory ID.
   const AccessoryIdInput({
-    Key? key,
+    super.key,
     required this.changeListener,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

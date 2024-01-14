@@ -16,7 +16,7 @@ class Dashboard extends StatefulWidget {
   /// The layout is optimized for a vertically aligned small screens.
   /// The functionality is structured in a bottom tab bar for easy access
   /// on mobile devices.
-  const Dashboard({Key? key}) : super(key: key);
+  const Dashboard({super.key});
 
   @override
   State<StatefulWidget> createState() {
