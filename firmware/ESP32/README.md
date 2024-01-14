@@ -1,4 +1,4 @@
-## HeadlessHaystack Firmware for ESP32
+## Macless Haystack Firmware for ESP32
 
 This project contains a battery-optimzed PoC firmware for Espressif ESP32 chips (like ESP32-WROOM or ESP32-WROVER, but _not_ ESP32-S2).
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).

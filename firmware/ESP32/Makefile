@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := headless-haystack-esp32
+PROJECT_NAME := macless-haystack-esp32
 
 COMPONENT_ADD_INCLUDEDIRS := components/include
 

@@ -59,11 +59,19 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 `docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server`
 
-- Start Macless Haystack endpoint in interactive mode:
+- Start and set up your Macless Haystack endpoint in interactive mode:
 
-`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/webserver/data --network mh-network christld/macless-haystack`
+`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack`
 
-- You will be asked for your Apple-ID, password and your 2FA
+- You will be asked for your Apple-ID, password and your 2FA. If you see `serving at port 6176 over HTTP` you have all set up
+
+- End your server by pressing Ctrl+C or by 
+
+`docker stop macless-haystack`
+
+- Restart your server now in background
+
+`docker restart macless-haystack`     
 
 
 ### Configure and install frontend

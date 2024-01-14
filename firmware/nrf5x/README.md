@@ -1,4 +1,4 @@
-## Headless Haystack Firmware for NRF51 and NRF52
+## Macless Haystack Firmware for NRF51 and NRF52
 
 This project contains an battery-optimized firmware for the Nordic NRF5x chips from [acalatrava](https://github.com/acalatrava/openhaystack-firmware). So all credits goes to him. 
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
