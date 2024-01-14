@@ -37,7 +37,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
         Provider.of<AccessoryRegistry>(context, listen: false);
     var locationModel = Provider.of<LocationModel>(context, listen: false);
 
-    // Resize map to fit all accessories at initial locaiton
+    // Resize map to fit all accessories at initial location
     fitToContent(accessoryRegistry.accessories, locationModel.here);
 
     // Fit map if first location is known
@@ -99,20 +99,20 @@ class _AccessoryMapState extends State<AccessoryMap> {
       return FlutterMap(
         mapController: _mapController,
         options: MapOptions(
-          initialCenter: locationModel.here ?? const LatLng(51.1657, 10.4515),
-          maxZoom: 18.0,
-          minZoom: 2.0,
-          initialZoom: 13.0,
-          interactiveFlags: InteractiveFlag.pinchZoom |
-              InteractiveFlag.drag |
-              InteractiveFlag.doubleTapZoom |
-              InteractiveFlag.flingAnimation |
-              InteractiveFlag.pinchMove,
-        ),
+            initialCenter: locationModel.here ?? const LatLng(51.1657, 10.4515),
+            maxZoom: 18.0,
+            minZoom: 2.0,
+            initialZoom: 13.0,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.pinchZoom |
+                    InteractiveFlag.drag |
+                    InteractiveFlag.doubleTapZoom |
+                    InteractiveFlag.flingAnimation |
+                    InteractiveFlag.pinchMove)),
         children: [
           TileLayer(
             tileProvider: CancellableNetworkTileProvider(),
-            backgroundColor: Theme.of(context).colorScheme.surface,
             tileBuilder: (context, child, tile) {
               var isDark = (Theme.of(context).brightness == Brightness.dark);
               return isDark

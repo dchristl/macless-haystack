@@ -88,15 +88,17 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 key: ValueKey(MediaQuery.of(context).orientation),
                 mapController: _mapController,
                 options: MapOptions(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   initialCenter: const LatLng(51.1657, 10.4515),
                   maxZoom: 18.0,
                   minZoom: 2.0,
                   initialZoom: 13.0,
-                  interactiveFlags: InteractiveFlag.pinchZoom |
-                      InteractiveFlag.drag |
-                      InteractiveFlag.doubleTapZoom |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.pinchMove,
+                  interactionOptions: const InteractionOptions(
+                      flags: InteractiveFlag.pinchZoom |
+                          InteractiveFlag.drag |
+                          InteractiveFlag.doubleTapZoom |
+                          InteractiveFlag.flingAnimation |
+                          InteractiveFlag.pinchMove),
                   onTap: (_, __) {
                     setState(() {
                       showPopup = false;
@@ -109,7 +111,6 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                       tileProvider: CancellableNetworkTileProvider(),
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      backgroundColor: Theme.of(context).colorScheme.surface,
                       tileBuilder: (context, child, tile) {
                         var isDark =
                             (Theme.of(context).brightness == Brightness.dark);
@@ -218,7 +219,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
       var bounds = LatLngBounds.fromPoints(historicLocations);
       _mapController
         ..fitCamera(CameraFit.bounds(bounds: bounds))
-        ..move(_mapController.camera.center, _mapController.camera.zoom + 0.00001);
+        ..move(
+            _mapController.camera.center, _mapController.camera.zoom + 0.00001);
     }
   }
 
