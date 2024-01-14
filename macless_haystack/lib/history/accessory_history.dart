@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:macless_haystack/history/days_selection_slider.dart';
@@ -87,10 +88,10 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 key: ValueKey(MediaQuery.of(context).orientation),
                 mapController: _mapController,
                 options: MapOptions(
-                  center: const LatLng(51.1657, 10.4515),
+                  initialCenter: const LatLng(51.1657, 10.4515),
                   maxZoom: 18.0,
                   minZoom: 2.0,
-                  zoom: 13.0,
+                  initialZoom: 13.0,
                   interactiveFlags: InteractiveFlag.pinchZoom |
                       InteractiveFlag.drag |
                       InteractiveFlag.doubleTapZoom |
@@ -105,6 +106,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 ),
                 children: [
                   TileLayer(
+                      tileProvider: CancellableNetworkTileProvider(),
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -149,7 +151,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                     markers: filteredEntries
                         .map((entry) => Marker(
                               point: entry.location,
-                              builder: (ctx) => GestureDetector(
+                              child: GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     showPopup = true;
@@ -172,10 +174,10 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                     markers: [
                       if (showPopup)
                         LocationPopup(
-                          location: popupEntry!.location,
-                          time: popupEntry!.start,
-                          end: popupEntry!.end,
-                        ),
+                            location: popupEntry!.location,
+                            time: popupEntry!.start,
+                            end: popupEntry!.end,
+                            ctx: context),
                     ],
                   ),
                 ],
@@ -215,8 +217,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
           filteredEntries.map((entry) => entry.location).toList();
       var bounds = LatLngBounds.fromPoints(historicLocations);
       _mapController
-        ..fitBounds(bounds)
-        ..move(_mapController.center, _mapController.zoom + 0.00001);
+        ..fitCamera(CameraFit.bounds(bounds: bounds))
+        ..move(_mapController.camera.center, _mapController.camera.zoom + 0.00001);
     }
   }
 

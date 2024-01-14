@@ -6,6 +6,7 @@ import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:macless_haystack/accessory/accessory_registry.dart';
 import 'package:macless_haystack/location/location_model.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 
 class AccessoryMap extends StatefulWidget {
   final MapController? mapController;
@@ -67,8 +68,9 @@ class _AccessoryMapState extends State<AccessoryMap> {
     List<LatLng> points = [];
     if (hereLocation != null) {
       _mapController
-        ..move(hereLocation, _mapController.zoom)
-        ..move(_mapController.center, _mapController.zoom + 0.00001);
+        ..move(hereLocation, _mapController.camera.zoom)
+        ..move(
+            _mapController.camera.center, _mapController.camera.zoom + 0.00001);
       points = [hereLocation];
     }
 
@@ -78,11 +80,10 @@ class _AccessoryMapState extends State<AccessoryMap> {
         .toList();
     if (accessoryPoints.isNotEmpty) {
       _mapController
-        ..fitBounds(LatLngBounds.fromPoints([...points, ...accessoryPoints]),
-            options: const FitBoundsOptions(
-              padding: EdgeInsets.all(25),
-            ))
-        ..move(_mapController.center, _mapController.zoom + 0.00001);
+        ..fitCamera(CameraFit.bounds(
+            bounds: LatLngBounds.fromPoints([...points, ...accessoryPoints])))
+        ..move(
+            _mapController.camera.center, _mapController.camera.zoom + 0.00001);
     }
   }
 
@@ -98,10 +99,10 @@ class _AccessoryMapState extends State<AccessoryMap> {
       return FlutterMap(
         mapController: _mapController,
         options: MapOptions(
-          center: locationModel.here ?? const LatLng(51.1657, 10.4515),
+          initialCenter: locationModel.here ?? const LatLng(51.1657, 10.4515),
           maxZoom: 18.0,
           minZoom: 2.0,
-          zoom: 13.0,
+          initialZoom: 13.0,
           interactiveFlags: InteractiveFlag.pinchZoom |
               InteractiveFlag.drag |
               InteractiveFlag.doubleTapZoom |
@@ -110,6 +111,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
         ),
         children: [
           TileLayer(
+            tileProvider: CancellableNetworkTileProvider(),
             backgroundColor: Theme.of(context).colorScheme.surface,
             tileBuilder: (context, child, tile) {
               var isDark = (Theme.of(context).brightness == Brightness.dark);
@@ -141,8 +143,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
                     )
                   : child;
             },
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: const ['a', 'b', 'c'],
+            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
           ),
           MarkerLayer(
             markers: [
@@ -153,10 +154,9 @@ class _AccessoryMapState extends State<AccessoryMap> {
                         width: 50,
                         height: 50,
                         point: accessory.lastLocation!,
-                        builder: (ctx) => AccessoryIcon(
+                        child: AccessoryIcon(
                             icon: accessory.icon, color: accessory.color),
-                      ))
-                  .toList(),
+                      )),
             ],
           ),
           MarkerLayer(markers: [
@@ -165,7 +165,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
                 width: 25.0,
                 height: 25.0,
                 point: locationModel.here!,
-                builder: (ctx) => Stack(
+                child: Stack(
                   children: [
                     Container(
                       decoration: BoxDecoration(

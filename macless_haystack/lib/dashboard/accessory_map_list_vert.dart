@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
+
 import 'package:provider/provider.dart';
 import 'package:macless_haystack/accessory/accessory_list.dart';
 import 'package:macless_haystack/accessory/accessory_registry.dart';
@@ -27,8 +28,8 @@ class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
 
   void _centerPoint(LatLng point) {
     _mapController
-      ..fitBounds(LatLngBounds.fromPoints([point]))
-      ..move(_mapController.center, _mapController.zoom + 0.00001);
+      ..fitCamera(CameraFit.bounds(bounds: LatLngBounds.fromPoints([point])))
+      ..move(_mapController.camera.center, _mapController.camera.zoom + 0.00001);
   }
 
   @override
