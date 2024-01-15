@@ -275,7 +275,7 @@ class Accessory {
   void addLocationHistoryEntry(FindMyLocationReport report) {
     var reportDate = report.timestamp ?? report.published!;
     logger.d(
-        '#### Trying to add report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
+        'Trying to add report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
     Pair? closest;
     //Find the closest history report by time
     for (int i = 0; i < locationHistory.length; i++) {
@@ -307,7 +307,7 @@ class Accessory {
 
     if (closest != null) {
       logger.d(
-          '#### Found closest with ts ${closest.start} - ${closest.end} and ${closest.location.longitude} - ${closest.location.latitude}');
+          'Found closest with ts ${closest.start} - ${closest.end} and ${closest.location.longitude} - ${closest.location.latitude}');
       bool latIsClose =
           (closest.location.latitude - report.latitude!).abs() <= 0.001;
       bool lonIsClose =
@@ -315,13 +315,13 @@ class Accessory {
       if (latIsClose && lonIsClose) {
         //similar
         if (reportDate.isAfter(closest.end)) {
-          logger.d('#### Changing closest end date to $reportDate');
+          logger.d('Changing closest end date to $reportDate');
           closest.end = reportDate;
         } else {
-          logger.d('#### Date not changed, because is before current date.');
+          logger.d('Date not changed, because is before current date.');
         }
       } else {
-        logger.d('#### Adding new one, because closest is too far away');
+        logger.d('Adding new one, because closest is too far away');
         //not like before, so add new one
         Pair<LatLng, DateTime> pair = Pair(
             LatLng(report.latitude!, report.longitude!),
@@ -330,7 +330,7 @@ class Accessory {
         locationHistory.add(pair);
       }
     } else {
-      logger.d('#### Closest not found. Adding to list.');
+      logger.d('Closest not found. Adding to list.');
       //no report before
       Pair<LatLng, DateTime> pair = Pair(
           LatLng(report.latitude!, report.longitude!), reportDate, reportDate);
