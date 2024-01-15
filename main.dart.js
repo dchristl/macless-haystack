@@ -106949,7 +106949,7 @@ A.a4K.prototype={
 C(a){var s=null
 return A.jU(A.jx(s,s,!0,s,s,1,s,s,s,!1,s,!1,s,s,s,s,!0,s,s,s,s,s,B.a_0,s,s,s,1,s),A.h0(A.ce(A.a([this.a5F(),this.a62(),new A.xU("NUMBER_OF_DAYS",7,B.PP,"Number of days to fetch location",s,t.B_),A.e0(!1,s,s,s,!0,s,s,!1,s,s,s,s,!1,s,s,s,s,s,this.a5u(),s,s)],t.p),B.v,s,B.A,B.x),s,s),s,s,s)},
 a5F(){return new A.Z1("LOCATION_PREFERENCE_WANTED","Show this devices location",new A.aKe(this),null)},
-a62(){return new A.Ju("HAYSTACK_URL","http://localhost:6176","Url to Fetch location server",new A.aKf(),null)},
+a62(){return new A.Ju("HAYSTACK_URL","http://localhost:6176","Url to macless haystack endpoint",new A.aKf(),null)},
 a5u(){var s=null,r=t.T
 return A.nY(B.a_t,new A.aKb(this),A.tp(s,s,new A.bl(new A.aKc(),r),s,s,s,new A.bl(new A.aKd(),r),s,s,s,s,s,s,new A.bp(B.oN,t.C4),s,s,s,s,s,s,s,s))}}
 A.aKe.prototype={
