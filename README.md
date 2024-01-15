@@ -71,7 +71,7 @@ docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --vo
 
 - You will be asked for your Apple-ID, password and your 2FA. If you see `serving at port 6176 over HTTP` you have all set up
 
-- Restart your server now in background by restarting in in an other terminal
+- Restart your server now in background by restarting it in an other terminal
 
 ```
 docker restart macless-haystack
