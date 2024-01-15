@@ -60,7 +60,8 @@ docker network create mh-network
 - Install [Anisette Server](https://github.com/Dadoum/anisette-v3-server):
 
 ```
-docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server```
+docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server
+```
 
 - Start and set up your Macless Haystack endpoint in interactive mode:
 
