@@ -208,7 +208,7 @@ class AccessoryRegistry extends ChangeNotifier {
     }
     logger.d(
         '${reports.length - count} reports decrypted. Decryption of $count reports skipped, because they are already fetched and decrypted.');
-    //All hashes, that are not in the reportlist anymore can be deleted, because they are out of time
+    //All hashes, that are not in the reports anymore can be deleted, because they are out of time
     accessory.clearHashesNotInList(hashes);
 //Sort by date
     decryptedReports.sort((a, b) {
