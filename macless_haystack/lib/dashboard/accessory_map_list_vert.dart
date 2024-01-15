@@ -28,8 +28,7 @@ class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
 
   void _centerPoint(LatLng point) {
     _mapController
-      ..fitCamera(CameraFit.bounds(bounds: LatLngBounds.fromPoints([point])))/*
-      ..move(_mapController.camera.center, _mapController.camera.zoom + 0.00001)*/;
+      .fitCamera(CameraFit.bounds(bounds: LatLngBounds.fromPoints([point])));
   }
 
   @override

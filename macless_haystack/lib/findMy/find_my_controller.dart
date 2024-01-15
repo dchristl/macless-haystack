@@ -8,8 +8,10 @@ import 'package:macless_haystack/findMy/models.dart';
 import 'package:macless_haystack/findMy/reports_fetcher.dart';
 import 'package:logger/logger.dart';
 import 'package:pointycastle/export.dart';
+
 // ignore: implementation_imports
 import 'package:pointycastle/src/platform_check/platform_check.dart';
+
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
 
@@ -40,7 +42,8 @@ class FindMyController {
     }
 
     map['url'] = url;
-    map['daysToFetch'] =  Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!;
+    map['daysToFetch'] =
+        Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!;
     return compute(_getListedReportResults, map);
   }
 
@@ -66,8 +69,11 @@ class FindMyController {
           DateTime.fromMillisecondsSinceEpoch(result['datePublished']);
       FindMyKeyPair keyPair =
           hashedKeyKeyPairsMap[result['id']] as FindMyKeyPair;
-      var currentReport = FindMyLocationReport.decrypted(result,
-          keyPair.getBase64PrivateKey(), keyPair.getHashedAdvertisementKey());
+      var currentReport = FindMyLocationReport.decrypted(
+        result,
+        keyPair.getBase64PrivateKey(),
+        keyPair.getHashedAdvertisementKey(),
+      );
       if (currentDate.isAfter(latestDate)) {
         latest = currentReport;
         latestDate = currentDate;
