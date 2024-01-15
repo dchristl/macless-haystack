@@ -7,6 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Fail if Git-Tag already exist on main
+        if: github.ref == 'refs/heads/main'  
+        run: |
+          TAG="v${{ env.VERSION }}"
+          if git show-ref --tags --verify --quiet "refs/tags/${TAG}" ]]; then
+            echo "Tag ${TAG} already exists"
+            exit 1
+          else
+            echo "Tag ${TAG} does not exist"
+          fi   
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
         with:
@@ -134,12 +144,10 @@ jobs:
             firmware/ESP32/.pio/build/esp32dev/partitions.bin
             firmware/ESP32/.pio/build/esp32dev/bootloader.bin     
       - name: Delete old drafts
-        if: github.ref == 'refs/heads/main'  
         uses: hugo19941994/delete-draft-releases@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
-        if: github.ref == 'refs/heads/main'
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
