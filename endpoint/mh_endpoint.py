@@ -68,17 +68,12 @@ class ServerHandler(BaseHTTPRequestHandler):
             logger.debug(result)
             results = result['results']
 
-            latestTimestamp = None
             newResults = OrderedDict()
 
             for idx, entry in enumerate(results):
                 data = base64.b64decode(entry['payload'])
                 timestamp = int.from_bytes(data[0:4], 'big') + 978307200
                 if (timestamp > startdate):
-                    newResults[timestamp] = entry
-                if latestTimestamp is None or latestTimestamp < timestamp:
-                    latestTimestamp = timestamp
-                    newResults.clear()
                     newResults[timestamp] = entry
 
             sorted_map = OrderedDict(sorted(newResults.items(), reverse=True))
