@@ -83,6 +83,7 @@ class Accessory {
 
   /// A list of known locations over time.
   List<Pair<dynamic, dynamic>> locationHistory = [];
+  Set<String> hashes = {};
 
   /// Stores address information about the current location.
   Future<Placemark?> place = Future.value(null);
@@ -275,7 +276,7 @@ class Accessory {
   void addLocationHistoryEntry(FindMyLocationReport report) {
     var reportDate = report.timestamp ?? report.published!;
     logger.d(
-        'Trying to add report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
+        'Adding report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
     Pair? closest;
     //Find the closest history report by time
     for (int i = 0; i < locationHistory.length; i++) {
@@ -349,5 +350,19 @@ class Accessory {
       return DateTime.fromMicrosecondsSinceEpoch(0);
     }
     return locationHistory.first.end;
+  }
+
+  void addDecryptedHash(String? hash) {
+    if (hash != null) {
+      hashes.add(hash);
+    }
+  }
+
+  bool containsHash(String? hash) {
+    return hashes.contains(hash);
+  }
+
+  void clearHashesNotInList(Set<String> hashesInReports) {
+    hashes.removeWhere((element) => !hashesInReports.contains(element));
   }
 }

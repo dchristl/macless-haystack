@@ -189,19 +189,37 @@ class AccessoryRegistry extends ChangeNotifier {
 
   Future<List<Pair<dynamic, dynamic>>> fillLocationHistory(
       List<FindMyLocationReport> reports, Accessory accessory) async {
+    List<FindMyLocationReport> decryptedReports = [];
+    //Decrypt only reports that are not already decrypted
+    Set<String> hashes = {};
+    int count = 0;
+    //This will be achieved by saving the hash(payload) of all already decrypted reports
     for (var i = 0; i < reports.length; i++) {
-      await reports[i].decrypt();
+      var currHash = reports[i].hash;
+      if (!accessory.containsHash(currHash)) {
+        accessory.addDecryptedHash(currHash);
+        await reports[i].decrypt();
+        decryptedReports.add(reports[i]);
+      } else {
+        count++;
+      }
+
+      hashes.add(currHash!);
     }
+    logger.d(
+        '${reports.length - count} reports decrypted. Decryption of $count reports skipped, because they are already fetched and decrypted.');
+    //All hashes, that are not in the reportlist anymore can be deleted, because they are out of time
+    accessory.clearHashesNotInList(hashes);
 //Sort by date
-    reports.sort((a, b) {
+    decryptedReports.sort((a, b) {
       var aDate = a.timestamp ?? a.published!;
       var bDate = b.timestamp ?? b.published!;
       return aDate.compareTo(bDate);
     });
 
     //Update the latest timestamp
-    if (reports.isNotEmpty) {
-      var lastReport = reports[reports.length - 1];
+    if (decryptedReports.isNotEmpty) {
+      var lastReport = decryptedReports[decryptedReports.length - 1];
       var oldTs = accessory.datePublished;
       accessory.lastLocation =
           LatLng(lastReport.latitude!, lastReport.longitude!);
@@ -212,10 +230,15 @@ class AccessoryRegistry extends ChangeNotifier {
     }
 
 //add to history in correct order
-    for (var i = 0; i < reports.length; i++) {
-      FindMyLocationReport report = reports[i];
-      if (report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
+    for (var i = 0; i < decryptedReports.length; i++) {
+      FindMyLocationReport report = decryptedReports[i];
+      if (report.longitude!.abs() <= 180 &&
+          report.latitude!.abs() <= 90 &&
+          report.accuracy! < 100) {
         accessory.addLocationHistoryEntry(report);
+      } else {
+        logger.d(
+            'Report skipped, because of anomaly data (lat: ${report.latitude}, lon: ${report.longitude}, acc: ${report.accuracy})');
       }
     }
     _storeAccessories();
