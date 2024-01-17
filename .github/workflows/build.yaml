@@ -24,6 +24,7 @@ jobs:
         run: |
           git show-ref --tags 
           TAG="v${{ env.VERSION }}"
+          echo $TAG
           if git rev-parse -q --verify "refs/tags/${TAG}" > /dev/null; then
             echo "Tag ${TAG} already exists"
             exit 1
