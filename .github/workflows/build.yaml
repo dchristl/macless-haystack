@@ -14,11 +14,8 @@ jobs:
       #     skip-recent: 3
       - name: Prepare and checkout
         uses: actions/checkout@v3
-      - name: Initialize Submodules
-        run: |
-          git submodule update --init --recursive
       - name: Set environment variables
-        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV       
+        run: echo "VERSION=$(cat version)" >> $GITHUB_ENV     
       - name: Fail if Git-Tag already exist on main
         if: github.ref == 'refs/heads/main'  
         run: |
@@ -31,6 +28,11 @@ jobs:
           else
             echo "Tag ${TAG} does not exist"
           fi    
+      - name: Initialize Submodules
+        run: |
+          git submodule update --init --recursive
+  
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
