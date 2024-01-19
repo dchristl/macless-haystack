@@ -20,7 +20,7 @@ jobs:
         if: github.ref == 'refs/heads/main'  
         run: |
           TAG="v${{ env.VERSION }}"
-          pwd
+          git fetch
           git tag
           if git rev-parse -q --verify "refs/tags/${TAG}" > /dev/null; then
             echo "Tag ${TAG} already exists"
