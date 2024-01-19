@@ -24,7 +24,7 @@ jobs:
         run: |
           TAG="v${{ env.VERSION }}"
           pwd
-          git rev-parse -q --verify "refs/tags/${TAG}"
+          git tag
           if git rev-parse -q --verify "refs/tags/${TAG}" > /dev/null; then
             echo "Tag ${TAG} already exists"
             exit 1
