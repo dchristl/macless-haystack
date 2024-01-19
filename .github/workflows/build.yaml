@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '90 seconds'
-          skip-recent: 3
+      # - name: Remove old artifacts
+      #   uses: c-hive/gha-remove-artifacts@v1
+      #   with:
+      #     age: '90 seconds'
+      #     skip-recent: 3
       - name: Prepare and checkout
         uses: actions/checkout@v3
       - name: Initialize Submodules
