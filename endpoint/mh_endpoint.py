@@ -64,8 +64,8 @@ class ServerHandler(BaseHTTPRequestHandler):
                               headers=pypush_gsa_icloud.generate_anisette_headers(),
                               json=data)
             logger.debug('Return from fetch service:')
+            logger.debug(r.content.decode())
             result = json.loads(r.content.decode())
-            logger.debug(result)
             results = result['results']
 
             newResults = OrderedDict()
@@ -87,11 +87,13 @@ class ServerHandler(BaseHTTPRequestHandler):
             # send the body of the response
             responseBody = json.dumps(result)
             self.wfile.write(responseBody.encode())
-
         except requests.exceptions.ConnectTimeout:
             logger.error("Timeout to " + config.getAnisetteServer() +
                          ", is your anisette running and accepting Connections?")
             self.send_response(504)
+        except Exception as e:
+            logger.error("Unknown error occured {e}", exc_info=True)    
+            self.send_response(501)
 
     def getCurrentTimes(self):
         clientTime = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
