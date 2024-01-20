@@ -53,35 +53,39 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 
 - Create a docker network
 
-`docker network create mh-network`
+```
+docker network create mh-network
+```
 
 - Install [Anisette Server](https://github.com/Dadoum/anisette-v3-server):
 
-`docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server`
+```
+docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/ --network mh-network dadoum/anisette-v3-server
+```
 
 - Start and set up your Macless Haystack endpoint in interactive mode:
 
-`docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack`
+```
+docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
+```
 
 - You will be asked for your Apple-ID, password and your 2FA. If you see `serving at port 6176 over HTTP` you have all set up
 
-- End your server by pressing Ctrl+C or by 
+- Restart your server now in background by restarting it in an other terminal
 
-`docker stop macless-haystack`
-
-- Restart your server now in background
-
-`docker restart macless-haystack`     
+```
+docker restart macless-haystack
+```
 
 
 ### Configure and install frontend
 
-You can either use the frontend, provided by GitHub, host the webserver for yourself or use the Android application 
+You can either use the frontend provided by GitHub, host the webserver for yourself or use the Android application 
 
 - *Optional*: Mobile: Install application
 - *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](endpoint/README.md#notes-on-usage-on-other-machines-ssl))
 - Import PREFIX_devices.json to your application
-- *Optional*: If you run the frontend not on the same machine as your endpoint, you have to configure your Url in the settings
+- If you run the frontend not on the same machine as your endpoint, you have to configure your Url in the settings
 
 
 ## Screenshots
