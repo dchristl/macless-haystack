@@ -66,7 +66,7 @@ docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3
 - Start and set up your Macless Haystack endpoint in interactive mode:
 
 ```
-docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
+docker run -it --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
 ```
 
 - You will be asked for your Apple-ID, password and your 2FA. If you see `serving at port 6176 over HTTP` you have all set up
