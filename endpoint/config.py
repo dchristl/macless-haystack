@@ -25,12 +25,11 @@ def getPort():
     return int(config.get('Settings', 'port', fallback='6176'))
 
 def getUser():
-    return config.get('Settings', 'user', fallback=None)
+    return config.get('Settings', 'appleid', fallback=None)
 
 
 def getPass():
-    return config.get('Settings', 'pass', fallback=None)
-
+    return config.get('Settings', 'appleid_pass', fallback=None)
 
 
 def getConfigFile():
@@ -38,12 +37,17 @@ def getConfigFile():
 
 
 def getCertFile():
-    return getConfigPath() + '/' + CERT_FILE
+    return getConfigPath() + '/' + config.get('Settings', 'cert', fallback=CERT_FILE)
 
 
 def getKeyFile():
-    return getConfigPath() + '/' + KEY_FILE
+    return getConfigPath() + '/' + config.get('Settings', 'priv_key', fallback=KEY_FILE)
 
+def getEndpointUser():
+    return config.get('Settings', 'endpoint_user', fallback=None)
+
+def getEndpointPass():
+    return config.get('Settings', 'endpoint_pass', fallback=None)
 
 def getLogLevel():
     logLevel = config.get('Settings', 'loglevel', fallback='INFO')
