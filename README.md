@@ -19,17 +19,6 @@ Included projects are (Credits goes to them for the hard work):
     - NRF5x firmware customization for battery optimization 
 
 
-## Changes to the original projects
-
-### Openhaystack
-
-Stripped down to the mobile application (Android) and ESP32 firmware. ESP32 firmware combined with FindYou project and optimizations in power usage. 
- 
-
-### Biemster's FindMy
-
-Customization in keypair generator to output an array for the ESP32 firmware and a json for import in the Android application. 
-
 
 ## Instructions
 
@@ -83,10 +72,24 @@ docker restart macless-haystack
 You can either use the frontend provided by GitHub, host the webserver for yourself or use the Android application 
 
 - *Optional*: Mobile: Install application
-- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](endpoint/README.md#notes-on-usage-on-other-machines-ssl))
+- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](FAQ.md#how-can-i-use-ssl-if-the-endpoint-runs-on-another-machine-than-the-ui))
 - Import PREFIX_devices.json to your application
 - If you run the frontend not on the same machine as your endpoint, you have to configure your Url in the settings
 
+### Problems/ Issues/ Questions
+
+Please have a look at the [FAQ](FAQ.md) first. If this doesn't help you, create a new issue.
+
+## Changes to the original projects
+
+### Openhaystack
+
+Stripped down to the mobile application (Android) and ESP32 firmware. ESP32 firmware combined with FindYou project and optimizations in power usage. 
+ 
+
+### Biemster's FindMy
+
+Customization in keypair generator to output an array for the ESP32 firmware and a json for import in the Android application. 
 
 ## Screenshots
 

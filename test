@@ -1,7 +1,0 @@
-          TAG="v2.0.0"
-          if git rev-parse -q --verify "refs/tags/${TAG}" > /dev/null; then
-            echo "Tag ${TAG} already exists"
-            exit 1
-          else
-            echo "Tag ${TAG} does not exist"
-          fi   
