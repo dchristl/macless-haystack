@@ -21,7 +21,27 @@ logger = logging.getLogger()
 
 
 class ServerHandler(BaseHTTPRequestHandler):
+    
+    def authenticate(self):
+        auth_header = self.headers.get('Authorization')
+
+        if auth_header:
+            auth_type, auth_encoded = auth_header.split(None, 1)
+            if auth_type.lower() == 'basic':
+                auth_decoded = base64.b64decode(auth_encoded).decode('utf-8')
+                username, password = auth_decoded.split(':', 1)
+
+                if username == 'your_username' and password == 'your_password':
+                    return True
+
+        return False
+    
     def do_OPTIONS(self):
+        if not self.authenticate():
+            self.send_response(401)
+            self.send_header('WWW-Authenticate', 'Basic realm="Auth Realm"')
+            self.end_headers()
+            return
         self.send_response(200, "ok")
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
@@ -30,12 +50,22 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        if not self.authenticate():
+            self.send_response(401)
+            self.send_header('WWW-Authenticate', 'Basic realm="Auth Realm"')
+            self.end_headers()
+            return
         self.send_response(200)
         self.send_header('Content-type', 'text/plain')
         self.end_headers()
         self.wfile.write(b"Nothing to see here")
 
     def do_POST(self):
+        if not self.authenticate():
+            self.send_response(401)
+            self.send_header('WWW-Authenticate', 'Basic realm="Auth Realm"')
+            self.end_headers()
+            return
         if hasattr(self.headers, 'getheader'):
             content_len = int(self.headers.getheader('content-length', 0))
         else:
