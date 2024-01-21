@@ -12,6 +12,18 @@ Check out the *Source*-key. The folder is typically protected and can only be ac
 
 In the folder you'll find the configuration (config.ini), the authentication (auth.json), if it has already been executed. Additionally, the self-signed certificate used for SSL is also located here.
 
+#### How can I see the logs?
+
+You can check out the logs with:
+```
+docker logs -f macless-haystack
+```
+or restart docker in interactive mode:
+```
+docker stop macless-haystack
+docker start -ai macless-haystack
+```
+
 #### What is the config.ini used for?
 
 This is where specific settings can be configured, for example, if another/existing Anisette server is to be used or if you want to provide a username and password. Normally, no adjustments should be necessary here.
@@ -33,7 +45,6 @@ docker run -d --restart unless-stopped --name macless-haystack -p 6176:6176 --vo
 A new registration is usually not necessary, as the data is retained.
 
 #### Restart the registration/change account
-
 
 If, for example, your activation was successful, and you still don't have access or simply want to switch your account, you can repeat the registration by deleting the auth.json and restarting the container:
 
@@ -68,7 +79,7 @@ docker exec -it  macless-haystack /bin/bash -c "export TERM=xterm; exec bash"
 ```
 #### How can I use SSL if the endpoint runs on another machine than the UI?
 
-If you want to use Macless Haystack not on the same machine your browser is running or you want to use SSL, some extra steps are needed. You need a valid certificate, called certificate.pem in the server's folder (i.e. created with [Let's Encrypt](https://letsencrypt.org/) ) or you can rename the file rename_me.pem as root to certificate.pem and use my self signed one. After that restart the container: 
+If you want to use Macless Haystack not on the same machine your browser is running or you want to use SSL, some extra steps are needed. You need a valid certificate, called certificate.pem in the server's folder or you can rename the file rename_me.pem as root to certificate.pem and use my self signed one. After that restart the container: 
 ```
 sudo su
 cd /var/lib/docker/volumes/mh_data/_data
@@ -79,3 +90,12 @@ If you used a self signed certificate go to your client where you want to run Ma
 ![Certificate error](firefox_cert.png)
 
 Go to 'Advanced' and 'Accept the Risk and continue'. You should see a directory listing now. Use Macless Haystack now normally, but change the endpoint server setting, according to your needs. Use now https instead!
+
+#### How can I use my own certificate with private and public key (i.e. [Let's Encrypt](https://letsencrypt.org/) ) 
+
+The certificate is created according to the current instructions from Let's Encrypt and then symbolically linked in the container. If there is a file alongside certificate.pem (public key) called privkey.pem (private key), they will be used. The two files will be linked like that (Check out the folder and file-names)
+
+```
+sudo ln -s <path_to_private_key> /var/lib/docker/volumes/mh_data/_data/privkey.pem 
+sudo ln -s <path_to_public_key> /var/lib/docker/volumes/mh_data/_data/certificate.pem
+```
