@@ -37,11 +37,12 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 ### Prerequisites
 
 - [Docker](https://www.docker.com/) installed
-- [Python 3](https://www.python.org/) installed
+- [Python 3](https://www.python.org/) and pip installed
 - Apple-ID with second factor (mobile/sms) enabled
 
 ### Set up device
 
+- Install the cryptography module as a prerequisite for the key generation: `pip install cryptography`
 - Run `generate_keys.py` to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
 - [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and (see note)
 - [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) (see note)
