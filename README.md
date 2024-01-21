@@ -19,17 +19,6 @@ Included projects are (Credits goes to them for the hard work):
     - NRF5x firmware customization for battery optimization 
 
 
-## Changes to the original projects
-
-### Openhaystack
-
-Stripped down to the mobile application (Android) and ESP32 firmware. ESP32 firmware combined with FindYou project and optimizations in power usage. 
- 
-
-### Biemster's FindMy
-
-Customization in keypair generator to output an array for the ESP32 firmware and a json for import in the Android application. 
-
 
 ## Instructions
 
@@ -37,11 +26,12 @@ Customization in keypair generator to output an array for the ESP32 firmware and
 ### Prerequisites
 
 - [Docker](https://www.docker.com/) installed
-- [Python 3](https://www.python.org/) installed
+- [Python 3](https://www.python.org/) and pip installed
 - Apple-ID with second factor (mobile/sms) enabled
 
 ### Set up device
 
+- Install the cryptography module as a prerequisite for the key generation: `pip install cryptography`
 - Run `generate_keys.py` to generate your key (e.g. `./generate_keys.py -p PREFIX`). All files will be in output-folder (All keys as information, PREFIX_keyfile for ESP32 and PREFIX_devices.json for import in application)
 - [Install ESP32-firmware with your key](firmware/ESP32/README.md) or/and (see note)
 - [Install NRF5x-firmware with your key](firmware/nrf5x/README.md) (see note)
@@ -66,7 +56,7 @@ docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3
 - Start and set up your Macless Haystack endpoint in interactive mode:
 
 ```
-docker run -i --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
+docker run -it --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
 ```
 
 - You will be asked for your Apple-ID, password and your 2FA. If you see `serving at port 6176 over HTTP` you have all set up
@@ -83,10 +73,24 @@ docker restart macless-haystack
 You can either use the frontend provided by GitHub, host the webserver for yourself or use the Android application 
 
 - *Optional*: Mobile: Install application
-- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](endpoint/README.md#notes-on-usage-on-other-machines-ssl))
+- *Optional*: Host: Browse to [Github Page](https://dchristl.github.io/macless-haystack/) (s. [Notes on SSL usage](FAQ.md#how-can-i-use-ssl-if-the-endpoint-runs-on-another-machine-than-the-ui))
 - Import PREFIX_devices.json to your application
 - If you run the frontend not on the same machine as your endpoint, you have to configure your Url in the settings
 
+### Problems/ Issues/ Questions
+
+Please have a look at the [FAQ](FAQ.md) first. If this doesn't help you, create a new issue.
+
+## Changes to the original projects
+
+### Openhaystack
+
+Stripped down to the mobile application (Android) and ESP32 firmware. ESP32 firmware combined with FindYou project and optimizations in power usage. 
+ 
+
+### Biemster's FindMy
+
+Customization in keypair generator to output an array for the ESP32 firmware and a json for import in the Android application. 
 
 ## Screenshots
 
