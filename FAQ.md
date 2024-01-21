@@ -28,6 +28,26 @@ docker start -ai macless-haystack
 
 This is where specific settings can be configured, for example, if another/existing Anisette server is to be used or if you want to provide a username and password. Normally, no adjustments should be necessary here.
 
+#### Error during registration
+
+During the registration, an error occurs, for example:
+
+```
+It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it.
+```
+
+This can happen with new accounts that have not provided any data and/or devices. A solution might be to add a payment method (i.e. credit card) and/or some more data to the account at [Apple](https://appleid.apple.com/). 
+
+There are indications that accounts newly registered through [Apple Music](https://play.google.com/store/apps/details?id=com.apple.android.music) do not have this issue.
+
+Unfortunately, there is no general solution as Apple changes the mechanism. After the data has been added, the registration can be restarted:
+
+```
+docker stop macless-haystack
+docker start -ai macless-haystack
+```
+
+
 #### How do I update the Docker container
 
 An update of the container should generally not be necessary, as it automatically updates when restarted. This can be achieved by using 
