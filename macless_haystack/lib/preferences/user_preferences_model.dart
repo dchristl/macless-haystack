@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const introductionShownKey = 'INTRODUCTION_SHOWN';
 const locationPreferenceKnownKey = 'LOCATION_PREFERENCE_KNOWN';
 const locationAccessWantedKey = 'LOCATION_PREFERENCE_WANTED';
-const haystackurl = 'HAYSTACK_URL';
+const endpointUrl = 'HAYSTACK_URL';
 const String endpointUser = 'HAYSTACK_USER';
 const String endpointPass = 'HAYSTACK_PASS';
 const String numberOfDaysToFetch = 'NUMBER_OF_DAYS';

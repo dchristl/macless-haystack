@@ -75,7 +75,7 @@ class AccessoryRegistry extends ChangeNotifier {
 
     // request location updates for all accessories simultaneously
     List<Accessory> currentAccessories = accessories;
-    String? url = Settings.getValue<String>(haystackurl);
+    String? url = Settings.getValue<String>(endpointUrl);
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
 

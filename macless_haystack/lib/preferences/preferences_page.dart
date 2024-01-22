@@ -74,7 +74,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
   getUrlTile() {
     return TextInputSettingsTile(
       initialValue: 'http://localhost:6176',
-      settingKey: haystackurl,
+      settingKey: endpointUrl,
       title: 'Url to macless haystack endpoint',
       validator: (String? url) {
         if (url != null &&
