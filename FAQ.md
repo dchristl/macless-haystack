@@ -47,6 +47,11 @@ docker stop macless-haystack
 docker start -ai macless-haystack
 ```
 
+#### How can I secure the endpoint?
+
+The endpoint can and should be secured, especially if it is exposed to the internet. This authentication can be configured in the config.ini file (using the keys `endpoint_user` and `endpoint_pass`). After restarting the container, the log output should indicate a successful authentication.
+
+The data must, of course, also be entered into the configuration of the frontend.
 
 #### How do I update the Docker container
 

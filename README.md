@@ -18,10 +18,7 @@ Included projects are (Credits goes to them for the hard work):
 - [acalatrava's OpenHaystack-Fimware alternative](https://github.com/acalatrava/openhaystack-firmware)
     - NRF5x firmware customization for battery optimization 
 
-
-
 ## Instructions
-
 
 ### Prerequisites
 
