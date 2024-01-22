@@ -21,32 +21,31 @@ logger = logging.getLogger()
 
 
 class ServerHandler(BaseHTTPRequestHandler):
-    
-    def authenticate(self):
-        auth_header = self.headers.get('Authorization')
 
+    def authenticate(self):
+        user = config.getEndpointUser()
+        passw = config.getEndpointPass()
+        if (user is None or user == "") and (passw is None or passw == ""):
+            return True
+
+        auth_header = self.headers.get('authorization')
         if auth_header:
             auth_type, auth_encoded = auth_header.split(None, 1)
             if auth_type.lower() == 'basic':
                 auth_decoded = base64.b64decode(auth_encoded).decode('utf-8')
                 username, password = auth_decoded.split(':', 1)
-
-                if username == 'your_username' and password == 'your_password':
+                if username == user and password == passw:
                     return True
 
         return False
-    
+
     def do_OPTIONS(self):
-        if not self.authenticate():
-            self.send_response(401)
-            self.send_header('WWW-Authenticate', 'Basic realm="Auth Realm"')
-            self.end_headers()
-            return
         self.send_response(200, "ok")
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Authorization")
         self.end_headers()
 
     def do_GET(self):
@@ -122,7 +121,7 @@ class ServerHandler(BaseHTTPRequestHandler):
                          ", is your anisette running and accepting Connections?")
             self.send_response(504)
         except Exception as e:
-            logger.error("Unknown error occured {e}", exc_info=True)    
+            logger.error("Unknown error occured {e}", exc_info=True)
             self.send_response(501)
 
     def getCurrentTimes(self):
@@ -169,7 +168,12 @@ if __name__ == "__main__":
         logger.info("Certificate file " + config.getCertFile() +
                     " not found, so not using SSL")
         logger.info("serving at port " + str(config.getPort()) + " over HTTP")
-
+    user = config.getEndpointUser()
+    passw = config.getEndpointPass()
+    if (user is None or user == "") and (passw is None or passw == ""):
+        logger.warning("Endpoint is not protected by authentication")
+    else:
+        logger.info("Endpoint is protected by authentication")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
