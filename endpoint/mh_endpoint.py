@@ -21,6 +21,13 @@ logger = logging.getLogger()
 
 
 class ServerHandler(BaseHTTPRequestHandler):
+    
+    def addCORSHeaders(self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Authorization")
 
     def authenticate(self):
         user = config.getEndpointUser()
@@ -41,20 +48,18 @@ class ServerHandler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200, "ok")
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.send_header("Access-Control-Allow-Headers", "Authorization")
+        self.addCORSHeaders()
         self.end_headers()
 
     def do_GET(self):
         if not self.authenticate():
             self.send_response(401)
+            self.addCORSHeaders()
             self.send_header('WWW-Authenticate', 'Basic realm="Auth Realm"')
             self.end_headers()
             return
         self.send_response(200)
+        self.addCORSHeaders()
         self.send_header('Content-type', 'text/plain')
         self.end_headers()
         self.wfile.write(b"Nothing to see here")
@@ -62,6 +67,7 @@ class ServerHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.authenticate():
             self.send_response(401)
+            self.addCORSHeaders()
             self.send_header('WWW-Authenticate', 'Basic realm="Auth Realm"')
             self.end_headers()
             return
@@ -111,6 +117,7 @@ class ServerHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             # send response headers
             self.send_header('Access-Control-Allow-Origin', '*')
+            self.addCORSHeaders()
             self.end_headers()
 
             # send the body of the response
