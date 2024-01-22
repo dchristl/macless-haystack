@@ -15,20 +15,36 @@ class ReportsFetcher {
   );
 
   static Future<List> fetchLocationReports(
-      Iterable<String> hashedAdvertisementKeys, int daysToFetch,
-      [String? url]) async {
+      Iterable<String> hashedAdvertisementKeys,
+      int daysToFetch,
+      String url,
+      String user,
+      String pass) async {
     var keys = hashedAdvertisementKeys.toList(growable: false);
     logger.i('Using ${keys.length} key(s) to ask webservice');
+
+    String? credentials;
+    if (user.trim().isNotEmpty || pass.trim().isNotEmpty) {
+      credentials = 'Basic ${base64.encode(utf8.encode("$user:$pass"))}';
+    }
+
     if (kIsWeb) {
-      final response = await http.post(Uri.parse(url as String),
-          headers: <String, String>{
-            "Content-Type": "application/json",
-          },
+      Map<String, String> requestHeaders = {
+        "Content-Type": "application/json",
+      };
+      if (credentials != null) {
+        requestHeaders['Authorization'] = credentials;
+      }
+
+      final response = await http.post(Uri.parse(url),
+          headers: requestHeaders,
           body: jsonEncode(<String, dynamic>{
             "ids": keys,
             "days": daysToFetch,
           }));
-
+      if (response.statusCode == 401) {
+        throw Exception("Authentication failure. User/password wrong");
+      }
       if (response.statusCode == 200) {
         var out = await jsonDecode(response.body)["results"];
         logger.i('Found ${out.length} reports');
@@ -43,17 +59,23 @@ class ReportsFetcher {
       httpClient.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
 
-      final request = await httpClient.postUrl(Uri.parse(url as String));
+      final request = await httpClient.postUrl(Uri.parse(url));
       var body = jsonEncode(<String, dynamic>{
         "ids": keys,
         "days": daysToFetch,
       });
       request.headers.set(HttpHeaders.contentTypeHeader, "application/json");
+      if (credentials != null) {
+        request.headers.set(HttpHeaders.authorizationHeader, credentials);
+      }
+
       request.headers
           .set(HttpHeaders.contentLengthHeader, utf8.encode(body).length);
       request.write(body);
       final response = await request.close();
-
+      if (response.statusCode == 401) {
+        throw Exception("Authentication failure. User/password wrong");
+      }
       if (response.statusCode == 200) {
         String body = await response.transform(utf8.decoder).join();
         var out = await jsonDecode(body)["results"];

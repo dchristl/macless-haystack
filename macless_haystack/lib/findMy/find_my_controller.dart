@@ -44,6 +44,8 @@ class FindMyController {
     map['url'] = url;
     map['daysToFetch'] =
         Settings.getValue<int>(numberOfDaysToFetch, defaultValue: 7)!;
+    map['user'] = Settings.getValue<String>(endpointUser, defaultValue: '')!;
+    map['pass'] = Settings.getValue<String>(endpointPass, defaultValue: '')!;
     return compute(_getListedReportResults, map);
   }
 
@@ -61,7 +63,7 @@ class FindMyController {
     };
 
     List jsonResults = await ReportsFetcher.fetchLocationReports(
-        hashedKeyKeyPairsMap.keys, daysToFetch, url);
+        hashedKeyKeyPairsMap.keys, daysToFetch, url, map['user'], map['pass']);
     FindMyLocationReport? latest;
     DateTime latestDate = DateTime.fromMicrosecondsSinceEpoch(0);
     for (var result in jsonResults) {

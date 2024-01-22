@@ -26,6 +26,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
           children: <Widget>[
             getLocationTile(),
             getUrlTile(),
+            getUserTile(),
+            getPassTile(),
             getNumberofDaysTile(),
             ListTile(
               title: getAbout(),
@@ -83,6 +85,23 @@ class _PreferencesPageState extends State<PreferencesPage> {
       },
     );
   }
+  getUserTile() {
+    return TextInputSettingsTile(
+      initialValue: '',
+      settingKey: endpointUser,
+      title: 'Username for endpoint',
+    );
+  }
+
+  getPassTile() {
+    return TextInputSettingsTile(
+      obscureText: true,
+      initialValue: '',
+      settingKey: endpointPass,
+      title: 'Password for endpoint',
+    );
+  }
+
 
   getAbout() {
     return TextButton(
