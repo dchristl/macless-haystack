@@ -116,7 +116,6 @@ class ServerHandler(BaseHTTPRequestHandler):
             result["results"] = list(sorted_map.values())
             self.send_response(200)
             # send response headers
-            self.send_header('Access-Control-Allow-Origin', '*')
             self.addCORSHeaders()
             self.end_headers()
 
