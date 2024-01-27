@@ -7,11 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '90 seconds'
-          skip-recent: 3
       - name: Prepare and checkout
         uses: actions/checkout@v3
       - name: Set environment variables
@@ -27,11 +22,14 @@ jobs:
           else
             echo "Tag ${TAG} does not exist"
           fi    
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '90 seconds'
+          skip-recent: 3
       - name: Initialize Submodules
         run: |
           git submodule update --init --recursive
-  
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       

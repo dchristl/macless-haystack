@@ -36,7 +36,7 @@ During the registration, an error occurs, for example:
 It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it.
 ```
 
-This can happen with new accounts that have not provided any data and/or devices. A solution might be to add a payment method (i.e. credit card) and/or some more data to the account at [Apple](https://appleid.apple.com/). 
+This can happen with new accounts that have not provided any data and/or devices. A solution might be to add a payment method (i.e. credit card), register your account with a real Apple device and/or add some more data to the account at [Apple](https://appleid.apple.com/). 
 
 There are indications that accounts newly registered through [Apple Music](https://play.google.com/store/apps/details?id=com.apple.android.music) do not have this issue.
 
@@ -52,6 +52,13 @@ docker start -ai macless-haystack
 The endpoint can and should be secured, especially if it is exposed to the internet. This authentication can be configured in the config.ini file (using the keys `endpoint_user` and `endpoint_pass`). After restarting the container, the log output should indicate a successful authentication.
 
 The data must, of course, also be entered into the configuration of the frontend.
+
+#### How can I host my own web-frontend?
+
+You shouldn't do that because there's no reason for it. It's better to use the web frontend on [Github](https://dchristl.github.io/macless-haystack/). 
+The frontend is always up to date and runs stable. Security concerns regarding data are also not an issue here because GitHub only delivers the empty page. All data such as location, keys, request frequency, etc., are not transmitted to GitHub. All communication then occurs only between your system (browser) and the endpoint. Theoretically, after the page has been loaded, GitHub could be blocked in the firewall, and the application would still work.
+
+The frontend is still offered for download in the releases (webapplication.zip) and can be self-hosted.
 
 #### How do I update the Docker container
 
