@@ -86,7 +86,7 @@ sudo rm /var/lib/docker/volumes/mh_data/_data/auth.json #adjust folder, if neede
 docker start macless-haystack
 ```
 
-#### How can I reset everything and start over7 How can i completely uninstall Macless Haystack
+#### How can I reset everything and start over? How can i completely uninstall Macless Haystack?
 
 
 You can start completely from scratch by deleting the container and the data. After that, you can begin the guide from the beginning:
