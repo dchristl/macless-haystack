@@ -1,5 +1,4 @@
-
-## Frequently asked questions
+# Frequently asked questions
 
 #### Where and what data is stored on the host?
 
