@@ -46,8 +46,7 @@ In this section, you will find a step-by-step guide on how to set up your own Ma
 
 3. Unzip the firmware and flash it to your device (see [Install ESP32-firmware with your key](firmware/ESP32/README.md) or [Install NRF5x-firmware with your key](firmware/nrf5x/README.md))
 
-> [!NOTE]
->
+> [!TIP]
 > In general, any OpenHaystack-compatible device or its firmware is also compatible with Macless-Haystack (i.e. [the ST17H66](https://github.com/biemster/FindMy/tree/main/Lenze_ST17H66)). Typically, only the Base64-encoded advertisement key is required, which can be found in the .keys file after key generation.
 
 ---
@@ -157,6 +156,3 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 This repository is for research purposes only, the use of this code is your responsibility.
 
 I take NO responsibility and/or liability for how you choose to use any of the source code available here. By using any of the files available in this repository, you understand that you are AGREEING TO USE AT YOUR OWN RISK. Once again, ALL files available here are for EDUCATION and/or RESEARCH purposes ONLY.
-
-> [!TIP]
-> Optional information to help a user be more successful. TEST
