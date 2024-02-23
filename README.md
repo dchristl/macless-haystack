@@ -7,10 +7,7 @@
 
 This project tries to unify several projects for an easy-to-use and easy-to-setup custom FindMy network. The goal is to run a FindMy network without the need to own a real Mac or virtual Mac. Also you don't have to install the mail plugin or openhaystack itself. (As needed by the original OpenHaystack project).
 
-<p float="center">
-  <img src="images/dashboard_web.png" width="630" />
-  <img src="images/dashboard_mobile.png" width="300" />
-</p>
+<img src="images/dashboard_web.png" width="500" />
 
 ## Table of Contents
 
