@@ -4,6 +4,9 @@ This project contains an battery-optimized firmware for the Nordic NRF5x chips f
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 This firmware consumes more power when more than 1 key is used. The controller wakes up every 30 minutes and switches the key.
 
+> [!NOTE]
+> In general, any OpenHaystack-compatible device or its firmware is also compatible with Macless-Haystack (i.e. [the ST17H66](https://github.com/biemster/FindMy/tree/main/Lenze_ST17H66)). Typically, only the Base64-encoded advertisement key is required, which can be found in the .keys file after key generation.
+
 > [!WARNING]  
 > Currently, only the NRF51 build has been tested, and the NRF52 build has not been tested yet, but it should work. Feedback on this is welcome. It has been tested with [this](https://www.aliexpress.com/item/1005003671695188.html?spm=a2g0o.order_list.order_list_main.55.72491802ZTaXKp) or [this](https://de.aliexpress.com/item/32860266105.html?spm=a2g0o.order_list.order_list_main.50.72491802ZTaXKp&gatewayAdapt=glo2deu) beacon from Aliexpress.
 
@@ -13,35 +16,37 @@ This firmware consumes more power when more than 1 key is used. The controller w
 - Copy your previously generated PREFIX_keyfile in the same folder 
 - Patch the firmware with your keyfile (Change the path if necessary!)
 
-```
+```bash
 # For the nrf51
 export LC_CTYPE=C
 xxd -p -c 100000 PREFIX_keyfile | xxd -r -p | dd of=nrf51_firmware.bin skip=1 bs=1 seek=$(grep -oba OFFLINEFINDINGPUBLICKEYHERE! nrf51_firmware.bin | cut -d ':' -f 1) conv=notrunc
 ```
-or 
-```
+
+or
+
+```bash
 # For the nrf52
 export LC_CTYPE=C
 xxd -p -c 100000 PREFIX_keyfile | xxd -r -p | dd of=nrf52_firmware.bin skip=1 bs=1 seek=$(grep -oba OFFLINEFINDINGPUBLICKEYHERE! nrf52_firmware.bin | cut -d ':' -f 1) conv=notrunc
 ```
 
 The output should be something like this, depending on the count of your keys (in this example 3 keys => 3*28=84 Bytes):
-```
+
+```bash
 84+0 records in
 84+0 records out
 84 bytes copied, 0.00024581 s, 346 kB/s
 ```
 
 - Patch the changed firmware file your firmware, i.e with openocd:
-```
+
+```bash
 openocd -f openocd.cfg -c "init; halt; nrf51 mass_erase; program nrf51_firmware.bin; reset; exit"
 ```
 (Hint: If needed, the file openocd.cfg is in the root of this folder)
 
-
 > [!NOTE]  
 > You might need to reset your device after running the script before it starts sending advertisements.
-
 
 ### Misc
 
