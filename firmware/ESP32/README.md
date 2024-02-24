@@ -4,9 +4,6 @@ This project contains a battery-optimzed PoC firmware for Espressif ESP32 chips 
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 This firmware consumes slightly more power when more than 1 key is used. The controller wakes up every 30 minutes and switches the key.
 
-> [!NOTE]
-> In general, any OpenHaystack-compatible device or its firmware is also compatible with Macless-Haystack (i.e. [the ST17H66](https://github.com/biemster/FindMy/tree/main/Lenze_ST17H66)). Typically, only the Base64-encoded advertisement key is required, which can be found in the .keys file after key generation.
-
 ### Requirements
 
 - [Esptool](https://docs.espressif.com/projects/esptool/en/latest/esp32/installation.html) installed *or*
