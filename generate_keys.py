@@ -116,6 +116,7 @@ keys = open(OUTPUT_FOLDER + fname, 'w')
 
 isV3 = sys.version_info.major > 2
 print('Using python3' if isV3 else 'Using python2')
+print(f'Output will be written to {OUTPUT_FOLDER}')
 additionalKeys = []
 i = 0
 while i < args.nkeys:
