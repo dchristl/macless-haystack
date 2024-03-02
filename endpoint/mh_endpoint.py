@@ -160,6 +160,7 @@ if __name__ == "__main__":
 
     Handler = ServerHandler
     httpd = HTTPServer(('0.0.0.0', config.getPort()), Handler)
+    httpd.timeout = 30
     if os.path.isfile(config.getCertFile()):
         logger.info("Certificate file " + config.getCertFile() +
                     " exists, so using SSL")
