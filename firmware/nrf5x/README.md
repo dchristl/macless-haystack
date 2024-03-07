@@ -49,4 +49,4 @@ openocd -f openocd.cfg -c "init; halt; nrf51 mass_erase; program nrf51_firmware.
 
 If you want to compile the firmware for yourself or need further informations have a look at [project documentation](https://github.com/acalatrava/openhaystack-firmware/blob/main/apps/openhaystack-alternative/README.md)
 
-A detailed step-by-step for beginners can be found [here](https://github.com/acalatrava/openhaystack-firmware/blob/db9ae098db10aac38814de70bb9201765f957076/apps/openhaystack-alternative/iBeacon%20StepByStep.md)
+A detailed step-by-step for beginners can be found [here](https://github.com/acalatrava/openhaystack-firmware/blob/main/apps/openhaystack-alternative/iBeacon%20StepByStep.md)
