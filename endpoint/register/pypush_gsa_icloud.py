@@ -246,7 +246,7 @@ def trusted_second_factor(dsid, idms_token):
     headers["security-code"] = code
 
     # Send the 2FA code to Apple
-    resp = requests.get(
+    resp = requests.post(
         "https://gsa.apple.com/grandslam/GsService2/validate",
         headers=headers,
         verify=False,
