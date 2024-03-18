@@ -152,7 +152,6 @@ def getAuth(regenerate=False, second_factor='sms'):
 
 
 if __name__ == "__main__":
-
     logging.debug(f'Searching for token at ' + config.getConfigFile())
     if not os.path.exists(config.getConfigFile()):
         logging.info(f'No auth-token found.')

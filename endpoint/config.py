@@ -19,13 +19,25 @@ config.read(getConfigPath() + '/config.ini')
 
 
 def getAnisetteServer():
-    return config.get('Settings', 'anisette_url', fallback='http://anisette:6969')
+    value = config.get('Settings', 'anisette_url')
+    if not value:
+        return 'http://anisette:6969'
+    return value
+
 
 def getPort():
-    return int(config.get('Settings', 'port', fallback='6176'))
+    value = config.get('Settings', 'port')
+    if not value:
+        return '6176'
+    return int(value)
+
 
 def getBindingAddress():
-    return config.get('Settings', 'binding_address', fallback='0.0.0.0')
+    value = config.get('Settings', 'binding_address')
+    if not value:
+        return '0.0.0.0'
+    return value
+
 
 def getUser():
     return config.get('Settings', 'appleid', fallback=None)
@@ -46,11 +58,14 @@ def getCertFile():
 def getKeyFile():
     return getConfigPath() + '/' + config.get('Settings', 'priv_key', fallback=KEY_FILE)
 
+
 def getEndpointUser():
     return config.get('Settings', 'endpoint_user', fallback=None)
 
+
 def getEndpointPass():
     return config.get('Settings', 'endpoint_pass', fallback=None)
+
 
 def getLogLevel():
     logLevel = config.get('Settings', 'loglevel', fallback='INFO')
