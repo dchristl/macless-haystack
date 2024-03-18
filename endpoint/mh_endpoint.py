@@ -21,7 +21,7 @@ logger = logging.getLogger()
 
 
 class ServerHandler(BaseHTTPRequestHandler):
-    
+
     def addCORSHeaders(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
@@ -159,8 +159,10 @@ if __name__ == "__main__":
         apple_cryptography.registerDevice()
 
     Handler = ServerHandler
-    httpd = HTTPServer(('0.0.0.0', config.getPort()), Handler)
+
+    httpd = HTTPServer((config.getBindingAddress, config.getPort()), Handler)
     httpd.timeout = 30
+    address = config.getBindingAddress() + ":" + str(config.getPort())
     if os.path.isfile(config.getCertFile()):
         logger.info("Certificate file " + config.getCertFile() +
                     " exists, so using SSL")
@@ -170,11 +172,11 @@ if __name__ == "__main__":
 
         httpd.socket = ssl_context.wrap_socket(httpd.socket, server_side=True)
 
-        logger.info("serving at port " + str(config.getPort()) + " over HTTPS")
+        logger.info("serving at " + address + " over HTTPS")
     else:
         logger.info("Certificate file " + config.getCertFile() +
                     " not found, so not using SSL")
-        logger.info("serving at port " + str(config.getPort()) + " over HTTP")
+        logger.info("serving at " + address + " over HTTP")
     user = config.getEndpointUser()
     passw = config.getEndpointPass()
     if (user is None or user == "") and (passw is None or passw == ""):
