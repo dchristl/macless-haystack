@@ -127,7 +127,7 @@ class ServerHandler(BaseHTTPRequestHandler):
                          ", is your anisette running and accepting Connections?")
             self.send_response(504)
         except Exception as e:
-            logger.error("Unknown error occured {e}", exc_info=True)
+            logger.error(f"Unknown error occured {e}", exc_info=True)
             self.send_response(501)
 
     def getCurrentTimes(self):
