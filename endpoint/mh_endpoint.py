@@ -127,7 +127,7 @@ class ServerHandler(BaseHTTPRequestHandler):
                          ", is your anisette running and accepting Connections?")
             self.send_response(504)
         except Exception as e:
-            logger.error("Unknown error occured {e}", exc_info=True)
+            logger.error(f"Unknown error occured {e}", exc_info=True)
             self.send_response(501)
 
     def getCurrentTimes(self):
@@ -160,6 +160,7 @@ if __name__ == "__main__":
 
     Handler = ServerHandler
     httpd = HTTPServer(('0.0.0.0', config.getPort()), Handler)
+    httpd.timeout = 30
     if os.path.isfile(config.getCertFile()):
         logger.info("Certificate file " + config.getCertFile() +
                     " exists, so using SSL")
