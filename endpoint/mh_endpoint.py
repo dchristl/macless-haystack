@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     Handler = ServerHandler
 
-    httpd = HTTPServer((config.getBindingAddress, config.getPort()), Handler)
+    httpd = HTTPServer((config.getBindingAddress(), config.getPort()), Handler)
     httpd.timeout = 30
     address = config.getBindingAddress() + ":" + str(config.getPort())
     if os.path.isfile(config.getCertFile()):

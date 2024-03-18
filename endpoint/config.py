@@ -25,7 +25,7 @@ def getPort():
     return int(config.get('Settings', 'port', fallback='6176'))
 
 def getBindingAddress():
-    return int(config.get('Settings', 'binding_address', fallback='0.0.0.0'))
+    return config.get('Settings', 'binding_address', fallback='0.0.0.0')
 
 def getUser():
     return config.get('Settings', 'appleid', fallback=None)
