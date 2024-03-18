@@ -223,7 +223,7 @@ void app_main(void)
         if (cycle >= REUSE_CYCLES)
         {
             ESP_LOGI(LOG_TAG, "Max cycles %d are reached. Changing key ", cycle);
-            key_index = (key_index + 1) % (key_count + 1); // Back to zero if out of range
+            key_index = (key_index + 1) % key_count; // Back to zero if out of range
             cycle = 0;
         }
         else

@@ -14,7 +14,7 @@ This firmware consumes slightly more power when more than 1 key is used. The con
 - Download and unpack the firmware
 - Copy your previously generated PREFIX_keyfile in the same folder 
 
-```
+```bash
 esptool.py write_flash 0x1000  bootloader.bin \
                 0x8000  partitions.bin \
                 0x10000 firmware.bin \
@@ -22,10 +22,10 @@ esptool.py write_flash 0x1000  bootloader.bin \
 ```
 
 If any problem occurs, erase flash manually before flashing:
-```
+
+```bash
 esptool.py erase_flash
 ```
 
-
-> **Note:** You might need to reset your device after running the script before it starts sending advertisements.
-
+> [!NOTE]  
+> You might need to reset your device after running the script before it starts sending advertisements.
