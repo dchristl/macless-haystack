@@ -1,58 +1,32 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include "ble_stack.h"
 #include "openhaystack.h"
-#include "nrf.h"
-#include "nrf_delay.h"
-#include "nrf_soc.h"
-#include <time.h>
-#include "nrf_drv_rtc.h"
-#include "nrf_drv_clock.h"
-#include "nrf_gpio.h"
-/**
- * advertising interval in milliseconds
- */
-#define ADVERTISING_INTERVAL 5000
-#define LEDS_COUNT 10
+#include "app_timer.h"
 
-#define KEY_CHANGE_INTERVAL_MINUTES 30
 
-#define MAX_KEYS 50
+#define ADVERTISING_INTERVAL 5000  // advertising interval in milliseconds
+#define KEY_CHANGE_INTERVAL_MINUTES 30  // how often to rotate to new key in minutes
+#define MAX_KEYS 20  // maximum number of keys to rotate through
+#define KEY_CHANGE_INTERVAL_MS (KEY_CHANGE_INTERVAL_MINUTES * 60 * 1000)
 
-uint32_t LEDS_TO_FLASH_ON_START[LEDS_COUNT] = {10, 29};
-
-const nrf_drv_rtc_t rtc1 = NRF_DRV_RTC_INSTANCE(1);
+#define APP_TIMER_PRESCALER 0
+#define APP_TIMER_MAX_TIMERS 1 
+#define TIMER_TICKS APP_TIMER_TICKS(KEY_CHANGE_INTERVAL_MS, APP_TIMER_PRESCALER)
+#define APP_TIMER_OP_QUEUE_SIZE 4 
 
 int last_filled_index = -1;
-int key_index = -1;
+int current_index = 0;
 
-static char public_key[MAX_KEYS][28] = {
+APP_TIMER_DEF(m_key_change_timer_id);
+
+// Create space for MAX_KEYS public keys
+static char public_key[MAX_KEYS][28] = { 
     "OFFLINEFINDINGPUBLICKEYHERE!",
 };
-
-void setRandomIndex()
-{
-    uint8_t random_buffer[sizeof(int)];
-    int random_integer;
-    sd_rand_application_vector_get(random_buffer, sizeof(int));
-    memcpy(&random_integer, random_buffer, sizeof(int));
-
-    key_index = abs(random_integer % (last_filled_index + 1));
-    printf("%d", key_index);
-}
-
-char *getCurrentKey()
-{
-    uint8_t random_buffer[sizeof(int)];
-    int random_integer;
-    sd_rand_application_vector_get(random_buffer, sizeof(int));
-    memcpy(&random_integer, random_buffer, sizeof(int));
-
-    int randomValue = abs(random_integer % (last_filled_index + 1));
-
-    return public_key[randomValue];
-}
 
 void setAndAdvertiseNextKey()
 {
@@ -60,12 +34,16 @@ void setAndAdvertiseNextKey()
     uint8_t *ble_address;
     uint8_t *raw_data;
     uint8_t data_len;
+
     // Disable advertising
     sd_ble_gap_adv_stop();
     sd_ble_gap_adv_data_set(NULL, 0, NULL, 0);
-    key_index = (key_index + 1) % (last_filled_index + 1); // Back to zero if out of range
+
+    // Update key index for next advertisement...Back to zero if out of range
+    current_index = (current_index + 1) % (last_filled_index + 1); 
+    
     // Set key to be advertised
-    data_len = setAdvertisementKey(public_key[key_index], &ble_address, &raw_data);
+    data_len = setAdvertisementKey(public_key[current_index], &ble_address, &raw_data);
 
     // Set bluetooth address
     setMacAddress(ble_address);
@@ -77,73 +55,31 @@ void setAndAdvertiseNextKey()
     startAdvertisement(ADVERTISING_INTERVAL);
 }
 
-static void rtc1_handler(nrf_drv_rtc_int_type_t int_type)
+void key_change_timeout_handler(void *p_context)
 {
-
-    if (int_type == NRF_DRV_RTC_INT_COMPARE0)
-    { // Interrupt from COMPARE0 event.
-        // nrf_gpio_pin_toggle(LED_GPIO);
-        setAndAdvertiseNextKey();                               // next key
-        nrf_drv_rtc_int_enable(&rtc1, RTC_CHANNEL_INT_MASK(0)); // re-enable
-        nrf_drv_rtc_counter_clear(&rtc1);                       // reset the counter
-    }
-    else if (int_type == NRF_DRV_RTC_INT_TICK)
-    { // Tick off
-      // This is an error
-    }
+    setAndAdvertiseNextKey();
 }
 
-/** @brief Function starting the HFCLK oscillator.
- */
-static void lfclk_config(void)
-{
-    ret_code_t err_code = nrf_drv_clock_init();
-    APP_ERROR_CHECK(err_code);
-
-    nrf_drv_clock_lfclk_request(NULL);
-}
-
-static void gpio_config(void)
-{
-    // Configure LED-pin as outputs and clear.
-
-    for (int i = 0; i < 2; i++)
-    {
-        uint32_t currentValue = LEDS_TO_FLASH_ON_START[i];
-        nrf_gpio_cfg_output(currentValue);
-        nrf_gpio_pin_clear(currentValue);
-        nrf_gpio_pin_toggle(currentValue);
-        nrf_delay_ms(200); // Flash the pin on startup
-        nrf_gpio_pin_clear(currentValue);
-    }
-}
-
-/** @brief Function initialization and configuration of timer driver instance.
- */
 static void timer_config(void)
 {
     uint32_t err_code;
 
-    // Initialize RTC instance
-    err_code = nrf_drv_rtc_init(&rtc1, NULL, rtc1_handler);
+    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, NULL);
+
+    // Create timer
+    err_code = app_timer_create(&m_key_change_timer_id, APP_TIMER_MODE_REPEATED, key_change_timeout_handler);
     APP_ERROR_CHECK(err_code);
 
-    // Disable tick event & interrupt
-    nrf_drv_rtc_tick_enable(&rtc1, false);
-
-    // Set compare channel 0 to trigger interrupt after RTC1_CC_VALUE*125ms
-    err_code = nrf_drv_rtc_cc_set(&rtc1, 0, KEY_CHANGE_INTERVAL_MINUTES * 60 * RTC1_CONFIG_FREQUENCY, true);
+    // Set timer interval 
+    err_code = app_timer_start(m_key_change_timer_id, TIMER_TICKS, NULL);
     APP_ERROR_CHECK(err_code);
-
-    // Power on RTC instance
-    nrf_drv_rtc_enable(&rtc1);
 }
 
 /**
  * main function
  */
-int main(void)
-{
+int main(void) {
+
     // Find the last filled index
     for (int i = MAX_KEYS - 1; i >= 0; i--)
     {
@@ -154,24 +90,19 @@ int main(void)
         }
     }
 
-    // Select a random index as start
-    setRandomIndex();
-
-    // Init BLE stack
+    // Init BLE stack and softdevice
     init_ble();
-    gpio_config();
-    if (last_filled_index > 0)
-    {
-        // Start timer
-        lfclk_config();
+    
+    // Only use the app_timer to rotate keys if we need to
+    if (last_filled_index > 0){
         timer_config();
     }
+    
+    if (last_filled_index >= 0) {
+        setAndAdvertiseNextKey();
+    }
 
-    setAndAdvertiseNextKey();
-
-    while (1)
-    {
+    while (1){
         power_manage();
     }
-    return 0;
 }
