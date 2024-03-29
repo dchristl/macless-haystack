@@ -28,6 +28,7 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("Access-Control-Allow-Headers", "Authorization")
+        self.send_header("Access-Control-Allow-Private-Network","true")
 
     def authenticate(self):
         user = config.getEndpointUser()
