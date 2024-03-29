@@ -26,9 +26,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Macless Haystack',
         theme: ThemeData(
-          brightness: Brightness.light,
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.blue
+          primarySwatch: Colors.blue
         ),
         darkTheme: ThemeData.dark(),
         home: const AppLayout(),

@@ -273,18 +273,15 @@ class _ItemFileImportState extends State<ItemFileImport> {
       appBar: AppBar(
         title: const Text('Select Accessories'),
         actions: [
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               if (accessories != null) {
                 _importSelectedAccessories();
                 Navigator.of(context, rootNavigator: true).pop();
               }
             },
-            child: Text(
-              'Import',
-              style: TextStyle(
-                color: accessories == null ? Colors.grey : Colors.white,
-              ),
+            child: const Text(
+              'Import'
             ),
           ),
         ],

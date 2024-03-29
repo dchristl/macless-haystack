@@ -95,8 +95,7 @@ class _AccessoryListState extends State<AccessoryList> {
                                     accessory.name);
                               }
                             },
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
+                            foregroundColor: Theme.of(context).primaryColor,
                             icon: Icons.directions,
                             label: 'Navigate',
                           ),
@@ -111,8 +110,7 @@ class _AccessoryListState extends State<AccessoryList> {
                                         )),
                               );
                             },
-                            backgroundColor: Colors.orange,
-                            foregroundColor: Colors.white,
+                            backgroundColor: Theme.of(context).primaryColor,
                             icon: Icons.history,
                             label: 'History',
                           ),
