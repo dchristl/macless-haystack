@@ -107,7 +107,7 @@ class LocationModel extends ChangeNotifier {
   /// Returns the address for a given geolocation (latitude & longitude).
   ///
   /// Only works on mobile platforms with their local APIs.
-  static Future<geocode.Placemark?> getAddress(LatLng? location) async {
+   Future<geocode.Placemark?> getAddress(LatLng? location) async {
     if (location == null) {
       return null;
     }

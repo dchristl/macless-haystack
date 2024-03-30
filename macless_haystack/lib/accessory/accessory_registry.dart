@@ -14,7 +14,7 @@ const accessoryStorageKey = 'ACCESSORIES';
 const historStorageKey = 'HISTORY';
 
 class AccessoryRegistry extends ChangeNotifier {
-  final _storage = const FlutterSecureStorage();
+  var _storage =  const FlutterSecureStorage();
   List<Accessory> _accessories = [];
   bool loading = false;
   bool initialLoadFinished = false;
@@ -54,6 +54,9 @@ class AccessoryRegistry extends ChangeNotifier {
     loading = false;
 
     notifyListeners();
+  }
+  set setStorage(FlutterSecureStorage s){
+    _storage = s;
   }
 
   Future<void> loadHistory() async {
