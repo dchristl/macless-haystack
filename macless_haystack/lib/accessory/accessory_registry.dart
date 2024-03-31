@@ -14,7 +14,7 @@ const accessoryStorageKey = 'ACCESSORIES';
 const historStorageKey = 'HISTORY';
 
 class AccessoryRegistry extends ChangeNotifier {
-  var _storage =  const FlutterSecureStorage();
+  var _storage = const FlutterSecureStorage();
   List<Accessory> _accessories = [];
   bool loading = false;
   bool initialLoadFinished = false;
@@ -55,7 +55,8 @@ class AccessoryRegistry extends ChangeNotifier {
 
     notifyListeners();
   }
-  set setStorage(FlutterSecureStorage s){
+
+  set setStorage(FlutterSecureStorage s) {
     _storage = s;
   }
 
@@ -224,10 +225,12 @@ class AccessoryRegistry extends ChangeNotifier {
     if (decryptedReports.isNotEmpty) {
       var lastReport = decryptedReports[decryptedReports.length - 1];
       var oldTs = accessory.datePublished;
-      accessory.lastLocation =
-          LatLng(lastReport.latitude!, lastReport.longitude!);
-      accessory.datePublished = lastReport.timestamp ?? lastReport.published;
-      if (oldTs == null || !oldTs.isAtSameMomentAs(accessory.datePublished!)) {
+      var latestReportTS = lastReport.timestamp ?? lastReport.published;
+      if (oldTs == null || oldTs.isBefore(latestReportTS!)) {
+        //only an actualization if oldTS is not set or is older than the latest of the new ones
+        accessory.lastLocation =
+            LatLng(lastReport.latitude!, lastReport.longitude!);
+        accessory.datePublished = latestReportTS;
         notifyListeners(); //redraw the UI, if the timestamp has changed
       }
     }
