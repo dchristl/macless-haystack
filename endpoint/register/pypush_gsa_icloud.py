@@ -264,7 +264,7 @@ def sms_second_factor(dsid, idms_token):
         timeout=5,
     )
     header_string = "Header der Antwort:\n"
-    for header, value in response.headers.items():
+    for header, value in resp.headers.items():
         header_string += f"{header}: {value}\n"
     response = f"HTTP-Code: {resp.status_code} with {header_string} bytes"
     logger.debug(response)
