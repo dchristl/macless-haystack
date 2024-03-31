@@ -263,13 +263,15 @@ def sms_second_factor(dsid, idms_token):
         verify=False,
         timeout=5,
     )
-    header_string = "Header der Antwort:\n"
+    response = f"HTTP-Code: {resp.status_code} with {len(resp.text)} bytes"
+    logger.debug(response)
+    header_string = "Headers:\n"
     for header, value in resp.headers.items():
         header_string += f"{header}: {value}\n"
-    response = f"HTTP-Code: {resp.status_code} with {header_string} bytes"
-    logger.debug(response)
-    # If the answer was too long, the output is the 
-    if resp.ok and len(resp.text) < 100:
+    logger.debug(header_string)
+    # Headers does not include Apple DSID, 2FA failed
+    if resp.ok and "X-Apple-DSID" in resp.headers:
         logger.info("2FA successful")
     else:
-        raise Exception("2FA unsuccessful. Maybe wrong code or wrong number. Check your account details.")
+        raise Exception(
+            "2FA unsuccessful. Maybe wrong code or wrong number. Check your account details.")
