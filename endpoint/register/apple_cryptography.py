@@ -41,13 +41,14 @@ def decode_tag(data):
     return {'lat': latitude, 'lon': longitude, 'conf': confidence, 'status': status}
 
 
-def getAuth(regenerate=False, second_factor='sms'):
+def getAuth(regenerate=False):
     if os.path.exists(config.getConfigFile()) and not regenerate:
         with open(config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
+        logger.info('Trying to login')
         mobileme = icloud_login_mobileme(
-            username=config.getUser(), password=config.getPass(), second_factor=second_factor)
+            username=config.getUser(), password=config.getPass())
 
         logger.debug('Answer from icloud login')
         logger.debug(mobileme)
@@ -73,4 +74,4 @@ def getAuth(regenerate=False, second_factor='sms'):
 def registerDevice():
 
     logger.info(f'Trying to register new device.')
-    getAuth(regenerate=True, second_factor='trusted_device' 'sms')
+    getAuth(regenerate=True)

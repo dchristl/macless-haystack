@@ -111,4 +111,56 @@ void main() {
     expect(locationHistory.elementAt(2).start, DateTime(2024, 1, 1, 12, 0, 0));
     expect(locationHistory.elementAt(2).end, DateTime(2024, 1, 1, 12, 0, 0));
   });
+
+  test('Add same location entries twice should not change latest anything',
+      () async {
+    List<FindMyLocationReport> reports = [];
+
+    // 8 o'clock 1st location
+    reports.add(FindMyLocationReport.withHash(
+        1,
+        2,
+        DateTime(2024, 1, 1, 8, 0, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+    //10 o'clock second location
+    reports.add(FindMyLocationReport.withHash(
+        2,
+        2,
+        DateTime(2024, 1, 1, 10, 0, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+    // 9 o'clock first location
+    reports.add(FindMyLocationReport.withHash(
+        1,
+        2,
+        DateTime(2024, 1, 1, 9, 0, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+    //12 o'clock 1st location
+    reports.add(FindMyLocationReport.withHash(
+        1,
+        2,
+        DateTime(2024, 1, 1, 12, 0, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+    await registry.fillLocationHistory(reports, accessory);
+    reports.shuffle();
+    await registry.fillLocationHistory(reports, accessory);
+    var locationHistory = accessory.locationHistory;
+    expect(3, locationHistory.length);
+
+    var latest = accessory.datePublished;
+    var lastLocation = accessory.lastLocation;
+    var endOfFirstEntry = accessory.latestHistoryEntry();
+
+    expect(endOfFirstEntry, DateTime(2024, 1, 1, 9, 0, 0));
+    expect(latest, DateTime(2024, 1, 1, 12, 0, 0));
+    expect(lastLocation, const LatLng(1, 2));
+
+    expect(locationHistory.elementAt(0).start, DateTime(2024, 1, 1, 8, 0, 0));
+    expect(locationHistory.elementAt(0).end, DateTime(2024, 1, 1, 9, 0, 0));
+
+    expect(locationHistory.elementAt(1).start, DateTime(2024, 1, 1, 10, 0, 0));
+    expect(locationHistory.elementAt(1).end, DateTime(2024, 1, 1, 10, 0, 0));
+
+    expect(locationHistory.elementAt(2).start, DateTime(2024, 1, 1, 12, 0, 0));
+    expect(locationHistory.elementAt(2).end, DateTime(2024, 1, 1, 12, 0, 0));
+  });
 }

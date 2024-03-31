@@ -32,12 +32,12 @@ urllib3.disable_warnings()
 logger = logging.getLogger()
 
 
-def icloud_login_mobileme(username='', password='', second_factor='sms'):
+def icloud_login_mobileme(username='', password=''):
     if not username:
         username = input('Apple ID: ')
     if not password:
         password = getpass('Password: ')
-    g = gsa_authenticate(username, password, second_factor)
+    g = gsa_authenticate(username, password)
     pet = g["t"]["com.apple.gs.idms.pet"]["token"]
     adsid = g["adsid"]
 
@@ -55,21 +55,24 @@ def icloud_login_mobileme(username='', password='', second_factor='sms'):
     }
     headers.update(generate_anisette_headers())
 
-    r = requests.post(
+    logger.info("Registering device after login")
+    resp = requests.post(
         "https://setup.icloud.com/setup/iosbuddy/loginDelegates",
         auth=(username, pet),
         data=data,
         headers=headers,
         verify=False,
     )
-    return plist.loads(r.content)
+    response = f"HTTP-Code: {resp.status_code}\n{resp.text}"
+    logger.debug(response)
+    return plist.loads(resp.content)
 
 
-def gsa_authenticate(username, password, second_factor='sms'):
+def gsa_authenticate(username, password):
     # Password is None as we'll provide it later
     usr = srp.User(username, bytes(), hash_alg=srp.SHA256, ng_type=srp.NG_2048)
     _, A = usr.start_authentication()
-
+    logger.info("Authentication request initialization")
     r = gsa_authenticated_request(
         {"A2k": A, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
 
@@ -87,17 +90,21 @@ def gsa_authenticate(username, password, second_factor='sms'):
     if M is None:
         logger.error("Failed to process challenge")
         return
-
-    r = gsa_authenticated_request(
+    logger.info("Authentication request completion")
+    resp = gsa_authenticated_request(
         {"c": r["c"], "M1": M, "u": username, "o": "complete"})
 
     # Make sure that the server's session key matches our session key (and thus that they are not an imposter)
-    usr.verify_session(r["M2"])
+    if "M2" not in resp:
+        logger.error("Error on authentication")
+        logger.error(resp)
+        return
+    usr.verify_session(resp["M2"])
     if not usr.authenticated():
         logger.error("Failed to verify session")
         return
 
-    spd = decrypt_cbc(usr, r["spd"])
+    spd = decrypt_cbc(usr, resp["spd"])
     # For some reason plistlib doesn't accept it without the header...
     PLISTHEADER = b"""\
 <?xml version='1.0' encoding='UTF-8'?>
@@ -105,18 +112,16 @@ def gsa_authenticate(username, password, second_factor='sms'):
 """
     spd = plist.loads(PLISTHEADER + spd)
 
-    if "au" in r["Status"] and r["Status"]["au"] in ["trustedDeviceSecondaryAuth", "secondaryAuth"]:
+    if "au" in resp["Status"] and resp["Status"]["au"] in ["trustedDeviceSecondaryAuth", "secondaryAuth"]:
         logger.info("2FA required, requesting code")
         # Replace bytes with strings
         for k, v in spd.items():
             if isinstance(v, bytes):
                 spd[k] = base64.b64encode(v).decode()
-        if second_factor == 'sms':
-            sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
-        elif second_factor == 'trusted_device':
-            trusted_second_factor(spd["adsid"], spd["GsIdmsToken"])
+        sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+
         return gsa_authenticate(username, password)
-    elif "au" in r["Status"]:
+    elif "au" in resp["Status"]:
         logger.error(f"Unknown auth value {r['Status']['au']}")
         return
     else:
@@ -144,6 +149,8 @@ def gsa_authenticated_request(parameters):
         verify=False,
         timeout=5,
     )
+    response = f"HTTP-Code: {resp.status_code}\n{resp.text}"
+    logger.debug(response)
 
     return plist.loads(resp.content)["Response"]
 
@@ -163,10 +170,6 @@ def generate_cpd():
 
 
 def generate_anisette_headers():
-    
-
-    logger.debug(
-        f'Querying {config.getAnisetteServer()} for an anisette server')
     h = json.loads(requests.get(config.getAnisetteServer(), timeout=5).text)
     a = {"X-Apple-I-MD": h["X-Apple-I-MD"],
          "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
@@ -212,48 +215,6 @@ def decrypt_cbc(usr, data):
     # Remove PKCS#7 padding
     padder = padding.PKCS7(128).unpadder()
     return padder.update(data) + padder.finalize()
-
-
-def trusted_second_factor(dsid, idms_token):
-    identity_token = base64.b64encode(
-        (dsid + ":" + idms_token).encode()).decode()
-
-    headers = {
-        "Content-Type": "text/x-xml-plist",
-        "User-Agent": "Xcode",
-        "Accept": "text/x-xml-plist",
-        "Accept-Language": "en-us",
-        "X-Apple-Identity-Token": identity_token,
-        "X-Apple-App-Info": "com.apple.gs.xcode.auth",
-        "X-Xcode-Version": "11.2 (11B41)",
-        "X-Mme-Client-Info": '<MacBookPro18,3> <Mac OS X;13.4.1;22F8> <com.apple.AOSKit/282 (com.apple.dt.Xcode/3594.4.19)>'
-    }
-
-    headers.update(generate_anisette_headers())
-
-    # This will trigger the 2FA prompt on trusted devices
-    # We don't care about the response, it's just some HTML with a form for entering the code
-    # Easier to just use a text prompt
-    requests.get(
-        "https://gsa.apple.com/auth/verify/trusteddevice",
-        headers=headers,
-        verify=False,
-        timeout=10,
-    )
-
-    # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
-    code = getpass("Enter 2FA code: ")
-    headers["security-code"] = code
-
-    # Send the 2FA code to Apple
-    resp = requests.get(
-        "https://gsa.apple.com/grandslam/GsService2/validate",
-        headers=headers,
-        verify=False,
-        timeout=10,
-    )
-    if resp.ok:
-        logger.info("2FA successful")
 
 
 def sms_second_factor(dsid, idms_token):
@@ -302,5 +263,13 @@ def sms_second_factor(dsid, idms_token):
         verify=False,
         timeout=5,
     )
-    if resp.ok:
+    header_string = "Header der Antwort:\n"
+    for header, value in response.headers.items():
+        header_string += f"{header}: {value}\n"
+    response = f"HTTP-Code: {resp.status_code} with {header_string} bytes"
+    logger.debug(response)
+    # If the answer was too long, the output is the 
+    if resp.ok and len(resp.text) < 100:
         logger.info("2FA successful")
+    else:
+        raise Exception("2FA unsuccessful. Maybe wrong code or wrong number. Check your account details.")

@@ -71,6 +71,7 @@ def getLogLevel():
     logLevel = config.get('Settings', 'loglevel', fallback='INFO')
     return logging.getLevelName(logLevel)
 
-
 logging.basicConfig(level=getLogLevel(),
                     format='%(asctime)s - %(levelname)s - %(message)s')
+# Suppress http-log
+logging.getLogger('urllib3').setLevel(logging.INFO)
