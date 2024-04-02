@@ -30,7 +30,7 @@ In this section, you will find a step-by-step guide on how to set up your own Ma
 
 - [Docker](https://www.docker.com/) installed
 - [Python3](https://www.python.org/) and [pip3](https://pypi.org/project/pip/) installed
-- Apple-ID with F2A (mobile or sms) enabled
+- Apple-ID with 2FA enabled. Only sms/text message as second factor is supported!
 
 ---
 
