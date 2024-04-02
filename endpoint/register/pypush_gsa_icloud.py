@@ -113,7 +113,7 @@ def gsa_authenticate(username, password):
     spd = plist.loads(PLISTHEADER + spd)
 
     if "au" in resp["Status"] and resp["Status"]["au"] in ["trustedDeviceSecondaryAuth", "secondaryAuth"]:
-        logger.info("2FA required, requesting code")
+        logger.info("2FA required, requesting SMS code. (No other 2FA-code will work!)")
         # Replace bytes with strings
         for k, v in spd.items():
             if isinstance(v, bytes):
@@ -251,7 +251,7 @@ def sms_second_factor(dsid, idms_token):
         timeout=5
     )
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
-    code = input("Enter 2FA code: ")
+    code = input("Enter SMS 2FA code: ")
 
     body['securityCode'] = {'code': code}
 
