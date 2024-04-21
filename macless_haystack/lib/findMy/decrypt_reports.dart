@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:pointycastle/export.dart';
+
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
 import 'package:macless_haystack/findMy/models.dart';
@@ -12,9 +13,10 @@ class DecryptReports {
     final curveDomainParam = ECCurve_secp224r1();
 
     final payloadData = report.payload;
-    final ephemeralKeyBytes = payloadData.sublist(5, 62);
-    final encData = payloadData.sublist(62, 72);
-    final tag = payloadData.sublist(72, payloadData.length);
+    final ephemeralKeyBytes = payloadData.sublist(
+        payloadData.length - 16 - 10 - 57, payloadData.length - 16 - 10);
+    final encData = payloadData.sublist(payloadData.length - 16 - 10, payloadData.length - 16);
+    final tag = payloadData.sublist(payloadData.length - 16, payloadData.length);
 
     _decodeTimeAndConfidence(payloadData, report);
 
@@ -38,7 +40,8 @@ class DecryptReports {
       Uint8List payloadData, FindMyReport report) {
     final seenTimeStamp =
         payloadData.sublist(0, 4).buffer.asByteData().getInt32(0, Endian.big);
-    final timestamp = DateTime.utc(2001).add(Duration(seconds: seenTimeStamp)).toLocal();
+    final timestamp =
+        DateTime.utc(2001).add(Duration(seconds: seenTimeStamp)).toLocal();
     final confidence = payloadData.elementAt(4);
     report.timestamp = timestamp;
     report.confidence = confidence;
