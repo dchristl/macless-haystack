@@ -164,8 +164,8 @@ void app_main(void)
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     esp_bt_controller_init(&bt_cfg);
     esp_bt_controller_enable(ESP_BT_MODE_BLE);
-
-    esp_bluedroid_init();
+    esp_bluedroid_config_t bluedroid_cfg = BT_BLUEDROID_INIT_CONFIG_DEFAULT();
+    esp_bluedroid_init_with_cfg(&bluedroid_cfg);
     esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
     esp_bluedroid_enable();
 
