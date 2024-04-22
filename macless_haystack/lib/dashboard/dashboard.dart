@@ -25,7 +25,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
   /// A list of the tabs displayed in the bottom tab bar.
   late final List<Map<String, dynamic>> _tabs = [
     {
@@ -143,7 +142,7 @@ class _DashboardState extends State<Dashboard> {
                 ))
             .toList(),
         currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).indicatorColor,
+        unselectedItemColor: Theme.of(context).secondaryHeaderColor,
         onTap: _onItemTapped,
       ),
       floatingActionButton:

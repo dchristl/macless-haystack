@@ -31,6 +31,11 @@ class FindMyLocationReport {
   FindMyLocationReport(this.latitude, this.longitude, this.accuracy,
       this.published, this.timestamp, this.confidence);
 
+  FindMyLocationReport.withHash(
+      this.latitude, this.longitude, this.timestamp, this.hash) {
+    accuracy = 0;
+  }
+
   FindMyLocationReport.decrypted(this.result, this.base64privateKey, this.id) {
     hash = result['payload'];
   }
@@ -50,7 +55,8 @@ class FindMyLocationReport {
       await Future.delayed(const Duration(
           milliseconds: 1)); //Is needed otherwise is executed synchron
       if (isEncrypted()) {
-        logger.d('Decrypting report with private key of ${getId()!.substring(0, 4)}');
+        logger.d(
+            'Decrypting report with private key of ${getId()!.substring(0, 4)}');
         final unixTimestampInMillis = result["datePublished"];
         final datePublished =
             DateTime.fromMillisecondsSinceEpoch(unixTimestampInMillis);

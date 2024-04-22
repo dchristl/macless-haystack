@@ -88,6 +88,8 @@ class Accessory {
   /// Stores address information about the current location.
   Future<Placemark?> place = Future.value(null);
 
+  LocationModel locationModel = LocationModel();
+
   /// Creates an accessory with the given properties.
   Accessory(
       {required this.id,
@@ -113,7 +115,7 @@ class Accessory {
 
   void _init() {
     if (_lastLocation != null) {
-      place = LocationModel.getAddress(_lastLocation!);
+      place = locationModel.getAddress(_lastLocation!);
     }
   }
 
@@ -160,9 +162,11 @@ class Accessory {
   set lastLocation(LatLng? newLocation) {
     _lastLocation = newLocation;
     if (_lastLocation != null) {
-      place = LocationModel.getAddress(_lastLocation!);
+      place = locationModel.getAddress(_lastLocation!);
     }
   }
+
+
 
   /// The display icon of the accessory.
   IconData get icon {
