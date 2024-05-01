@@ -2,13 +2,11 @@
 
 import json
 import ssl
-import sys
 import os
 import requests
 from datetime import datetime
 import time
 import config
-from http.client import HTTPConnection
 import base64
 from collections import OrderedDict
 
