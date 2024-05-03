@@ -5,4 +5,4 @@ cd "$curr_dir" || exit
 cd ..
 date > /tmp/last_update.log
 git pull origin "$(git branch --show-current)" >> /tmp/last_update.log
-git merge origin/"$(git branch --show-current)" >> /tmp/last_update.log
+git merge origin/"$(git branch --show-current)" --strategy-option=theirs >> /tmp/last_update.log
