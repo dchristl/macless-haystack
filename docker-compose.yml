@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  mh-network:
+    driver: bridge
+
+services:
+  anisette:
+    image: dadoum/anisette-v3-server
+    container_name: anisette
+    restart: always
+    ports:
+      - "6969:6969"
+    volumes:
+      - anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/
+    networks:
+      - mh-network
+
+  macless-haystack:
+    image: christld/macless-haystack
+    container_name: macless-haystack
+    restart: unless-stopped
+    ports:
+      - "6176:6176"
+    volumes:
+      - mh_data:/app/endpoint/data
+    networks:
+      - mh-network
+    tty: true
+    stdin_open: true
+
+volumes:
+  anisette-v3_data:
+  mh_data:
