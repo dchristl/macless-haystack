@@ -12,7 +12,7 @@ services:
     ports:
       - "6969:6969"
     volumes:
-      - anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib/
+      - anisette-v3_data:/home/Alcoholic/.config/anisette-v3
     networks:
       - mh-network
 
