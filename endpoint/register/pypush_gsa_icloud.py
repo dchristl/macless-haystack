@@ -76,13 +76,13 @@ def gsa_authenticate(username, password):
     r = gsa_authenticated_request(
         {"A2k": A, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
 
-    if r["sp"] != "s2k":
+    if r["sp"] not in ["s2k", "s2k_fo"]:
         logger.warn(
-            f"This implementation only supports s2k. Server returned {r['sp']}")
+            f"This implementation only supports s2k and s2k_fo. Server returned {r['sp']}")
         return
 
     # Change the password out from under the SRP library, as we couldn't calculate it without the salt.
-    usr.p = encrypt_password(password, r["s"], r["i"])
+    usr.p = encrypt_password(password, r["s"], r["i"], protocol=r["sp"])
 
     M = usr.process_challenge(r["s"], r["B"])
 
@@ -190,8 +190,15 @@ def generate_meta_headers(serial="0", user_id=uuid.uuid4(), device_id=uuid.uuid4
     }
 
 
-def encrypt_password(password, salt, iterations):
-    p = hashlib.sha256(password.encode("utf-8")).digest()
+def encrypt_password(password, salt, iterations, protocol="s2k"):
+    hash = hashlib.sha256(password.encode("utf-8"))
+    if protocol == "s2k":
+        p = hash.digest()
+    elif protocol == "s2k_fo":
+        p = hash.hexdigest().encode("utf-8")
+    else:
+        raise Exception("Unknown protocol")
+    
     return pbkdf2.PBKDF2(p, salt, iterations, SHA256).read(32)
 
 
