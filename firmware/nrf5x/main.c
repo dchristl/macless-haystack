@@ -6,6 +6,7 @@
 #include "ble_stack.h"
 #include "openhaystack.h"
 #include "app_timer.h"
+#include "battery.h"
 
 
 #define ADVERTISING_INTERVAL 5000  // advertising interval in milliseconds
@@ -47,6 +48,9 @@ void setAndAdvertiseNextKey()
 
     // Set bluetooth address
     setMacAddress(ble_address);
+
+    //Update battery information
+    updateBatteryLevel(raw_data);
 
     // Set advertisement data
     setAdvertisementData(raw_data, data_len);
