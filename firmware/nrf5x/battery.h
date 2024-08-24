@@ -7,7 +7,7 @@
 #ifdef S130
     #include "nrf51_battery.h"
 #else
-    uint8_t get_current_level() {return 0;};
+    uint8_t get_current_level() {return 100;};
 #endif
 
 void updateBatteryLevel(uint8_t * data)
