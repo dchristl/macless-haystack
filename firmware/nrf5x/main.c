@@ -49,7 +49,7 @@ void setAndAdvertiseNextKey()
     // Set bluetooth address
     setMacAddress(ble_address);
 
-    //Update battery information
+    // Update battery information
     updateBatteryLevel(raw_data);
 
     // Set advertisement data
