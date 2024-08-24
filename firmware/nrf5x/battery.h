@@ -4,10 +4,10 @@
 #define STATUS_FLAG_LOW_BATTERY            0b10000000
 #define STATUS_FLAG_CRITICALLY_LOW_BATTERY 0b11000000
 
-#if NRF_MODEL == nrf51
-    #include "nrf51_battery.h"
+#ifdef S130
+    #include "battery_service/nrf51_battery.h"
 #else
-    uint8_t get_current_level() {return 0};
+    uint8_t get_current_level() {return 0;};
 #endif
 
 void updateBatteryLevel(uint8_t * data)
