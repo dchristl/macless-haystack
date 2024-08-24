@@ -1,3 +1,4 @@
+#ifdef S130
 /**
  * Copyright (c) 2012 - 2017, Nordic Semiconductor ASA
  * 
@@ -298,3 +299,4 @@ uint32_t ble_bas_init(ble_bas_t * p_bas, const ble_bas_init_t * p_bas_init)
     
     return NRF_SUCCESS;
 }
+#endif

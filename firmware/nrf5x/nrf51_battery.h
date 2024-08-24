@@ -1,4 +1,4 @@
-
+#ifdef S130
 #ifndef BLE_BAS_H__
 #define BLE_BAS_H__
 
@@ -93,3 +93,4 @@ uint8_t get_current_level (void);
 #endif // BLE_BAS_H__
 
 /** @} */
+#endif
