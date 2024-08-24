@@ -145,7 +145,7 @@ void set_payload_from_key(uint8_t *payload, uint8_t *public_key)
     payload[29] = public_key[0] >> 6;
 }
 
-uint get_key_count()
+uint8_t get_key_count()
 {
     uint8_t keyCount[1];
     if (load_bytes_from_partition(keyCount, sizeof(keyCount), 0) != ESP_OK)
@@ -172,8 +172,8 @@ void app_main(void)
     ESP_LOGI(LOG_TAG, "application initialized");
 
     /* Start with a random index */
-    uint key_count = get_key_count();
-    uint key_index = (esp_random() % key_count);
+    uint8_t key_count = get_key_count();
+    uint8_t key_index = (esp_random() % key_count);
     uint8_t cycle = 0;
     while (true)
     {
