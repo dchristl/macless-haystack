@@ -8,6 +8,7 @@ import 'package:pointycastle/ecc/api.dart';
 import 'package:pointycastle/src/utils.dart' as pc_utils;
 import 'package:macless_haystack/findMy/find_my_controller.dart';
 import 'package:macless_haystack/findMy/decrypt_reports.dart';
+import 'package:macless_haystack/accessory/accessory_battery.dart';
 
 /// Represents a decrypted FindMyReport.
 class FindMyLocationReport {
@@ -21,6 +22,7 @@ class FindMyLocationReport {
   DateTime? published;
   DateTime? timestamp;
   int? confidence;
+  AccessoryBatteryStatus? batteryStatus;
   dynamic result;
 
   String? base64privateKey;
@@ -29,7 +31,7 @@ class FindMyLocationReport {
   String? hash;
 
   FindMyLocationReport(this.latitude, this.longitude, this.accuracy,
-      this.published, this.timestamp, this.confidence);
+      this.published, this.timestamp, this.confidence, this.batteryStatus);
 
   FindMyLocationReport.withHash(
       this.latitude, this.longitude, this.timestamp, this.hash) {

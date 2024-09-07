@@ -5,6 +5,7 @@ import 'package:pointycastle/export.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart' as pc_utils;
 import 'package:macless_haystack/findMy/models.dart';
+import 'package:macless_haystack/accessory/accessory_battery.dart';
 
 class DecryptReports {
   /// Decrypts a given [FindMyReport] with the given private key.
@@ -65,12 +66,31 @@ class DecryptReports {
     final latitude = payload.buffer.asByteData(0, 4).getUint32(0, Endian.big);
     final longitude = payload.buffer.asByteData(4, 4).getUint32(0, Endian.big);
     final accuracy = payload.buffer.asByteData(8, 1).getUint8(0);
+    final status = payload.buffer.asByteData(9, 1).getUint8(0);
+    AccessoryBatteryStatus batteryStatus;
+
+    switch ((status >> 6) & 0x3) {
+      case 0:
+        batteryStatus = AccessoryBatteryStatus.ok;
+        break;
+      case 1:
+        batteryStatus = AccessoryBatteryStatus.medium;
+        break;
+      case 2:
+        batteryStatus = AccessoryBatteryStatus.low;
+        break;
+      case 3:
+        batteryStatus = AccessoryBatteryStatus.criticalLow;
+        break;
+      default:
+        batteryStatus = AccessoryBatteryStatus.ok;
+    } 
 
     final latitudeDec = latitude / 10000000.0;
     final longitudeDec = longitude / 10000000.0;
 
     return FindMyLocationReport(latitudeDec, longitudeDec, accuracy,
-        report.datePublished, report.timestamp, report.confidence);
+        report.datePublished, report.timestamp, report.confidence, batteryStatus);
   }
 
   /// Decrypts the given cipher text with the key data using an AES-GCM block cipher.
