@@ -217,20 +217,20 @@ class AccessoryRegistry extends ChangeNotifier {
 //Sort by date
     decryptedReports.sort((a, b) {
       var aDate = a.timestamp ?? DateTime(1970);
-      var bDate = b.timestamp ??  DateTime(1970);
+      var bDate = b.timestamp ?? DateTime(1970);
       return aDate.compareTo(bDate);
     });
 
     //Update the latest timestamp
     if (decryptedReports.isNotEmpty) {
       var lastReport = decryptedReports[decryptedReports.length - 1];
-      var oldTs =  DateTime(1970);
+      var oldTs = DateTime(1970);
       var latestReportTS = lastReport.timestamp ?? DateTime(1971);
       if (oldTs.isBefore(latestReportTS)) {
         //only an actualization if oldTS is not set or is older than the latest of the new ones
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);
-        accessory.datePublished = latestReportTS;//
+        accessory.datePublished = latestReportTS; //
         notifyListeners(); //redraw the UI, if the timestamp has changed
       }
     }
@@ -238,9 +238,8 @@ class AccessoryRegistry extends ChangeNotifier {
 //add to history in correct order
     for (var i = 0; i < decryptedReports.length; i++) {
       FindMyLocationReport report = decryptedReports[i];
-      if (report.longitude!.abs() <= 180 &&
-          report.latitude!.abs() <= 90 &&
-          report.accuracy! < 100) {
+      if (report.accuracy! < 100 ||
+          report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
         accessory.addLocationHistoryEntry(report);
       } else {
         logger.d(
