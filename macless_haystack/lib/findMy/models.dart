@@ -75,6 +75,7 @@ class FindMyLocationReport {
         confidence = decryptedReport.confidence;
         result = null;
         base64privateKey = null;
+        batteryStatus = decryptedReport.batteryStatus;
       }
     }
   }

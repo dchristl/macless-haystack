@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:macless_haystack/accessory/accessory_battery.dart';
 import 'package:macless_haystack/accessory/accessory_icon_model.dart';
 import 'package:macless_haystack/findMy/find_my_controller.dart';
 import 'package:macless_haystack/location/location_model.dart';
@@ -80,6 +81,10 @@ class Accessory {
   /// The last known locations coordinates
   /// (null if no location known).
   LatLng? _lastLocation;
+
+  /// The last known battery status
+  /// (null if battery data not found)
+  AccessoryBatteryStatus? lastBatteryStatus;
 
   /// A list of known locations over time.
   List<Pair<dynamic, dynamic>> locationHistory = [];
@@ -165,8 +170,6 @@ class Accessory {
       place = locationModel.getAddress(_lastLocation!);
     }
   }
-
-
 
   /// The display icon of the accessory.
   IconData get icon {
