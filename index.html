@@ -18,7 +18,7 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="OpenHaystack2.0">
+  <meta name="description" content="macless-Haystack">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,32 +26,13 @@
   <meta name="apple-mobile-web-app-title" content="macless_haystack">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <title>Macless Haystack</title>
-  <link rel="icon" href="favicon.png">
-  <link rel="manifest" href="manifest.json">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "1466793393";
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+  <title>Macless Haystack</title>
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
