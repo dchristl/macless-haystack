@@ -166,8 +166,6 @@ class Accessory {
     }
   }
 
-
-
   /// The display icon of the accessory.
   IconData get icon {
     IconData? icon = AccessoryIconModel.mapIcon(_icon);
@@ -212,6 +210,9 @@ class Accessory {
         lastDerivationTimestamp = json['lastDerivationTimestamp'],
         updateInterval = json['updateInterval'],
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'],
+        hashes = json['hashes'] != null
+            ? (json['hashes'] as List).map((e) => e.toString()).toSet()
+            : <String>{},
         additionalKeys =
             json['additionalKeys']?.cast<String>() ?? List.empty() {
     _init();
@@ -238,6 +239,7 @@ class Accessory {
         'icon': _icon,
         'color': color.toString().split('(0x')[1].split(')')[0],
         'usesDerivation': usesDerivation,
+        'hashes': hashes.toList(),
         'symmetricKey': symmetricKey,
         'lastDerivationTimestamp': lastDerivationTimestamp,
         'updateInterval': updateInterval,

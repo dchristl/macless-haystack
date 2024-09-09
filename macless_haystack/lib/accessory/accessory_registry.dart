@@ -112,9 +112,10 @@ class AccessoryRegistry extends ChangeNotifier {
       if (reports.where((element) => !element.isEncrypted()).isNotEmpty) {
         var lastReport =
             reports.where((element) => !element.isEncrypted()).first;
-        var reportDate = lastReport.timestamp ?? lastReport.published;
+        var reportDate = (lastReport.timestamp ?? lastReport.published) ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
         if (accessory.datePublished != null &&
-            reportDate!.isAfter(accessory.datePublished!)) {
+            reportDate.isAfter(accessory.datePublished!)) {
           accessory.datePublished = reportDate;
           accessory.lastLocation =
               LatLng(lastReport.latitude!, lastReport.longitude!);
@@ -202,6 +203,7 @@ class AccessoryRegistry extends ChangeNotifier {
       var currHash = reports[i].hash;
       if (!accessory.containsHash(currHash)) {
         accessory.addDecryptedHash(currHash);
+        logger.d('Decrypting report $i of ${reports.length}');
         await reports[i].decrypt();
         decryptedReports.add(reports[i]);
       } else {
@@ -238,8 +240,9 @@ class AccessoryRegistry extends ChangeNotifier {
 //add to history in correct order
     for (var i = 0; i < decryptedReports.length; i++) {
       FindMyLocationReport report = decryptedReports[i];
-      if (report.accuracy! < 100 ||
-          report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
+      if (report.accuracy! >= 110 &&
+          report.longitude!.abs() <= 180 &&
+          report.latitude!.abs() <= 90) {
         accessory.addLocationHistoryEntry(report);
       } else {
         logger.d(

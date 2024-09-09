@@ -55,8 +55,6 @@ class FindMyLocationReport {
       await Future.delayed(const Duration(
           milliseconds: 1)); //Is needed otherwise is executed synchron
       if (isEncrypted()) {
-        logger.d(
-            'Decrypting report with private key of ${getId()!.substring(0, 4)}');
         final unixTimestampInMillis = result["datePublished"];
         final datePublished =
             DateTime.fromMillisecondsSinceEpoch(unixTimestampInMillis);
@@ -69,7 +67,9 @@ class FindMyLocationReport {
         latitude = correctCoordinate(decryptedReport.latitude!, 90);
         longitude = correctCoordinate(decryptedReport.longitude!, 180);
         accuracy = decryptedReport.accuracy;
-        timestamp = decryptedReport.timestamp;
+        timestamp = accuracy != null && accuracy! >= 110
+            ? decryptedReport.timestamp
+            : null;
         confidence = decryptedReport.confidence;
         result = null;
         base64privateKey = null;

@@ -107,7 +107,7 @@ class LocationModel extends ChangeNotifier {
   /// Returns the address for a given geolocation (latitude & longitude).
   ///
   /// Only works on mobile platforms with their local APIs.
-   Future<geocode.Placemark?> getAddress(LatLng? location) async {
+  Future<geocode.Placemark?> getAddress(LatLng? location) async {
     if (location == null) {
       return null;
     }
@@ -115,9 +115,11 @@ class LocationModel extends ChangeNotifier {
     double lng = location.longitude;
 
     try {
-      List<geocode.Placemark> placemarks =
-          await geocode.placemarkFromCoordinates(lat, lng);
-      return placemarks.first;
+      if (geocode.GeocodingPlatform.instance != null) {
+        List<geocode.Placemark> placemarks =
+            await geocode.placemarkFromCoordinates(lat, lng);
+        return placemarks.first;
+      }
     } on MissingPluginException {
       return null;
     } on PlatformException {
