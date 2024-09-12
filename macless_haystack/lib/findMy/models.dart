@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:logger/logger.dart';
+import 'package:macless_haystack/accessory/accessory_registry.dart';
 import 'package:pointycastle/ecc/api.dart';
 
 // ignore: implementation_imports
@@ -67,7 +68,7 @@ class FindMyLocationReport {
         latitude = correctCoordinate(decryptedReport.latitude!, 90);
         longitude = correctCoordinate(decryptedReport.longitude!, 180);
         accuracy = decryptedReport.accuracy;
-        timestamp = accuracy != null && accuracy! >= 110
+        timestamp = accuracy != null && accuracy! >= DEFAULT_MIN_ACCURACY
             ? decryptedReport.timestamp
             : null;
         confidence = decryptedReport.confidence;
