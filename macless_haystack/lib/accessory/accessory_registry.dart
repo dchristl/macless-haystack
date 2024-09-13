@@ -118,6 +118,9 @@ class AccessoryRegistry extends ChangeNotifier {
           accessory.datePublished = reportDate;
           accessory.lastLocation =
               LatLng(lastReport.latitude!, lastReport.longitude!);
+
+          // Update last battery status
+          accessory.lastBatteryStatus = lastReport.batteryStatus!;
         }
       }
       historyEntries[accessory] = fillLocationHistory(reports, accessory);
@@ -231,6 +234,10 @@ class AccessoryRegistry extends ChangeNotifier {
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);
         accessory.datePublished = latestReportTS;
+        //If battery status exists, update last battery status
+        if (lastReport.batteryStatus != null) {
+          accessory.lastBatteryStatus = lastReport.batteryStatus;
+        }
         notifyListeners(); //redraw the UI, if the timestamp has changed
       }
     }
