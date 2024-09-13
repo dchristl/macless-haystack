@@ -32,7 +32,7 @@ class LocationPopup extends Marker {
               },
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       Text(

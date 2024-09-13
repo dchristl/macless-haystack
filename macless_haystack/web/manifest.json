@@ -1,11 +1,11 @@
 {
     "name": "Macless Haystack",
-    "short_name": "Macless Haystack",
+    "short_name": "Haystack",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Macless Haystack",
+    "description": "Macless Haystack.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
