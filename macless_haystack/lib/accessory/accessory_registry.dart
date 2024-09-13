@@ -219,17 +219,17 @@ class AccessoryRegistry extends ChangeNotifier {
     accessory.clearHashesNotInList(hashes);
 //Sort by date
     decryptedReports.sort((a, b) {
-      var aDate = a.timestamp ?? a.published!;
-      var bDate = b.timestamp ?? b.published!;
+      var aDate = a.timestamp ?? DateTime(1970);
+      var bDate = b.timestamp ??  DateTime(1970);
       return aDate.compareTo(bDate);
     });
 
     //Update the latest timestamp
     if (decryptedReports.isNotEmpty) {
       var lastReport = decryptedReports[decryptedReports.length - 1];
-      var oldTs = accessory.datePublished;
-      var latestReportTS = lastReport.timestamp ?? lastReport.published;
-      if (oldTs == null || oldTs.isBefore(latestReportTS!)) {
+      var oldTs =  DateTime(1970);
+      var latestReportTS = lastReport.timestamp ?? DateTime(1971);
+      if (oldTs.isBefore(latestReportTS)) {
         //only an actualization if oldTS is not set or is older than the latest of the new ones
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);
