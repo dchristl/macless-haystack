@@ -11,29 +11,35 @@
 
 #define ADVERTISING_INTERVAL 5000  // advertising interval in milliseconds
 #define KEY_CHANGE_INTERVAL_MINUTES 30  // how often to rotate to new key in minutes
+#define KEY_CHANGE_INTERVAL_DAYS 14  // how often to update battery status in days
 #define MAX_KEYS 20  // maximum number of keys to rotate through
+
 #define KEY_CHANGE_INTERVAL_MS (KEY_CHANGE_INTERVAL_MINUTES * 60 * 1000)
+#define BATTERY_STATUS_UPDATES_INTERVAL_MS (KEY_CHANGE_INTERVAL_DAYS * 24 * 60 * 60 * 1000)
 
 #define APP_TIMER_PRESCALER 0
-#define APP_TIMER_MAX_TIMERS 1 
-#define TIMER_TICKS APP_TIMER_TICKS(KEY_CHANGE_INTERVAL_MS, APP_TIMER_PRESCALER)
+#define APP_TIMER_MAX_TIMERS 2
+#define KEY_CHANGE_TIMER_TICKS APP_TIMER_TICKS(KEY_CHANGE_INTERVAL_MS, APP_TIMER_PRESCALER)
+#define BATTERY_STATUS_UPDATE_TIMER_TICKS APP_TIMER_TICKS(BATTERY_STATUS_UPDATES_INTERVAL_MS, APP_TIMER_PRESCALER)
 #define APP_TIMER_OP_QUEUE_SIZE 4 
 
 int last_filled_index = -1;
 int current_index = 0;
 
 APP_TIMER_DEF(m_key_change_timer_id);
+APP_TIMER_DEF(m_battery_status_timer_id);
 
 // Create space for MAX_KEYS public keys
 static char public_key[MAX_KEYS][28] = { 
     "OFFLINEFINDINGPUBLICKEYHERE!",
 };
 
+uint8_t *raw_data; // Initialized by setAndAdvertiseNextKey() -> setAdvertisementKey()
+
 void setAndAdvertiseNextKey()
 {
     // Variable to hold the data to advertise
     uint8_t *ble_address;
-    uint8_t *raw_data;
     uint8_t data_len;
 
     // Disable advertising
@@ -64,7 +70,13 @@ void key_change_timeout_handler(void *p_context)
     setAndAdvertiseNextKey();
 }
 
-static void timer_config(void)
+void battery_status_update_timeout_handler(void *p_context)
+{
+    updateBatteryLevel(raw_data);
+}
+
+
+static void key_change_timer_config(void)
 {
     uint32_t err_code;
 
@@ -75,7 +87,22 @@ static void timer_config(void)
     APP_ERROR_CHECK(err_code);
 
     // Set timer interval 
-    err_code = app_timer_start(m_key_change_timer_id, TIMER_TICKS, NULL);
+    err_code = app_timer_start(m_key_change_timer_id, KEY_CHANGE_TIMER_TICKS, NULL);
+    APP_ERROR_CHECK(err_code);
+}
+
+static void battery_status_update_timer_config(void)
+{
+    uint32_t err_code;
+
+    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, NULL);
+
+    // Create timer
+    err_code = app_timer_create(&m_battery_status_timer_id, APP_TIMER_MODE_REPEATED, battery_status_update_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+
+    // Set timer interval 
+    err_code = app_timer_start(m_battery_status_timer_id, BATTERY_STATUS_UPDATE_TIMER_TICKS, NULL);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -99,11 +126,12 @@ int main(void) {
     
     // Only use the app_timer to rotate keys if we need to
     if (last_filled_index > 0){
-        timer_config();
+        key_change_timer_config();
     }
     
     if (last_filled_index >= 0) {
         setAndAdvertiseNextKey();
+        battery_status_update_timer_config();
     }
 
     while (1){
