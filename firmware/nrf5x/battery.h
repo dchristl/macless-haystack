@@ -3,6 +3,7 @@
 #define STATUS_FLAG_MEDIUM_BATTERY         0b01000000
 #define STATUS_FLAG_LOW_BATTERY            0b10000000
 #define STATUS_FLAG_CRITICALLY_LOW_BATTERY 0b11000000
+#define STATUS_FLAG_BATTERY_UPDATES_SUPPORT 0b00100000
 
 #ifdef S130
     #include "nrf51_battery.h"
@@ -13,6 +14,9 @@
 void updateBatteryLevel(uint8_t * data)
 {
     uint8_t * status_flag_ptr = data + 6;
+    #ifdef S130 // If the board supports battery updates
+        *status_flag_ptr |= STATUS_FLAG_BATTERY_UPDATES_SUPPORT
+    #endif
 
     /*
     static uint16_t battery_counter = BATTERY_COUNTER_THRESHOLD;
