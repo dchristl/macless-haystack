@@ -22,9 +22,12 @@ class AccessoryListItemBattery extends StatelessWidget {
     } else if (accessory.lastBatteryStatus == AccessoryBatteryStatus.low) {
       batteryIcon = const Icon(Icons.battery_1_bar, color: Colors.green);
       batteryStatusText = 'Low';
-    } else {
+    } else if (accessory.lastBatteryStatus == AccessoryBatteryStatus.criticalLow) {
       batteryIcon = const Icon(Icons.battery_alert, color: Colors.red);
       batteryStatusText = 'Alert';
+    } else {
+      batteryIcon = const Icon(Icons.battery_alert, color: Colors.orange);
+      batteryStatusText = 'Unknown';
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

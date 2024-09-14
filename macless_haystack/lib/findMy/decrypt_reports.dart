@@ -67,23 +67,26 @@ class DecryptReports {
     final longitude = payload.buffer.asByteData(4, 4).getUint32(0, Endian.big);
     final accuracy = payload.buffer.asByteData(8, 1).getUint8(0);
     final status = payload.buffer.asByteData(9, 1).getUint8(0);
-    AccessoryBatteryStatus batteryStatus;
+    AccessoryBatteryStatus batteryStatus = AccessoryBatteryStatus.unknown;
 
-    switch ((status >> 6) & 0x3) {
-      case 0:
-        batteryStatus = AccessoryBatteryStatus.ok;
-        break;
-      case 1:
-        batteryStatus = AccessoryBatteryStatus.medium;
-        break;
-      case 2:
-        batteryStatus = AccessoryBatteryStatus.low;
-        break;
-      case 3:
-        batteryStatus = AccessoryBatteryStatus.criticalLow;
-        break;
-      default:
-        batteryStatus = AccessoryBatteryStatus.ok;
+    if (status & 0x20 != 0) // Check if battery status updates are supported
+    {
+      switch ((status >> 6) & 0x3) { // get highest 2 bits
+        case 0:
+          batteryStatus = AccessoryBatteryStatus.ok;
+          break;
+        case 1:
+          batteryStatus = AccessoryBatteryStatus.medium;
+          break;
+        case 2:
+          batteryStatus = AccessoryBatteryStatus.low;
+          break;
+        case 3:
+          batteryStatus = AccessoryBatteryStatus.criticalLow;
+          break;
+        default:
+          batteryStatus = AccessoryBatteryStatus.ok;
+      }
     } 
 
     final latitudeDec = latitude / 10000000.0;
