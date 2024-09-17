@@ -10,6 +10,7 @@ import hmac
 import base64
 import locale
 import logging
+import re
 from datetime import datetime
 import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
@@ -221,11 +222,6 @@ def sms_second_factor(dsid, idms_token):
     identity_token = base64.b64encode(
         (dsid + ":" + idms_token).encode()).decode()
 
-    # TODO: Actually do this request to get user prompt data
-    # a = requests.get("https://gsa.apple.com/auth", verify=False)
-    # This request isn't strictly necessary though,
-    # and most accounts should have their id 1 SMS, if not contribute ;)
-
     headers = {
         "User-Agent": "Xcode",
         "Accept-Language": "en-us",
@@ -237,19 +233,24 @@ def sms_second_factor(dsid, idms_token):
 
     headers.update(generate_anisette_headers())
 
-    # TODO: Actually get the correct id, probably in the above GET
-    body = {"phoneNumber": {"id": 1}, "mode": "sms"}
+    # Extract the "boot_args" from the auth page to get the id of the trusted phone number
+    pattern = r'<script type="application/json" class="boot_args">\s*(.*?)\s*</script>'
+    auth = requests.get("https://gsa.apple.com/auth", headers=headers, verify=False)
+    match = re.search(pattern, auth.text, re.DOTALL)
+    boot_args = json.loads(match.group(1).strip())
+
+    body = {"phoneNumber": {"id": boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]}, "mode": "sms"}
 
     # This will send the 2FA code to the user's phone over SMS
     # We don't care about the response, it's just some HTML with a form for entering the code
     # Easier to just use a text prompt
-    t = requests.put(
-        "https://gsa.apple.com/auth/verify/phone/",
-        json=body,
-        headers=headers,
-        verify=False,
-        timeout=5
-    )
+    #t = requests.put(
+    #    "https://gsa.apple.com/auth/verify/phone/",
+    #    json=body,
+    #    headers=headers,
+    #    verify=False,
+    #    timeout=5
+    #)
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
     code = input("Enter SMS 2FA code: ")
 
