@@ -10,6 +10,7 @@ import hmac
 import base64
 import locale
 import logging
+import re
 from datetime import datetime
 import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
@@ -82,15 +83,15 @@ def gsa_authenticate(username, password):
     # Change the password out from under the SRP library, as we couldn't calculate it without the salt.
     usr.p = encrypt_password(password, r["s"], r["i"], r["sp"])
 
-    M = usr.process_challenge(r["s"], r["B"])
+    m = usr.process_challenge(r["s"], r["B"])
 
     # Make sure we processed the challenge correctly
-    if M is None:
+    if m is None:
         logger.error("Failed to process challenge")
         return
     logger.info("Authentication request completion")
     resp = gsa_authenticated_request(
-        {"c": r["c"], "M1": M, "u": username, "o": "complete"})
+        {"c": r["c"], "M1": m, "u": username, "o": "complete"})
 
     # Make sure that the server's session key matches our session key (and thus that they are not an imposter)
     if "M2" not in resp:
@@ -237,20 +238,30 @@ def sms_second_factor(dsid, idms_token):
     }
 
     headers.update(generate_anisette_headers())
-
-    # TODO: Actually get the correct id, probably in the above GET
-    body = {"phoneNumber": {"id": 1}, "mode": "sms"}
+    
+    # Extract the "boot_args" from the auth page to get the id of the trusted phone number
+    pattern = r'<script.*class="boot_args">\s*(.*?)\s*</script>'
+    auth = requests.get("https://gsa.apple.com/auth", headers=headers, verify=False)
+    sms_id = 1
+    match = re.search(pattern, auth.text, re.DOTALL)
+    if match:
+        boot_args = json.loads(match.group(1).strip())
+        try: 
+            sms_id = boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]
+        except KeyError as e:    
+            logger.debug(match.group(1).strip())        
+            logger.error("Key for sms id not found. Using the first phone number")        
+    else:
+      logger.debug(auth.text)
+      logger.error("Script for sms id not found. Using the first phone number")        
+        
+    logger.info(f"Using phone with id {sms_id} for SMS2FA")
+    body = {"phoneNumber": {"id": sms_id }, "mode": "sms"}
 
     # This will send the 2FA code to the user's phone over SMS
     # We don't care about the response, it's just some HTML with a form for entering the code
     # Easier to just use a text prompt
-    t = requests.put(
-        "https://gsa.apple.com/auth/verify/phone/",
-        json=body,
-        headers=headers,
-        verify=False,
-        timeout=5
-    )
+
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
     code = input("Enter SMS 2FA code: ")
 
