@@ -128,3 +128,6 @@ notes
 firmware/nrf5x/_build
 firmware/nrf5x/compiled
 endpoint/data/*.json
+endpoint/venv/*
+*.iml
+.idea
