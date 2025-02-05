@@ -11,7 +11,7 @@ import base64
 import locale
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -77,7 +77,7 @@ def gsa_authenticate(username, password):
         {"A2k": A, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
 
     if r["sp"] not in ["s2k", "s2k_fo"]:
-        logger.warn(f"This implementation only supports s2k and sk2_fo. Server returned {r['sp']}")
+        logger.warning(f"This implementation only supports s2k and sk2_fo. Server returned {r['sp']}")
         return
 
     # Change the password out from under the SRP library, as we couldn't calculate it without the salt.
@@ -178,8 +178,8 @@ def generate_anisette_headers():
 
 def generate_meta_headers(serial="0", user_id=uuid.uuid4(), device_id=uuid.uuid4()):
     return {
-        "X-Apple-I-Client-Time": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
-        "X-Apple-I-TimeZone": str(datetime.utcnow().astimezone().tzinfo),
+        "X-Apple-I-Client-Time": datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z",
+        "X-Apple-I-TimeZone": str(datetime.now(timezone.utc).astimezone().tzinfo),
         "loc": locale.getdefaultlocale()[0] or "en_US",
         "X-Apple-Locale": locale.getdefaultlocale()[0] or "en_US",
         "X-Apple-I-MD-RINFO": "17106176",  # either 17106176 or 50660608
