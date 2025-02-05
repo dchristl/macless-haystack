@@ -100,7 +100,7 @@ jobs:
           cd ./macless_haystack/build/webapplication
           zip -r webapplication.zip .
       - name: Upload Web Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: webapplication
           path: ./macless_haystack/build/webapplication
@@ -110,7 +110,7 @@ jobs:
           flutter build apk  --release
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/android-application.apk
       - name: Upload Android Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-application
           path: ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
@@ -137,7 +137,7 @@ jobs:
           cd firmware/ESP32/.pio/build/esp32dev/
           zip -r esp32-firmware.zip firmware.bin partitions.bin bootloader.bin
       - name: Upload firmware
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: esp32-firmware
           path: |

@@ -10,7 +10,8 @@ import hmac
 import base64
 import locale
 import logging
-from datetime import datetime
+import re
+from datetime import datetime, timezone
 import srp._pysrp as srp
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -27,7 +28,6 @@ srp.no_username_in_x()
 
 # Disable SSL Warning
 urllib3.disable_warnings()
-
 
 logger = logging.getLogger()
 
@@ -76,23 +76,22 @@ def gsa_authenticate(username, password):
     r = gsa_authenticated_request(
         {"A2k": A, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
 
-    if r["sp"] != "s2k":
-        logger.warn(
-            f"This implementation only supports s2k. Server returned {r['sp']}")
+    if r["sp"] not in ["s2k", "s2k_fo"]:
+        logger.warning(f"This implementation only supports s2k and sk2_fo. Server returned {r['sp']}")
         return
 
     # Change the password out from under the SRP library, as we couldn't calculate it without the salt.
-    usr.p = encrypt_password(password, r["s"], r["i"])
+    usr.p = encrypt_password(password, r["s"], r["i"], r["sp"])
 
-    M = usr.process_challenge(r["s"], r["B"])
+    m = usr.process_challenge(r["s"], r["B"])
 
     # Make sure we processed the challenge correctly
-    if M is None:
+    if m is None:
         logger.error("Failed to process challenge")
         return
     logger.info("Authentication request completion")
     resp = gsa_authenticated_request(
-        {"c": r["c"], "M1": M, "u": username, "o": "complete"})
+        {"c": r["c"], "M1": m, "u": username, "o": "complete"})
 
     # Make sure that the server's session key matches our session key (and thus that they are not an imposter)
     if "M2" not in resp:
@@ -179,8 +178,8 @@ def generate_anisette_headers():
 
 def generate_meta_headers(serial="0", user_id=uuid.uuid4(), device_id=uuid.uuid4()):
     return {
-        "X-Apple-I-Client-Time": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
-        "X-Apple-I-TimeZone": str(datetime.utcnow().astimezone().tzinfo),
+        "X-Apple-I-Client-Time": datetime.now(timezone.utc).replace(microsecond=0).isoformat() + "Z",
+        "X-Apple-I-TimeZone": str(datetime.now(timezone.utc).astimezone().tzinfo),
         "loc": locale.getdefaultlocale()[0] or "en_US",
         "X-Apple-Locale": locale.getdefaultlocale()[0] or "en_US",
         "X-Apple-I-MD-RINFO": "17106176",  # either 17106176 or 50660608
@@ -190,8 +189,11 @@ def generate_meta_headers(serial="0", user_id=uuid.uuid4(), device_id=uuid.uuid4
     }
 
 
-def encrypt_password(password, salt, iterations):
+def encrypt_password(password, salt, iterations, protocol):
+    assert protocol in ["s2k", "s2k_fo"]
     p = hashlib.sha256(password.encode("utf-8")).digest()
+    if protocol == "s2k_fo":
+        p = p.hex().encode("utf-8")
     return pbkdf2.PBKDF2(p, salt, iterations, SHA256).read(32)
 
 
@@ -236,20 +238,30 @@ def sms_second_factor(dsid, idms_token):
     }
 
     headers.update(generate_anisette_headers())
-
-    # TODO: Actually get the correct id, probably in the above GET
-    body = {"phoneNumber": {"id": 1}, "mode": "sms"}
+    
+    # Extract the "boot_args" from the auth page to get the id of the trusted phone number
+    pattern = r'<script.*class="boot_args">\s*(.*?)\s*</script>'
+    auth = requests.get("https://gsa.apple.com/auth", headers=headers, verify=False)
+    sms_id = 1
+    match = re.search(pattern, auth.text, re.DOTALL)
+    if match:
+        boot_args = json.loads(match.group(1).strip())
+        try: 
+            sms_id = boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]
+        except KeyError as e:    
+            logger.debug(match.group(1).strip())        
+            logger.error("Key for sms id not found. Using the first phone number")        
+    else:
+      logger.debug(auth.text)
+      logger.error("Script for sms id not found. Using the first phone number")        
+        
+    logger.info(f"Using phone with id {sms_id} for SMS2FA")
+    body = {"phoneNumber": {"id": sms_id }, "mode": "sms"}
 
     # This will send the 2FA code to the user's phone over SMS
     # We don't care about the response, it's just some HTML with a form for entering the code
     # Easier to just use a text prompt
-    t = requests.put(
-        "https://gsa.apple.com/auth/verify/phone/",
-        json=body,
-        headers=headers,
-        verify=False,
-        timeout=5
-    )
+
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
     code = input("Enter SMS 2FA code: ")
 
