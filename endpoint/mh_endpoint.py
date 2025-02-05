@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
-import json
-import ssl
-import os
-import requests
-from datetime import datetime
-import time
-import config
 import base64
+import json
+import logging
+import os
+import ssl
+import time
 from collections import OrderedDict
-
+from datetime import datetime,  timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+import requests
+
+import config
 from register import apple_cryptography, pypush_gsa_icloud
 
-import logging
 logger = logging.getLogger()
 
 
@@ -126,11 +126,11 @@ class ServerHandler(BaseHTTPRequestHandler):
                          ", is your anisette running and accepting Connections?")
             self.send_response(504)
         except Exception as e:
-            logger.error(f"Unknown error occured {e}", exc_info=True)
+            logger.error(f"Unknown error occurred {e}", exc_info=True)
             self.send_response(501)
 
     def getCurrentTimes(self):
-        clientTime = datetime.utcnow().replace(microsecond=0).isoformat() + 'Z'
+        clientTime = datetime.now(timezone.utc).replace(microsecond=0).isoformat() + 'Z'
         clientTimestamp = int(datetime.now().strftime('%s'))
         return clientTime, time.tzname[1], clientTimestamp
 
@@ -140,14 +140,13 @@ def getAuth(regenerate=False, second_factor='sms'):
         with open(config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
-        mobileme = pypush_gsa_icloud.icloud_login_mobileme(username=config.USER, password=config.PASS,
-                                                           second_factor=second_factor)
+        mobileme = pypush_gsa_icloud.icloud_login_mobileme(username=config.USER, password=config.PASS)
         logger.debug('Mobileme result: ' + mobileme)
         j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
              ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
         with open(config.getConfigFile(), "w") as f:
             json.dump(j, f)
-    return (j['dsid'], j['searchPartyToken'])
+    return j['dsid'], j['searchPartyToken']
 
 
 if __name__ == "__main__":
