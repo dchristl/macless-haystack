@@ -13,6 +13,8 @@ This firmware consumes more power when more than 1 key is used. The controller w
 - Copy your previously generated PREFIX_keyfile in the same folder 
 - Patch the firmware with your keyfile (Change the path if necessary!)
 
+Note that, in the commands below, you only have to change the `PREFIX_keyfile` part, the `OFFLINEFINDINGPUBLICKEYHERE` should stay as it is, as that's a marker for the binary.
+
 ```bash
 # For the nrf51
 export LC_CTYPE=C
