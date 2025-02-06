@@ -261,6 +261,13 @@ def sms_second_factor(dsid, idms_token):
     # This will send the 2FA code to the user's phone over SMS
     # We don't care about the response, it's just some HTML with a form for entering the code
     # Easier to just use a text prompt
+    requests.put(
+        "https://gsa.apple.com/auth/verify/phone/",
+        json=body,
+        headers=headers,
+        verify=False,
+        timeout=5
+    )
 
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
     code = input("Enter SMS 2FA code: ")
