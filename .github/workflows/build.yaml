@@ -57,14 +57,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: christld/macless-haystack:latest,christld/macless-haystack:v${{ env.VERSION }},        
-#      - name: Install ARM Toolchain
-#        uses: carlosperate/arm-none-eabi-gcc-action@v1
-#        with:
-#          release: '10-2020-q4'
-#      - name: Install Nordic Toolchain
-#        run: |
-#          wget https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/desktop-software/nrf-command-line-tools/sw/versions-10-x-x/10-23-0/nrf-command-line-tools_10.23.0_amd64.deb
-#          sudo dpkg -i nrf-command-line-tools_10.23.0_amd64.deb
+      - name: Install ARM Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: '10-2020-q4'
+      - name: Install Nordic Toolchain
+        run: |
+          wget https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/desktop-software/nrf-command-line-tools/sw/versions-10-x-x/10-23-0/nrf-command-line-tools_10.23.0_amd64.deb
+          sudo dpkg -i nrf-command-line-tools_10.23.0_amd64.deb
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
@@ -77,33 +77,33 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
-#      - name: GH-Page Build
-#        working-directory: ./macless_haystack
-#        run: |
-#          flutter pub get
-#          flutter build web --profile --base-href "/macless-haystack/"
+      - name: GH-Page Build
+        working-directory: ./macless_haystack
+        run: |
+          flutter pub get
+          flutter build web --profile --base-href "/macless-haystack/"
       - name: Deploy to Github Pages
         if: github.ref == 'refs/heads/dev'  
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./macless_haystack/build/web
 
-#      - name: Web Build
-#        working-directory: ./macless_haystack
-#        run: |
-#          flutter pub get
-#          flutter build web --release
-#      - name: Copy files to web application
-#        run: |
-#          mkdir -p ./macless_haystack/build/webapplication
-#          cp -R ./macless_haystack/build/web ./macless_haystack/build/webapplication
-#          cd ./macless_haystack/build/webapplication
-#          zip -r webapplication.zip .
-#      - name: Upload Web Artifacts
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: webapplication
-#          path: ./macless_haystack/build/webapplication
+      - name: Web Build
+        working-directory: ./macless_haystack
+        run: |
+          flutter pub get
+          flutter build web --release
+      - name: Copy files to web application
+        run: |
+          mkdir -p ./macless_haystack/build/webapplication
+          cp -R ./macless_haystack/build/web ./macless_haystack/build/webapplication
+          cd ./macless_haystack/build/webapplication
+          zip -r webapplication.zip .
+      - name: Upload Web Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapplication
+          path: ./macless_haystack/build/webapplication
       - name: Android Build
         working-directory: ./macless_haystack
         run: |
@@ -120,45 +120,45 @@ jobs:
             ~/.cache/pip
             ~/.platformio/.cache
           key: ${{ runner.os }}-pio
-#      - uses: actions/setup-python@v4
-#        with:
-#          python-version: '3.10'
-#      - name: Install PlatformIO Core
-#        run: pip install --upgrade platformio
-#      - name: Build NRF5x firmware
-#        run: |
-#          cd firmware/nrf5x/
-#          make build
-#          make clean
-#          NRF_MODEL=nrf51 make build
-#      - name: Build ESP32 firmware
-#        run: |
-#          pio run -d firmware/ESP32/
-#          cd firmware/ESP32/.pio/build/esp32dev/
-#          zip -r esp32-firmware.zip firmware.bin partitions.bin bootloader.bin
-#      - name: Upload firmware
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: esp32-firmware
-#          path: |
-#            firmware/ESP32/.pio/build/esp32dev/firmware.bin
-#            firmware/ESP32/.pio/build/esp32dev/partitions.bin
-#            firmware/ESP32/.pio/build/esp32dev/bootloader.bin
-#      - name: Delete old drafts
-#        uses: hugo19941994/delete-draft-releases@v1.0.0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Create Release
-#        uses: "marvinpinto/action-automatic-releases@latest"
-#        with:
-#          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-#          automatic_release_tag: v${{ env.VERSION }}
-#          title: v${{ env.VERSION }}
-#          draft: true
-#          prerelease: false
-#          files: |
-#            generate_keys.py
-#            firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
-#            firmware/nrf5x/compiled/*.bin
-#            ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
-#            ./macless_haystack/build/webapplication/webapplication.zip
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+      - name: Build NRF5x firmware
+        run: |
+          cd firmware/nrf5x/
+          make build
+          make clean
+          NRF_MODEL=nrf51 make build
+      - name: Build ESP32 firmware
+        run: |
+          pio run -d firmware/ESP32/
+          cd firmware/ESP32/.pio/build/esp32dev/
+          zip -r esp32-firmware.zip firmware.bin partitions.bin bootloader.bin
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-firmware
+          path: |
+            firmware/ESP32/.pio/build/esp32dev/firmware.bin
+            firmware/ESP32/.pio/build/esp32dev/partitions.bin
+            firmware/ESP32/.pio/build/esp32dev/bootloader.bin
+      - name: Delete old drafts
+        uses: hugo19941994/delete-draft-releases@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: v${{ env.VERSION }}
+          title: v${{ env.VERSION }}
+          draft: true
+          prerelease: false
+          files: |
+            generate_keys.py
+            firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
+            firmware/nrf5x/compiled/*.bin
+            ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
+            ./macless_haystack/build/webapplication/webapplication.zip
