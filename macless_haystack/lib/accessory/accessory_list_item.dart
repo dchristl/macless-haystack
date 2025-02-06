@@ -1,10 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:macless_haystack/accessory/Accessory_List_Item_Battery.dart';
 import 'package:macless_haystack/accessory/accessory_icon.dart';
 import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:intl/intl.dart';
+
+import 'accessory_battery.dart';
 
 class AccessoryListItem extends StatelessWidget {
   /// The accessory to display the information for.
@@ -65,14 +66,12 @@ class AccessoryListItem extends StatelessWidget {
                   : Theme.of(context).disabledColor,
             ),
           ),
-          subtitle: Column(
+          subtitle: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(locationString + dateString),
-              if (accessory.lastBatteryStatus != null)
-                AccessoryListItemBattery(
-                  accessory: accessory,
-                )
+              const SizedBox(width: 5),
+              buildIcon(),
             ],
           ),
           trailing: distance,
@@ -84,5 +83,21 @@ class AccessoryListItem extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget buildIcon() {
+    switch (accessory.lastBatteryStatus) {
+      case AccessoryBatteryStatus.ok:
+        return const Icon(Icons.battery_full, color: Colors.green, size: 15);
+      case AccessoryBatteryStatus.medium:
+        return const Icon(Icons.battery_3_bar,
+            color: Colors.orange, size: 15);
+      case AccessoryBatteryStatus.low:
+        return const Icon(Icons.battery_1_bar, color: Colors.red, size: 15);
+      case AccessoryBatteryStatus.criticalLow:
+        return const Icon(Icons.battery_alert, color: Colors.red, size: 15);
+      default:
+        return const SizedBox(width: 15);
+    }
   }
 }
