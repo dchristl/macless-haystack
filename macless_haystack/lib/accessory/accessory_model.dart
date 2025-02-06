@@ -209,12 +209,13 @@ class Accessory {
         isActive = json['isActive'],
         isDeployed = json['isDeployed'],
         _icon = json['icon'],
-        color = Color(int.parse(json['color'], radix: 16)),
+        color = Color(int.parse(json['color'].substring(0, 8), radix: 16)),
         usesDerivation = json['usesDerivation'] ?? false,
         symmetricKey = json['symmetricKey'],
         lastDerivationTimestamp = json['lastDerivationTimestamp'],
         updateInterval = json['updateInterval'],
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'],
+        lastBatteryStatus = json['lastBatteryStatus'] != null ? AccessoryBatteryStatus.values.byName(json['lastBatteryStatus']) : null,
         hashes = json['hashes'] != null
             ? (json['hashes'] as List).map((e) => e.toString()).toSet()
             : <String>{},
@@ -242,7 +243,7 @@ class Accessory {
         'isActive': isActive,
         'isDeployed': isDeployed,
         'icon': _icon,
-        'color': color.toString().split('(0x')[1].split(')')[0],
+        'color': color.value.toRadixString(16).padLeft(8, '0'),
         'usesDerivation': usesDerivation,
         'hashes': hashes.toList(),
         'symmetricKey': symmetricKey,
@@ -250,6 +251,7 @@ class Accessory {
         'updateInterval': updateInterval,
         'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
         'additionalKeys': additionalKeys,
+        ...lastBatteryStatus != null ? {'lastBatteryStatus': lastBatteryStatus!.name} : {}
       };
 
   /// Returns the Base64 encoded hash of the advertisement key
