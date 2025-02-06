@@ -53,7 +53,7 @@ class AccessoryListItem extends StatelessWidget {
         }
         // Format published date in a human readable way
         String? dateString = accessory.datePublished != null
-            ? ' · ${DateFormat('dd.MM.yyyy kk:mm').format(accessory.datePublished!)}'
+            ? ' · ${DateFormat('dd.MM.yyyy HH:mm').format(accessory.datePublished!)}'
             : '';
         return ListTile(
           onTap: onTap,
