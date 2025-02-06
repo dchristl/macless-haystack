@@ -107,14 +107,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
     return TextButton(
         style: ButtonStyle(
             padding:
-                MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(10)),
-            foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
+                WidgetStateProperty.all<EdgeInsets>(const EdgeInsets.all(10)),
+            foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
                 return Colors.white;
               },
             ),
-            backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
+            backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
                 return Colors.indigo;
               },
             )),

@@ -159,8 +159,8 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
               ListTile(
                 title: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
+                    backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                      (Set<WidgetState> states) {
                         return Theme.of(context).colorScheme.error;
                       },
                     ),

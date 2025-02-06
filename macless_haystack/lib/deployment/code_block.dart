@@ -21,7 +21,7 @@ class CodeBlock extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 50),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
             ),
             padding: const EdgeInsets.all(5),
             child: SelectableText(text),
