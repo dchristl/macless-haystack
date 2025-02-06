@@ -48,9 +48,9 @@ dependencies:
 
   # Location
 
-  flutter_map: ^7.0.1
-  flutter_map_cancellable_tile_provider: ^3.0.0
-  location: ^7.0.1
+  flutter_map: ^8.0.0
+  flutter_map_cancellable_tile_provider: ^3.1.0
+  location: ^8.0.0
   geocoding: ^3.0.0
 
   # Storage
