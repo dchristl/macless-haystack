@@ -239,29 +239,19 @@ def sms_second_factor(dsid, idms_token):
 
     headers.update(generate_anisette_headers())
     
-    # Extract the "boot_args" from the auth page to get the id of the trusted phone number
-    pattern = r'<script.*class="boot_args">\s*(.*?)\s*</script>'
-    auth = requests.get("https://gsa.apple.com/auth", headers=headers, verify=False)
-    sms_id = 1
-    match = re.search(pattern, auth.text, re.DOTALL)
-    if match:
-        boot_args = json.loads(match.group(1).strip())
-        try: 
-            sms_id = boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]
-        except KeyError as e:    
-            logger.debug(match.group(1).strip())        
-            logger.error("Key for sms id not found. Using the first phone number")        
-    else:
-      logger.debug(auth.text)
-      logger.error("Script for sms id not found. Using the first phone number")        
-        
-    logger.info(f"Using phone with id {sms_id} for SMS2FA")
-    body = {"phoneNumber": {"id": sms_id }, "mode": "sms"}
+    # TODO: Actually get the correct id, probably in the above GET
+    body = {"phoneNumber": {"id": 1}, "mode": "sms"}
 
     # This will send the 2FA code to the user's phone over SMS
     # We don't care about the response, it's just some HTML with a form for entering the code
     # Easier to just use a text prompt
-
+    requests.put(
+        "https://gsa.apple.com/auth/verify/phone/",
+        json=body,
+        headers=headers,
+        verify=False,
+        timeout=5
+    )
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
     code = input("Enter SMS 2FA code: ")
 
