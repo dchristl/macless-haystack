@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import ssl
+import sys
 import time
 from collections import OrderedDict
 from datetime import datetime,  timezone
@@ -29,9 +30,9 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Private-Network","true")
 
     def authenticate(self):
-        user = config.getEndpointUser()
-        passw = config.getEndpointPass()
-        if (user is None or user == "") and (passw is None or passw == ""):
+        endpoint_user = config.getEndpointUser()
+        endpoint_pass = config.getEndpointPass()
+        if (endpoint_user is None or endpoint_user == "") and (endpoint_pass is None or endpoint_pass == ""):
             return True
 
         auth_header = self.headers.get('authorization')
@@ -40,7 +41,7 @@ class ServerHandler(BaseHTTPRequestHandler):
             if auth_type.lower() == 'basic':
                 auth_decoded = base64.b64decode(auth_encoded).decode('utf-8')
                 username, password = auth_decoded.split(':', 1)
-                if username == user and password == passw:
+                if username == endpoint_user and password == endpoint_pass:
                     return True
 
         return False
@@ -149,8 +150,26 @@ def getAuth(regenerate=False, second_factor='sms'):
     return j['dsid'], j['searchPartyToken']
 
 
+
+def check_if_anisette_is_reachable(max_retries=3, retry_delay=10):
+    server_url = config.getAnisetteServer()
+    logging.info(f'Checking if Anisette {server_url} is reachable')
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(server_url, timeout=5)
+            response.raise_for_status()
+            return
+        except (requests.RequestException, requests.HTTPError) as e:
+            logger.error(f"Attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                logger.error(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+    logger.error(f"Max retries reached. Program will exit. Make sure your Anisette is reachable and start again with 'docker start -ai macless-haystack'")
+    sys.exit()
+
 if __name__ == "__main__":
-    logging.debug(f'Searching for token at ' + config.getConfigFile())
+    check_if_anisette_is_reachable()
+    logging.info(f'Searching for token at ' + config.getConfigFile())
     if not os.path.exists(config.getConfigFile()):
         logging.info(f'No auth-token found.')
         apple_cryptography.registerDevice()

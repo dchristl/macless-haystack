@@ -1,3 +1,5 @@
+import time
+
 import urllib3
 from getpass import getpass
 import plistlib as plist
@@ -37,6 +39,7 @@ def icloud_login_mobileme(username='', password=''):
         username = input('Apple ID: ')
     if not password:
         password = getpass('Password: ')
+
     g = gsa_authenticate(username, password)
     pet = g["t"]["com.apple.gs.idms.pet"]["token"]
     adsid = g["adsid"]
@@ -71,10 +74,10 @@ def icloud_login_mobileme(username='', password=''):
 def gsa_authenticate(username, password):
     # Password is None as we'll provide it later
     usr = srp.User(username, bytes(), hash_alg=srp.SHA256, ng_type=srp.NG_2048)
-    _, A = usr.start_authentication()
+    _, a = usr.start_authentication()
     logger.info("Authentication request initialization")
     r = gsa_authenticated_request(
-        {"A2k": A, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
+        {"A2k": a, "ps": ["s2k", "s2k_fo"], "u": username, "o": "init"})
 
     if r["sp"] not in ["s2k", "s2k_fo"]:
         logger.warning(f"This implementation only supports s2k and sk2_fo. Server returned {r['sp']}")
@@ -219,14 +222,12 @@ def decrypt_cbc(usr, data):
     return padder.update(data) + padder.finalize()
 
 
+WAITING_TIME = 60
+
+
 def sms_second_factor(dsid, idms_token):
     identity_token = base64.b64encode(
         (dsid + ":" + idms_token).encode()).decode()
-
-    # TODO: Actually do this request to get user prompt data
-    # a = requests.get("https://gsa.apple.com/auth", verify=False)
-    # This request isn't strictly necessary though,
-    # and most accounts should have their id 1 SMS, if not contribute ;)
 
     headers = {
         "User-Agent": "Xcode",
@@ -238,7 +239,7 @@ def sms_second_factor(dsid, idms_token):
     }
 
     headers.update(generate_anisette_headers())
-    
+
     # Extract the "boot_args" from the auth page to get the id of the trusted phone number
     pattern = r'<script.*class="boot_args">\s*(.*?)\s*</script>'
     auth = requests.get("https://gsa.apple.com/auth", headers=headers, verify=False)
@@ -246,31 +247,38 @@ def sms_second_factor(dsid, idms_token):
     match = re.search(pattern, auth.text, re.DOTALL)
     if match:
         boot_args = json.loads(match.group(1).strip())
-        try: 
+        try:
             sms_id = boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]
-        except KeyError as e:    
-            logger.debug(match.group(1).strip())        
-            logger.error("Key for sms id not found. Using the first phone number")        
+        except KeyError as e:
+            logger.debug(match.group(1).strip())
+            logger.error("Key for sms id not found. Using the first phone number")
     else:
-      logger.debug(auth.text)
-      logger.error("Script for sms id not found. Using the first phone number")        
-        
+        logger.debug(auth.text)
+        logger.error("Script for sms id not found. Using the first phone number")
+
     logger.info(f"Using phone with id {sms_id} for SMS2FA")
-    body = {"phoneNumber": {"id": sms_id }, "mode": "sms"}
-
-    # This will send the 2FA code to the user's phone over SMS
-    # We don't care about the response, it's just some HTML with a form for entering the code
-    # Easier to just use a text prompt
-    requests.put(
-        "https://gsa.apple.com/auth/verify/phone/",
-        json=body,
-        headers=headers,
-        verify=False,
-        timeout=5
-    )
-
+    body = {"phoneNumber": {"id": sms_id}, "mode": "sms"}
+    for handler in logger.handlers:
+        handler.flush()
     # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
-    code = input("Enter SMS 2FA code: ")
+    start_time = time.perf_counter()
+    code = input(
+        f"Enter SMS 2FA code (If you do not receive a code, wait {WAITING_TIME}s and press Enter. An attempt will be made to request the SMS in another way.): ")
+    end_time = time.perf_counter()
+
+    if code == "":
+        elapsed_time = int(end_time - start_time)
+        if elapsed_time < WAITING_TIME:
+            waiting_time = WAITING_TIME - elapsed_time
+            logger.info(
+                f"You only waited {elapsed_time} seconds. The next request will be started in {waiting_time} seconds")
+            time.sleep(waiting_time)
+            code = input(f"Enter SMS 2FA code if you have received it in the meantime, otherwise press Enter: ")
+
+            if code == "":
+                code = request_code(headers)
+        else:
+            code = request_code(headers)
 
     body['securityCode'] = {'code': code}
 
@@ -294,3 +302,19 @@ def sms_second_factor(dsid, idms_token):
     else:
         raise Exception(
             "2FA unsuccessful. Maybe wrong code or wrong number. Check your account details.")
+
+
+def request_code(headers):
+    # This will send the 2FA code to the user's phone over SMS
+    # We don't care about the response, it's just some HTML with a form for entering the code
+    # Easier to just use a text prompt
+    body = {"phoneNumber": {"id": 1}, "mode": "sms"}
+    requests.put(
+        "https://gsa.apple.com/auth/verify/phone/",
+        json=body,
+        headers=headers,
+        verify=False,
+        timeout=5
+    )
+    code = input(f"Enter SMS 2FA code:")
+    return  code
