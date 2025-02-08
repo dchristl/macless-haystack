@@ -1,24 +1,18 @@
 #!/usr/bin/env python
 
-import os
-import glob
-import datetime
-import argparse
-import base64
-import json
 import hashlib
-import codecs
-import struct
-import requests
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.backends import default_backend
-import sqlite3
-import sys
-from .pypush_gsa_icloud import icloud_login_mobileme, generate_anisette_headers
-
-import config
+import json
 import logging
+import os
+import struct
+import sys
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher
+
+from endpoint import mh_config
+from .pypush_gsa_icloud import icloud_login_mobileme
+
 logger = logging.getLogger()
 
 
@@ -42,13 +36,13 @@ def decode_tag(data):
 
 
 def getAuth(regenerate=False):
-    if os.path.exists(config.getConfigFile()) and not regenerate:
-        with open(config.getConfigFile(), "r") as f:
+    if os.path.exists(mh_config.getConfigFile()) and not regenerate:
+        with open(mh_config.getConfigFile(), "r") as f:
             j = json.load(f)
     else:
         logger.info('Trying to login')
         mobileme = icloud_login_mobileme(
-            username=config.getUser(), password=config.getPass())
+            username=mh_config.getUser(), password=mh_config.getPass())
 
         logger.debug('Answer from icloud login')
         logger.debug(mobileme)
@@ -56,7 +50,7 @@ def getAuth(regenerate=False):
         if status == 0:
             j = {'dsid': mobileme['dsid'], 'searchPartyToken': mobileme['delegates']
                  ['com.apple.mobileme']['service-data']['tokens']['searchPartyToken']}
-            with open(config.getConfigFile(), "w") as f:
+            with open(mh_config.getConfigFile(), "w") as f:
                 json.dump(j, f)
         else:
             msg = mobileme['delegates']['com.apple.mobileme']['status-message']
