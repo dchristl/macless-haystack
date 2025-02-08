@@ -1,6 +1,8 @@
 import logging
 import os
 import configparser
+import sys
+sys.path.append(os.getcwd())
 
 
 CONFIG_PATH = "data"
