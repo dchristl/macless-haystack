@@ -36,6 +36,7 @@ logger = logging.getLogger()
 
 
 def icloud_login_mobileme(username='', password=''):
+    print("")  #Sometimes no output
     if not username:
         username = input('Apple ID: ')
     if not password:
