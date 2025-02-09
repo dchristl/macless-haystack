@@ -4,7 +4,7 @@ FROM python:slim
 ENV TERM xterm
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y curl nano iproute2 git cron
+RUN apt-get update && apt-get install -y curl nano iproute2 git cron && rm -rf /var/lib/apt/lists/*
 # Clone endpoint-folder
 RUN git init
 RUN git remote add origin https://github.com/dchristl/macless-haystack.git
@@ -16,4 +16,4 @@ RUN git checkout dev
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r endpoint/requirements.txt
 # Update server files on startup
-CMD ["sh", "-c", "./endpoint/updateRepo && python -u endpoint/mh_endpoint.py"]
+CMD ["sh", "-c", "./endpoint/updateRepo && exec python -u endpoint/mh_endpoint.py"]
