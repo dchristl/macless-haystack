@@ -16,4 +16,4 @@ RUN git checkout main
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r endpoint/requirements.txt
 # Update server files on startup
-CMD ["sh", "-c", "./endpoint/updateRepo && python endpoint/mh_endpoint.py"]
+CMD ["sh", "-c", "./endpoint/updateRepo && python -u endpoint/mh_endpoint.py"]
