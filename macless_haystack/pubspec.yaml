@@ -54,7 +54,7 @@ dependencies:
   geocoding: ^3.0.0
 
   # Storage
-  shared_preferences: ^2.5.1
+  shared_preferences: ^2.5.2
   flutter_secure_storage: ^9.2.4
   file_picker: ^8.3.3
 
