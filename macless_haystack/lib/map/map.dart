@@ -102,11 +102,14 @@ class _AccessoryMapState extends State<AccessoryMap> {
             initialZoom: 13.0,
             backgroundColor: Theme.of(context).colorScheme.surface,
             interactionOptions: const InteractionOptions(
+                enableMultiFingerGestureRace: true,
                 flags: InteractiveFlag.pinchZoom |
                     InteractiveFlag.drag |
                     InteractiveFlag.doubleTapZoom |
+                    InteractiveFlag.scrollWheelZoom |
                     InteractiveFlag.flingAnimation |
-                    InteractiveFlag.pinchMove)),
+                    InteractiveFlag.pinchMove |
+                    InteractiveFlag.pinchZoom)),
         children: [
           TileLayer(
             tileProvider: CancellableNetworkTileProvider(),

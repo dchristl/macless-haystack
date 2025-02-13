@@ -92,11 +92,15 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                   initialZoom: 13.0,
                   onMapReady: mapReadyInit,
                   interactionOptions: const InteractionOptions(
+                      enableMultiFingerGestureRace: true,
                       flags: InteractiveFlag.pinchZoom |
                           InteractiveFlag.drag |
                           InteractiveFlag.doubleTapZoom |
+                          InteractiveFlag.scrollWheelZoom |
                           InteractiveFlag.flingAnimation |
-                          InteractiveFlag.pinchMove),
+                          InteractiveFlag.pinchMove
+                          | InteractiveFlag.pinchZoom
+                  ),
                   onTap: (_, __) {
                     setState(() {
                       showPopup = false;
