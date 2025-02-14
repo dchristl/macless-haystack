@@ -231,9 +231,9 @@ class AccessoryRegistry extends ChangeNotifier {
     //Update the latest timestamp
     if (decryptedReports.isNotEmpty) {
       var lastReport = decryptedReports[decryptedReports.length - 1];
-      var oldTs = DateTime(1970);
-      var latestReportTS = lastReport.timestamp ?? DateTime(1971);
-      if (oldTs.isBefore(latestReportTS)) {
+      var oldTs = accessory.datePublished;
+      var latestReportTS = lastReport.timestamp ?? lastReport.published ?? DateTime(1971);
+      if (oldTs == null || oldTs.isBefore(latestReportTS) ) {
         //only an actualization if oldTS is not set or is older than the latest of the new ones
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);

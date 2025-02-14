@@ -143,7 +143,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
     var keyPair = await FindMyController.importKeyPair(accessoryDTO.privateKey);
 
     Accessory newAccessory = Accessory(
-        datePublished: DateTime.now(),
+        datePublished: DateTime(1970),
         hashedPublicKey: keyPair.hashedPublicKey,
         id: accessoryDTO.id.toString(),
         name: accessoryDTO.name,
