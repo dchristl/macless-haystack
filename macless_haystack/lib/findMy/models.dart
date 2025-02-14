@@ -36,7 +36,7 @@ class FindMyLocationReport {
 
   FindMyLocationReport.withHash(
       this.latitude, this.longitude, this.timestamp, this.hash) {
-    accuracy = 0;
+    accuracy = 50;
   }
 
   FindMyLocationReport.decrypted(this.result, this.base64privateKey, this.id) {

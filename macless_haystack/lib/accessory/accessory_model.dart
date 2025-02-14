@@ -215,7 +215,9 @@ class Accessory {
         lastDerivationTimestamp = json['lastDerivationTimestamp'],
         updateInterval = json['updateInterval'],
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'],
-        lastBatteryStatus = json['lastBatteryStatus'] != null ? AccessoryBatteryStatus.values.byName(json['lastBatteryStatus']) : null,
+        lastBatteryStatus = json['lastBatteryStatus'] != null
+            ? AccessoryBatteryStatus.values.byName(json['lastBatteryStatus'])
+            : null,
         hashes = json['hashes'] != null
             ? (json['hashes'] as List).map((e) => e.toString()).toSet()
             : <String>{},
@@ -251,7 +253,9 @@ class Accessory {
         'updateInterval': updateInterval,
         'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
         'additionalKeys': additionalKeys,
-        ...lastBatteryStatus != null ? {'lastBatteryStatus': lastBatteryStatus!.name} : {}
+        ...lastBatteryStatus != null
+            ? {'lastBatteryStatus': lastBatteryStatus!.name}
+            : {}
       };
 
   /// Returns the Base64 encoded hash of the advertisement key
@@ -378,4 +382,12 @@ class Accessory {
   void clearHashesNotInList(Set<String> hashesInReports) {
     hashes.removeWhere((element) => !hashesInReports.contains(element));
   }
+
+  void clearLocationHistory() {
+    locationHistory.clear();
+  }
+  List<Pair<dynamic, dynamic>> getLocationHistory(){
+    return locationHistory;
+  }
+
 }
