@@ -208,7 +208,7 @@ class AccessoryRegistry extends ChangeNotifier {
       var currHash = reports[i].hash;
       if (!accessory.containsHash(currHash)) {
         accessory.addDecryptedHash(currHash);
-        logger.d('Decrypting report $i of ${reports.length}');
+        logger.d('Decrypting report $i of ${reports.length} with id $currHash');
         await reports[i].decrypt();
         decryptedReports.add(reports[i]);
       } else {

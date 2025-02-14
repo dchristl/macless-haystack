@@ -40,7 +40,7 @@ class FindMyLocationReport {
   }
 
   FindMyLocationReport.decrypted(this.result, this.base64privateKey, this.id) {
-    hash = result['payload'];
+    hash = result['id'];
   }
 
   Location get location => Location(latitude!, longitude!);
