@@ -28,10 +28,11 @@ class KeyManagement extends StatelessWidget {
         return Scrollbar(
           child: ListView(
             children: accessories.map((accessory) {
-              String lastSeen = accessory.datePublished != null
+              String lastSeen = accessory.datePublished != null &&
+                      accessory.datePublished != DateTime(1970)
                   ? DateFormat('dd.MM.yyyy kk:mm')
                       .format(accessory.datePublished!)
-                  : 'Unknown';
+                  : 'Never';
               return Material(
                   child: ListTile(
                 onTap: () {

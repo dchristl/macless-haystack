@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:macless_haystack/accessory/accessory_icon.dart';
@@ -52,7 +51,8 @@ class AccessoryListItem extends StatelessWidget {
           }
         }
         // Format published date in a human readable way
-        String? dateString = accessory.datePublished != null
+        String? dateString = accessory.datePublished != null &&
+                accessory.datePublished != DateTime(1970)
             ? ' · ${DateFormat('dd.MM.yyyy HH:mm').format(accessory.datePublished!)}'
             : '';
         return ListTile(
@@ -90,8 +90,7 @@ class AccessoryListItem extends StatelessWidget {
       case AccessoryBatteryStatus.ok:
         return const Icon(Icons.battery_full, color: Colors.green, size: 15);
       case AccessoryBatteryStatus.medium:
-        return const Icon(Icons.battery_3_bar,
-            color: Colors.orange, size: 15);
+        return const Icon(Icons.battery_3_bar, color: Colors.orange, size: 15);
       case AccessoryBatteryStatus.low:
         return const Icon(Icons.battery_1_bar, color: Colors.red, size: 15);
       case AccessoryBatteryStatus.criticalLow:
