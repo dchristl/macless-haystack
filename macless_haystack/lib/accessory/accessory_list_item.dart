@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -55,7 +55,7 @@ class AccessoryListItem extends StatelessWidget {
         // Format published date in a human readable way
         String? dateString = accessory.datePublished != null &&
                 accessory.datePublished != DateTime(1970)
-            ? ' · ${DateFormat('dd.MM.yyyy HH:mm').format(accessory.datePublished!)}'
+            ? ' · ${DateFormat.yMMMd(Platform.localeName).format(accessory.datePublished!)} ${DateFormat.jm(Platform.localeName).format(accessory.datePublished!)}'
             : '';
         return ListTile(
           onTap: onTap,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:universal_io/io.dart';
 
 class LocationPopup extends Marker {
   /// The location to display.
@@ -38,8 +39,7 @@ class LocationPopup extends Marker {
                     Expanded(
                         child: Center(
                             child: Text(
-                      '${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(time.toLocal())} - ${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(end.toLocal())}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      '${DateFormat.Md(Platform.localeName).format(time)} ${DateFormat.jm(Platform.localeName).format(time)} - ${DateFormat.Md(Platform.localeName).format(end)} ${DateFormat.jm(Platform.localeName).format(end)}',
                     ))),
                     Expanded(
                         child: Center(
