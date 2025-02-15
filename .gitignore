@@ -131,3 +131,4 @@ endpoint/data/*.json
 endpoint/venv/*
 *.iml
 .idea
+/macless_haystack/android/app/.cxx/**

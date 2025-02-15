@@ -35,7 +35,7 @@ class LocationModel extends ChangeNotifier {
       }
     }
 
-    permissionGranted = await location.hasPermission();
+    permissionGranted = await location.requestPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
