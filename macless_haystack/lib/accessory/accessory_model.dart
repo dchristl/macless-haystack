@@ -294,6 +294,7 @@ class Accessory {
     var reportDate = report.timestamp ?? report.published!;
     logger.d(
         'Adding report with timestamp $reportDate and ${report.longitude} - ${report.latitude}');
+
     Pair? closest;
     //Find the closest history report by time
     for (int i = 0; i < locationHistory.length; i++) {
@@ -303,7 +304,6 @@ class Accessory {
           reportDate.isAtSameMomentAs(currentPair.end) ||
           (reportDate.isAfter(locationHistory[0].start) &&
               reportDate.isBefore(locationHistory[0].end))) {
-        //new element is after latest history entry, so break directly
         closest = currentPair;
         break;
       }
@@ -338,14 +338,31 @@ class Accessory {
         } else {
           logger.d('Date not changed, because is before current date.');
         }
-      } else {
+      } else if (!reportDate.isAtSameMomentAs(closest.start) &&
+          !reportDate.isAtSameMomentAs(closest.end)) {
         logger.d('Adding new one, because closest is too far away');
         //not like before, so add new one
         Pair<LatLng, DateTime> pair = Pair(
             LatLng(report.latitude!, report.longitude!),
             reportDate,
             reportDate);
+        //add the new one
         locationHistory.add(pair);
+        if (reportDate.isAfter(closest.start) &&
+            reportDate.isBefore(closest.end)) {
+          logger.d(
+              'Splitting closest, because new entry is in between with other location.');
+          //add the closest entry again with the end time only
+          locationHistory.add(Pair(
+              LatLng(closest.location.latitude, closest.location.longitude),
+              closest.end,
+              closest.end));
+          //change the existing closest entry end date to the former start date
+          closest.end = closest.start;
+        }
+      } else {
+        logger.w(
+            'New entry at $reportDate (Lon: ${report.location.longitude}, Lat: ${report.location.latitude}) will be skipped, because we have already an entry at other location. (Lon: ${closest.location.longitude}, Lat: ${closest.location.latitude})');
       }
     } else {
       logger.d('Closest not found. Adding to list.');
@@ -386,8 +403,12 @@ class Accessory {
   void clearLocationHistory() {
     locationHistory.clear();
   }
-  List<Pair<dynamic, dynamic>> getLocationHistory(){
+
+  List<Pair<dynamic, dynamic>> getSortedLocationHistory() {
+    locationHistory.sort((a, b) {
+      return a.start.compareTo(b.start);
+    });
+
     return locationHistory;
   }
-
 }

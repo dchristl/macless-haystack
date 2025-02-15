@@ -168,6 +168,67 @@ void main() {
     expect(locationHistory.elementAt(2).end, DateTime(2024, 1, 1, 12, 0, 0));
   });
 
+  test('Add other location in the middle should split entries', () async {
+    List<FindMyLocationReport> reports =
+        await fillDefaultLocations(registry, accessory);
+    reports.clear();
+    reports.add(FindMyLocationReport.withHash(
+        4,
+        5,
+        DateTime(2024, 1, 1, 8, 30, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+    await registry.fillLocationHistory(reports, accessory);
+    var locationHistory = accessory.getSortedLocationHistory();
+    expect(5, locationHistory.length);
+
+    var latest = accessory.datePublished;
+    var lastLocation = accessory.lastLocation;
+    var endOfFirstEntry = accessory.latestHistoryEntry();
+
+    expect(endOfFirstEntry, DateTime(2024, 1, 1, 8, 0, 0));
+    expect(latest, DateTime(2024, 1, 1, 12, 0, 0));
+    expect(lastLocation, const LatLng(1, 2));
+
+    expect(locationHistory.elementAt(1).start, DateTime(2024, 1, 1, 8, 30, 0));
+    expect(locationHistory.elementAt(1).end, DateTime(2024, 1, 1, 8, 30, 0));
+    expect(locationHistory.elementAt(2).start, DateTime(2024, 1, 1, 9, 0, 0));
+    expect(locationHistory.elementAt(2).end, DateTime(2024, 1, 1, 9, 0, 0));
+  });
+
+  test(
+      'Add location at time already exist will be skipped because of invalid data',
+      () async {
+    List<FindMyLocationReport> reports =
+        await fillDefaultLocations(registry, accessory);
+    reports.clear();
+    reports.add(FindMyLocationReport.withHash(
+        4,
+        5,
+        DateTime(2024, 1, 1, 8, 0, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+
+    reports.add(FindMyLocationReport.withHash(
+        4,
+        5,
+        DateTime(2024, 1, 1, 9, 0, 0),
+        DateTime.now().microsecondsSinceEpoch.toString()));
+    await registry.fillLocationHistory(reports, accessory);
+    var locationHistory = accessory.getSortedLocationHistory();
+    expect(3, locationHistory.length);
+
+    var latest = accessory.datePublished;
+    var lastLocation = accessory.lastLocation;
+    var endOfFirstEntry = accessory.latestHistoryEntry();
+
+    expect(endOfFirstEntry, DateTime(2024, 1, 1, 9, 0, 0));
+    expect(latest, DateTime(2024, 1, 1, 12, 0, 0));
+    expect(lastLocation, const LatLng(1, 2));
+    // Invalid locations added, but first location has not changed
+    expect(locationHistory.elementAt(0).location.latitude, 1);
+    expect(locationHistory.elementAt(0).location.longitude, 2);
+    expect(locationHistory.elementAt(0).start, DateTime(2024, 1, 1, 8, 0, 0));
+  });
+
   test(
       'Add other location at the end should create new entry and change latestLocationTimestamp',
       () async {

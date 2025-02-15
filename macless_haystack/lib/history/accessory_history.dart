@@ -230,7 +230,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
 
   List<Pair<dynamic, dynamic>> filterHistoryEntries() {
     var now = DateTime.now();
-    var filteredEntries = widget.accessory.locationHistory
+    var filteredEntries = widget.accessory.getSortedLocationHistory()
         .where(
           (element) => element.end.isAfter(
             now.subtract(Duration(days: numberOfDays.round())),
