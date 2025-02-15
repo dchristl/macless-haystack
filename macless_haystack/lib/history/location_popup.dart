@@ -31,21 +31,23 @@ class LocationPopup extends Marker {
                 /* NOOP */
               },
               child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        '${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(time.toLocal())} - ${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(end.toLocal())}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Lat: ${location.round(decimals: 2).latitude}, '
-                        'Lng: ${location.round(decimals: 2).longitude}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Center(
+                            child: Text(
+                      '${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(time.toLocal())} - ${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(end.toLocal())}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    Expanded(
+                        child: Center(
+                            child: Text(
+                      'Lat: ${location.round(decimals: 2).latitude}, '
+                      'Lng: ${location.round(decimals: 2).longitude}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                  ],
                 ),
               ),
             ),
