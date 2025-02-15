@@ -6,9 +6,11 @@ import 'package:macless_haystack/location/location_model.dart';
 import 'package:macless_haystack/preferences/user_preferences_model.dart';
 import 'package:macless_haystack/splashscreen.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+void main() async {
   Settings.init();
+  await initializeDateFormatting();
   runApp(const MyApp());
 }
 
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AccessoryRegistry()),
