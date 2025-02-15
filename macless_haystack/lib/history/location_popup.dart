@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -39,7 +38,8 @@ class LocationPopup extends Marker {
                     Expanded(
                         child: Center(
                             child: Text(
-                      '${DateFormat.Md(Platform.localeName).format(time)} ${DateFormat.jm(Platform.localeName).format(time)} - ${DateFormat.Md(Platform.localeName).format(end)} ${DateFormat.jm(Platform.localeName).format(end)}',
+                      '${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(time.toLocal())} - ${DateFormat('MM/dd H:mm', Localizations.localeOf(ctx).toString()).format(end.toLocal())}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ))),
                     Expanded(
                         child: Center(
