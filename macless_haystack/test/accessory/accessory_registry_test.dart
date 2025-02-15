@@ -214,7 +214,7 @@ void main() {
         DateTime.now().microsecondsSinceEpoch.toString()));
     await registry.fillLocationHistory(reports, accessory);
     var locationHistory = accessory.getSortedLocationHistory();
-    expect(0, locationHistory.length);
+    expect(3, locationHistory.length);
 
     var latest = accessory.datePublished;
     var lastLocation = accessory.lastLocation;
