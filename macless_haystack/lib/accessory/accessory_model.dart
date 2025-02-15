@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:macless_haystack/accessory/accessory_battery.dart';
@@ -88,7 +90,7 @@ class Accessory {
 
   /// A list of known locations over time.
   List<Pair<dynamic, dynamic>> locationHistory = [];
-  Set<String> hashes = {};
+  Map<String, dynamic> hashesWithTS = {};
 
   /// Stores address information about the current location.
   Future<Placemark?> place = Future.value(null);
@@ -218,9 +220,9 @@ class Accessory {
         lastBatteryStatus = json['lastBatteryStatus'] != null
             ? AccessoryBatteryStatus.values.byName(json['lastBatteryStatus'])
             : null,
-        hashes = json['hashes'] != null
-            ? (json['hashes'] as List).map((e) => e.toString()).toSet()
-            : <String>{},
+        hashesWithTS = json['hashesWithTS'] != null
+            ? jsonDecode(json['hashesWithTS']) as Map<String, dynamic>
+            : <String, dynamic>{},
         additionalKeys =
             json['additionalKeys']?.cast<String>() ?? List.empty() {
     _init();
@@ -247,7 +249,7 @@ class Accessory {
         'icon': _icon,
         'color': color.value.toRadixString(16).padLeft(8, '0'),
         'usesDerivation': usesDerivation,
-        'hashes': hashes.toList(),
+        'hashesWithTS': jsonEncode(hashesWithTS),
         'symmetricKey': symmetricKey,
         'lastDerivationTimestamp': lastDerivationTimestamp,
         'updateInterval': updateInterval,
@@ -387,17 +389,26 @@ class Accessory {
   }
 
   void addDecryptedHash(String? hash) {
-    if (hash != null) {
-      hashes.add(hash);
+    if (hash != null && hash.length >= 10) {
+      hashesWithTS[hash.substring(hash.length - 10)] =
+          DateTime.now().millisecondsSinceEpoch;
     }
   }
 
   bool containsHash(String? hash) {
-    return hashes.contains(hash);
+    if (hash == null || hash.length < 10) {
+      return false;
+    }
+
+    return hashesWithTS.containsKey(hash.substring(hash.length - 10));
   }
 
-  void clearHashesNotInList(Set<String> hashesInReports) {
-    hashes.removeWhere((element) => !hashesInReports.contains(element));
+  void removeOldHashes() {
+    hashesWithTS.removeWhere((key, value) {
+      int sevenDaysAgo =
+          DateTime.now().millisecondsSinceEpoch - (7 * 24 * 60 * 60 * 1000);
+      return value < sevenDaysAgo;
+    });
   }
 
   void clearLocationHistory() {
