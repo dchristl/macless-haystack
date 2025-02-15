@@ -23,7 +23,7 @@ class LocationPopup extends Marker {
       required this.end,
       required this.ctx})
       : super(
-          width: 200,
+          width: 250,
           height: 150,
           point: location,
           child: Padding(
