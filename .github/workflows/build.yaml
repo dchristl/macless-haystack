@@ -93,6 +93,7 @@ jobs:
         run: |
           flutter pub get
           flutter build web --release
+          flutter test
       - name: Copy files to web application
         run: |
           mkdir -p ./macless_haystack/build/webapplication
