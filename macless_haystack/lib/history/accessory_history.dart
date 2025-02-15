@@ -194,6 +194,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                         visibility[index] = !visibility[index];
                         isLineLayerVisible = visibility[0];
                         isPointLayerVisible = visibility[1];
+                        showPopup = false;
+                        popupEntry = null;
                       });
                     },
                     children: [
@@ -211,6 +213,8 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                 numberOfDays: numberOfDays.toDouble(),
                 onChanged: (double newValue) {
                   setState(() {
+                    showPopup = false;
+                    popupEntry = null;
                     numberOfDays = newValue.toInt();
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       mapReady();
