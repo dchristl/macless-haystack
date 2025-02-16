@@ -65,7 +65,8 @@ class AccessoryDTO {
         colorSpaceName = json['colorSpaceName'],
         usesDerivation = json['usesDerivation'] ?? false,
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'] ?? '',
-        isActive = json['isActive'],
+  /*isDeployed is only for migration an can be removed in the future*/
+        isActive = json['isDeployed'] ?? json['isActive'],
         additionalKeys = json['additionalKeys']?.cast<String>() ?? List.empty();
 
   /// Creates a JSON map of the serialized transfer object.
