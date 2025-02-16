@@ -126,13 +126,9 @@ class ItemExportMenu extends StatelessWidget {
             accessory.color.a,
           ],
           name: accessory.name,
-          lastDerivationTimestamp: accessory.lastDerivationTimestamp,
-          symmetricKey: accessory.symmetricKey,
-          updateInterval: accessory.updateInterval,
           privateKey: privateKey,
           icon: accessory.rawIcon,
           colorSpaceName: 'kCGColorSpaceSRGB',
-          oldestRelevantSymmetricKey: accessory.oldestRelevantSymmetricKey,
           isActive: accessory.isActive,
           additionalKeys: additionalPrivateKeys));
     }

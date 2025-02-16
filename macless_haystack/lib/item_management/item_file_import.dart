@@ -151,10 +151,6 @@ class _ItemFileImportState extends State<ItemFileImport> {
         icon: icon,
         isActive: accessoryDTO.isActive,
         lastLocation: null,
-        lastDerivationTimestamp: accessoryDTO.lastDerivationTimestamp,
-        symmetricKey: accessoryDTO.symmetricKey,
-        updateInterval: accessoryDTO.updateInterval,
-        oldestRelevantSymmetricKey: accessoryDTO.oldestRelevantSymmetricKey,
         additionalKeys: additionalPublicKeys);
 
     registry.addAccessory(newAccessory);

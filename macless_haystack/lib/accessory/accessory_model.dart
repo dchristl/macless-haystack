@@ -50,12 +50,6 @@ class Accessory {
   /// An identifier for the private key stored separately in the key store.
   String hashedPublicKey;
 
-  // Parameters for rolling keys (only relevant is usesDerivation == true)
-  String? symmetricKey;
-  double? lastDerivationTimestamp;
-  int? updateInterval;
-  String? oldestRelevantSymmetricKey;
-
   /// The display name of the accessory.
   String name;
   List<String> additionalKeys;
@@ -100,10 +94,6 @@ class Accessory {
       LatLng? lastLocation,
       String icon = 'mappin',
       this.color = Colors.grey,
-      this.symmetricKey,
-      this.lastDerivationTimestamp,
-      this.updateInterval,
-      this.oldestRelevantSymmetricKey,
       required this.additionalKeys})
       : _icon = icon,
         _lastLocation = lastLocation,
@@ -128,10 +118,6 @@ class Accessory {
         icon: _icon,
         isActive: isActive,
         lastLocation: lastLocation,
-        symmetricKey: symmetricKey,
-        lastDerivationTimestamp: lastDerivationTimestamp,
-        updateInterval: updateInterval,
-        oldestRelevantSymmetricKey: oldestRelevantSymmetricKey,
         additionalKeys: additionalKeys);
   }
 
@@ -200,10 +186,6 @@ class Accessory {
         isActive = json['isDeployed'] ?? json['isActive'],
         _icon = json['icon'],
         color = Color(int.parse(json['color'].substring(0, 8), radix: 16)),
-        symmetricKey = json['symmetricKey'],
-        lastDerivationTimestamp = json['lastDerivationTimestamp'],
-        updateInterval = json['updateInterval'],
-        oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'],
         lastBatteryStatus = json['lastBatteryStatus'] != null
             ? AccessoryBatteryStatus.values.byName(json['lastBatteryStatus'])
             : null,
@@ -235,10 +217,6 @@ class Accessory {
         'icon': _icon,
         'color': color.value.toRadixString(16).padLeft(8, '0'),
         'hashesWithTS': jsonEncode(hashesWithTS),
-        'symmetricKey': symmetricKey,
-        'lastDerivationTimestamp': lastDerivationTimestamp,
-        'updateInterval': updateInterval,
-        'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
         'additionalKeys': additionalKeys,
         ...lastBatteryStatus != null
             ? {'lastBatteryStatus': lastBatteryStatus!.name}
