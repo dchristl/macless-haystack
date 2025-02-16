@@ -120,10 +120,10 @@ class ItemExportMenu extends StatelessWidget {
       exportAccessories.add(AccessoryDTO(
           id: int.tryParse(accessory.id) ?? 0,
           colorComponents: [
-            accessory.color.red / 255,
-            accessory.color.green / 255,
-            accessory.color.blue / 255,
-            accessory.color.opacity,
+            accessory.color.r / 255,
+            accessory.color.g / 255,
+            accessory.color.b / 255,
+            accessory.color.a,
           ],
           name: accessory.name,
           lastDerivationTimestamp: accessory.lastDerivationTimestamp,
@@ -151,15 +151,6 @@ class ItemExportMenu extends StatelessWidget {
         ..click();
 
       html.Url.revokeObjectUrl(url);
-
-      // var blob =
-      //     dom.html.Blob([encodedAccessories], 'application/json', 'native');
-      //
-      // dart.dom.html.AnchorElement(
-      //   href: dart.dom.html.Url.createObjectUrlFromBlob(blob).toString(),
-      // )
-      //   ..setAttribute("download", filename)
-      //   ..click();
     } else {
       // Create temporary directory to store export file
       Directory tempDir = await getTemporaryDirectory();
