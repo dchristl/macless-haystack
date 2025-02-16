@@ -61,9 +61,9 @@ class AccessoryListItem extends StatelessWidget {
           onTap: onTap,
           onLongPress: onLongPress,
           title: Text(
-            accessory.name + (accessory.isDeployed ? '' : ' (not deployed)'),
+            accessory.name + (accessory.isActive ? '' : ' (inactive)'),
             style: TextStyle(
-              color: accessory.isDeployed
+              color: accessory.isActive
                   ? Theme.of(context).colorScheme.onSurface
                   : Theme.of(context).disabledColor,
             ),
