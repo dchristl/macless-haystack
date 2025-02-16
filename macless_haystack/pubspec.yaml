@@ -47,7 +47,7 @@ dependencies:
   provider: ^6.1.2
 
   # Location
-
+  universal_io: ^2.2.2
   flutter_map: ^8.0.0
   flutter_map_cancellable_tile_provider: ^3.1.0
   location: ^8.0.0
@@ -56,7 +56,7 @@ dependencies:
   # Storage
   shared_preferences: ^2.5.2
   flutter_secure_storage: ^9.2.4
-  file_picker: ^8.3.5
+  file_picker: ^8.3.7
 
   # Sharing
   share_plus: ^10.1.4

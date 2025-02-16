@@ -119,8 +119,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
   void _importAccessory(
       AccessoryRegistry registry, AccessoryDTO accessoryDTO) async {
     Color color = Colors.grey;
-    if (accessoryDTO.colorSpaceName == 'kCGColorSpaceSRGB' &&
-        accessoryDTO.colorComponents.length == 4) {
+    if (accessoryDTO.colorComponents.length == 4) {
       var colors = accessoryDTO.colorComponents;
       int red = (colors[0] * 255).round();
       int green = (colors[1] * 255).round();
@@ -143,20 +142,14 @@ class _ItemFileImportState extends State<ItemFileImport> {
     var keyPair = await FindMyController.importKeyPair(accessoryDTO.privateKey);
 
     Accessory newAccessory = Accessory(
-        datePublished: DateTime.now(),
+        datePublished: DateTime(1970),
         hashedPublicKey: keyPair.hashedPublicKey,
         id: accessoryDTO.id.toString(),
         name: accessoryDTO.name,
         color: color,
         icon: icon,
         isActive: accessoryDTO.isActive,
-        isDeployed: accessoryDTO.isDeployed,
         lastLocation: null,
-        lastDerivationTimestamp: accessoryDTO.lastDerivationTimestamp,
-        symmetricKey: accessoryDTO.symmetricKey,
-        updateInterval: accessoryDTO.updateInterval,
-        usesDerivation: accessoryDTO.usesDerivation,
-        oldestRelevantSymmetricKey: accessoryDTO.oldestRelevantSymmetricKey,
         additionalKeys: additionalPublicKeys);
 
     registry.addAccessory(newAccessory);
@@ -232,10 +225,6 @@ class _ItemFileImportState extends State<ItemFileImport> {
                                   )),
                               _buildProperty(
                                   'isActive', accessory.isActive.toString()),
-                              _buildProperty('isDeployed',
-                                  accessory.isDeployed.toString()),
-                              _buildProperty('usesDerivation',
-                                  accessory.usesDerivation.toString()),
                               _buildProperty(
                                   'additionalKeys',
                                   accessory.additionalKeys?.length.toString() ??
@@ -280,9 +269,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
                 Navigator.of(context, rootNavigator: true).pop();
               }
             },
-            child: const Text(
-              'Import'
-            ),
+            child: const Text('Import'),
           ),
         ],
       ),

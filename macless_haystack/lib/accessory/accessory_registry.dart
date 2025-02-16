@@ -11,9 +11,9 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:macless_haystack/preferences/user_preferences_model.dart';
 
 const accessoryStorageKey = 'ACCESSORIES';
-const historStorageKey = 'HISTORY';
+const historyStorageKey = 'HISTORY';
 
-const DEFAULT_MIN_ACCURACY = 50;
+const int DEFAULT_MIN_ACCURACY = 50;
 
 class AccessoryRegistry extends ChangeNotifier {
   var _storage = const FlutterSecureStorage();
@@ -63,7 +63,7 @@ class AccessoryRegistry extends ChangeNotifier {
   }
 
   Future<void> loadHistory() async {
-    String? history = await _storage.read(key: historStorageKey);
+    String? history = await _storage.read(key: historyStorageKey);
     if (history != null) {
       Map<String, dynamic> jsonDecoded = jsonDecode(history);
       for (var item in _accessories) {
@@ -80,7 +80,7 @@ class AccessoryRegistry extends ChangeNotifier {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
 
     // request location updates for all accessories simultaneously
-    List<Accessory> currentAccessories = accessories;
+    Iterable<Accessory> currentAccessories = accessories.where((a) => a.isActive);
     String? url = Settings.getValue<String>(endpointUrl);
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
@@ -159,7 +159,7 @@ class AccessoryRegistry extends ChangeNotifier {
       historyEntriesAsJson[key.id] = filtered;
     }
     var historyJson = jsonEncode(historyEntriesAsJson);
-    _storage.write(key: historStorageKey, value: historyJson);
+    _storage.write(key: historyStorageKey, value: historyJson);
   }
 
   /// Stores the user's accessories in persistent storage.
@@ -208,7 +208,7 @@ class AccessoryRegistry extends ChangeNotifier {
       var currHash = reports[i].hash;
       if (!accessory.containsHash(currHash)) {
         accessory.addDecryptedHash(currHash);
-        logger.d('Decrypting report $i of ${reports.length}');
+        logger.d('Decrypting report $i of ${reports.length} with id $currHash');
         await reports[i].decrypt();
         decryptedReports.add(reports[i]);
       } else {
@@ -220,8 +220,8 @@ class AccessoryRegistry extends ChangeNotifier {
     logger.d(
         '${reports.length - count} reports decrypted. Decryption of $count reports skipped, because they are already fetched and decrypted.');
     //All hashes, that are not in the reports anymore can be deleted, because they are out of time
-    accessory.clearHashesNotInList(hashes);
-//Sort by date
+    accessory.removeOldHashes();
+    //Sort by date
     decryptedReports.sort((a, b) {
       var aDate = a.timestamp ?? DateTime(1970);
       var bDate = b.timestamp ?? DateTime(1970);
@@ -231,9 +231,9 @@ class AccessoryRegistry extends ChangeNotifier {
     //Update the latest timestamp
     if (decryptedReports.isNotEmpty) {
       var lastReport = decryptedReports[decryptedReports.length - 1];
-      var oldTs = DateTime(1970);
-      var latestReportTS = lastReport.timestamp ?? DateTime(1971);
-      if (oldTs.isBefore(latestReportTS)) {
+      var oldTs = accessory.datePublished;
+      var latestReportTS = lastReport.timestamp ?? lastReport.published ?? DateTime(1971);
+      if (oldTs == null || oldTs.isBefore(latestReportTS) ) {
         //only an actualization if oldTS is not set or is older than the latest of the new ones
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);

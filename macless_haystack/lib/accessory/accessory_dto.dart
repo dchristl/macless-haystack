@@ -8,9 +8,6 @@ class AccessoryDTO {
   int? updateInterval;
   String privateKey;
   String icon;
-  bool isDeployed;
-  String colorSpaceName;
-  bool usesDerivation;
   String? oldestRelevantSymmetricKey;
   bool isActive;
   List<String>? additionalKeys;
@@ -31,9 +28,6 @@ class AccessoryDTO {
       this.updateInterval,
       required this.privateKey,
       required this.icon,
-      required this.isDeployed,
-      required this.colorSpaceName,
-      required this.usesDerivation,
       this.oldestRelevantSymmetricKey,
       required this.isActive,
       this.additionalKeys});
@@ -64,11 +58,9 @@ class AccessoryDTO {
         updateInterval = json['updateInterval'] ?? 0,
         privateKey = json['privateKey'],
         icon = json['icon'],
-        isDeployed = json['isDeployed'],
-        colorSpaceName = json['colorSpaceName'],
-        usesDerivation = json['usesDerivation'] ?? false,
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'] ?? '',
-        isActive = json['isActive'],
+  /*isDeployed is only for migration an can be removed in the future*/
+        isActive = json['isDeployed'] ?? json['isActive'],
         additionalKeys = json['additionalKeys']?.cast<String>() ?? List.empty();
 
   /// Creates a JSON map of the serialized transfer object.
@@ -78,34 +70,13 @@ class AccessoryDTO {
   ///   var accessoryDTO = AccessoryDTO(...);
   ///   jsonEncode(accessoryDTO);
   /// ```
-  Map<String, dynamic> toJson() => usesDerivation
-      ? {
-          // With derivation
-          'id': id,
-          'colorComponents': colorComponents,
-          'name': name,
-          'lastDerivationTimestamp': lastDerivationTimestamp,
-          'symmetricKey': symmetricKey,
-          'updateInterval': updateInterval,
-          'privateKey': privateKey,
-          'icon': icon,
-          'isDeployed': isDeployed,
-          'colorSpaceName': colorSpaceName,
-          'usesDerivation': usesDerivation,
-          'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
-          'isActive': isActive,
-          'additionalKeys': additionalKeys
-        }
-      : {
+  Map<String, dynamic> toJson() =>  {
           // Without derivation (skip rolling key params)
           'id': id,
           'colorComponents': colorComponents,
           'name': name,
           'privateKey': privateKey,
           'icon': icon,
-          'isDeployed': isDeployed,
-          'colorSpaceName': colorSpaceName,
-          'usesDerivation': usesDerivation,
           'isActive': isActive,
           'additionalKeys': additionalKeys
         };

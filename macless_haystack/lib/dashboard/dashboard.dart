@@ -75,13 +75,15 @@ class _DashboardState extends State<Dashboard> {
     );
 
     try {
+      var inactive =
+          accessoryRegistry.accessories.where((a) => !a.isActive).length;
       var count = await accessoryRegistry.loadLocationReports();
       if (mounted && accessoryRegistry.accessories.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
             content: Text(
-              'Fetched $count location(s)',
+              'Fetched $count location(s).${inactive > 0 ? '$inactive inactive accessories skipped' : ''}',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),

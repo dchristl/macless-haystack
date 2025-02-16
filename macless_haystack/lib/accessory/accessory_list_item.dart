@@ -1,3 +1,4 @@
+import 'package:universal_io/io.dart';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -52,16 +53,17 @@ class AccessoryListItem extends StatelessWidget {
           }
         }
         // Format published date in a human readable way
-        String? dateString = accessory.datePublished != null
-            ? ' · ${DateFormat('dd.MM.yyyy HH:mm').format(accessory.datePublished!)}'
+        String? dateString = accessory.datePublished != null &&
+                accessory.datePublished != DateTime(1970)
+            ? ' · ${DateFormat.yMMMd(Platform.localeName).format(accessory.datePublished!)} ${DateFormat.jm(Platform.localeName).format(accessory.datePublished!)}'
             : '';
         return ListTile(
           onTap: onTap,
           onLongPress: onLongPress,
           title: Text(
-            accessory.name + (accessory.isDeployed ? '' : ' (not deployed)'),
+            accessory.name + (accessory.isActive ? '' : ' (inactive)'),
             style: TextStyle(
-              color: accessory.isDeployed
+              color: accessory.isActive
                   ? Theme.of(context).colorScheme.onSurface
                   : Theme.of(context).disabledColor,
             ),
@@ -90,8 +92,7 @@ class AccessoryListItem extends StatelessWidget {
       case AccessoryBatteryStatus.ok:
         return const Icon(Icons.battery_full, color: Colors.green, size: 15);
       case AccessoryBatteryStatus.medium:
-        return const Icon(Icons.battery_3_bar,
-            color: Colors.orange, size: 15);
+        return const Icon(Icons.battery_3_bar, color: Colors.orange, size: 15);
       case AccessoryBatteryStatus.low:
         return const Icon(Icons.battery_1_bar, color: Colors.red, size: 15);
       case AccessoryBatteryStatus.criticalLow:

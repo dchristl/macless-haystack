@@ -123,15 +123,6 @@ class _AccessoryImportState extends State<AccessoryImport> {
                   });
                 },
               ),
-              SwitchListTile(
-                value: newAccessory.isDeployed,
-                title: const Text('Is Deployed'),
-                onChanged: (checked) {
-                  setState(() {
-                    newAccessory.isDeployed = checked;
-                  });
-                },
-              ),
               ListTile(
                 title: ElevatedButton(
                   child: const Text('Import'),
