@@ -119,8 +119,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
   void _importAccessory(
       AccessoryRegistry registry, AccessoryDTO accessoryDTO) async {
     Color color = Colors.grey;
-    if (accessoryDTO.colorSpaceName == 'kCGColorSpaceSRGB' &&
-        accessoryDTO.colorComponents.length == 4) {
+    if (accessoryDTO.colorComponents.length == 4) {
       var colors = accessoryDTO.colorComponents;
       int red = (colors[0] * 255).round();
       int green = (colors[1] * 255).round();
@@ -270,9 +269,7 @@ class _ItemFileImportState extends State<ItemFileImport> {
                 Navigator.of(context, rootNavigator: true).pop();
               }
             },
-            child: const Text(
-              'Import'
-            ),
+            child: const Text('Import'),
           ),
         ],
       ),

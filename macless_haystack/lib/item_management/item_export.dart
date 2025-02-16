@@ -128,7 +128,6 @@ class ItemExportMenu extends StatelessWidget {
           name: accessory.name,
           privateKey: privateKey,
           icon: accessory.rawIcon,
-          colorSpaceName: 'kCGColorSpaceSRGB',
           isActive: accessory.isActive,
           additionalKeys: additionalPrivateKeys));
     }

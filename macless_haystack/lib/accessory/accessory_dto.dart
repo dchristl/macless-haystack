@@ -8,7 +8,6 @@ class AccessoryDTO {
   int? updateInterval;
   String privateKey;
   String icon;
-  String colorSpaceName;
   String? oldestRelevantSymmetricKey;
   bool isActive;
   List<String>? additionalKeys;
@@ -29,7 +28,6 @@ class AccessoryDTO {
       this.updateInterval,
       required this.privateKey,
       required this.icon,
-      required this.colorSpaceName,
       this.oldestRelevantSymmetricKey,
       required this.isActive,
       this.additionalKeys});
@@ -60,7 +58,6 @@ class AccessoryDTO {
         updateInterval = json['updateInterval'] ?? 0,
         privateKey = json['privateKey'],
         icon = json['icon'],
-        colorSpaceName = json['colorSpaceName'],
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'] ?? '',
   /*isDeployed is only for migration an can be removed in the future*/
         isActive = json['isDeployed'] ?? json['isActive'],
@@ -80,7 +77,6 @@ class AccessoryDTO {
           'name': name,
           'privateKey': privateKey,
           'icon': icon,
-          'colorSpaceName': colorSpaceName,
           'isActive': isActive,
           'additionalKeys': additionalKeys
         };

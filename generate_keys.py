@@ -24,7 +24,6 @@ TEMPLATE = Template('{'
                     '\"name\": \"$name\",'
                     '\"privateKey\": \"$privateKey\",'
                     '\"icon\": \"\",'
-                    '\"colorSpaceName\": \"kCGColorSpaceExtendedSRGB\",'
                     '\"isActive\": true,'
                     '\"additionalKeys\": [$additionalKeys]'
                     '}')
