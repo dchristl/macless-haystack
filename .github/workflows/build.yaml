@@ -132,12 +132,18 @@ jobs:
           make build
           make clean
           NRF_MODEL=nrf51 make build
+      - name: Upload NRF5x firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: nrf5x-firmware
+          path: |
+            firmware/nrf5x/compiled/*.bin
       - name: Build ESP32 firmware
         run: |
           pio run -d firmware/ESP32/
           cd firmware/ESP32/.pio/build/esp32dev/
           zip -r esp32-firmware.zip firmware.bin partitions.bin bootloader.bin
-      - name: Upload firmware
+      - name: Upload ESP32 firmware
         uses: actions/upload-artifact@v4
         with:
           name: esp32-firmware
