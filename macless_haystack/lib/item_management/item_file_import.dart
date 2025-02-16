@@ -154,7 +154,6 @@ class _ItemFileImportState extends State<ItemFileImport> {
         lastDerivationTimestamp: accessoryDTO.lastDerivationTimestamp,
         symmetricKey: accessoryDTO.symmetricKey,
         updateInterval: accessoryDTO.updateInterval,
-        usesDerivation: accessoryDTO.usesDerivation,
         oldestRelevantSymmetricKey: accessoryDTO.oldestRelevantSymmetricKey,
         additionalKeys: additionalPublicKeys);
 
@@ -231,8 +230,6 @@ class _ItemFileImportState extends State<ItemFileImport> {
                                   )),
                               _buildProperty(
                                   'isActive', accessory.isActive.toString()),
-                              _buildProperty('usesDerivation',
-                                  accessory.usesDerivation.toString()),
                               _buildProperty(
                                   'additionalKeys',
                                   accessory.additionalKeys?.length.toString() ??

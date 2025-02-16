@@ -50,9 +50,6 @@ class Accessory {
   /// An identifier for the private key stored separately in the key store.
   String hashedPublicKey;
 
-  /// If the accessory uses rolling keys.
-  bool usesDerivation;
-
   // Parameters for rolling keys (only relevant is usesDerivation == true)
   String? symmetricKey;
   double? lastDerivationTimestamp;
@@ -103,7 +100,6 @@ class Accessory {
       LatLng? lastLocation,
       String icon = 'mappin',
       this.color = Colors.grey,
-      this.usesDerivation = false,
       this.symmetricKey,
       this.lastDerivationTimestamp,
       this.updateInterval,
@@ -132,7 +128,6 @@ class Accessory {
         icon: _icon,
         isActive: isActive,
         lastLocation: lastLocation,
-        usesDerivation: usesDerivation,
         symmetricKey: symmetricKey,
         lastDerivationTimestamp: lastDerivationTimestamp,
         updateInterval: updateInterval,
@@ -205,7 +200,6 @@ class Accessory {
         isActive = json['isDeployed'] ?? json['isActive'],
         _icon = json['icon'],
         color = Color(int.parse(json['color'].substring(0, 8), radix: 16)),
-        usesDerivation = json['usesDerivation'] ?? false,
         symmetricKey = json['symmetricKey'],
         lastDerivationTimestamp = json['lastDerivationTimestamp'],
         updateInterval = json['updateInterval'],
@@ -240,7 +234,6 @@ class Accessory {
         'isActive': isActive,
         'icon': _icon,
         'color': color.value.toRadixString(16).padLeft(8, '0'),
-        'usesDerivation': usesDerivation,
         'hashesWithTS': jsonEncode(hashesWithTS),
         'symmetricKey': symmetricKey,
         'lastDerivationTimestamp': lastDerivationTimestamp,

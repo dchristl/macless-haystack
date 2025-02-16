@@ -9,7 +9,6 @@ class AccessoryDTO {
   String privateKey;
   String icon;
   String colorSpaceName;
-  bool usesDerivation;
   String? oldestRelevantSymmetricKey;
   bool isActive;
   List<String>? additionalKeys;
@@ -31,7 +30,6 @@ class AccessoryDTO {
       required this.privateKey,
       required this.icon,
       required this.colorSpaceName,
-      required this.usesDerivation,
       this.oldestRelevantSymmetricKey,
       required this.isActive,
       this.additionalKeys});
@@ -63,7 +61,6 @@ class AccessoryDTO {
         privateKey = json['privateKey'],
         icon = json['icon'],
         colorSpaceName = json['colorSpaceName'],
-        usesDerivation = json['usesDerivation'] ?? false,
         oldestRelevantSymmetricKey = json['oldestRelevantSymmetricKey'] ?? '',
   /*isDeployed is only for migration an can be removed in the future*/
         isActive = json['isDeployed'] ?? json['isActive'],
@@ -76,24 +73,7 @@ class AccessoryDTO {
   ///   var accessoryDTO = AccessoryDTO(...);
   ///   jsonEncode(accessoryDTO);
   /// ```
-  Map<String, dynamic> toJson() => usesDerivation
-      ? {
-          // With derivation
-          'id': id,
-          'colorComponents': colorComponents,
-          'name': name,
-          'lastDerivationTimestamp': lastDerivationTimestamp,
-          'symmetricKey': symmetricKey,
-          'updateInterval': updateInterval,
-          'privateKey': privateKey,
-          'icon': icon,
-          'colorSpaceName': colorSpaceName,
-          'usesDerivation': usesDerivation,
-          'oldestRelevantSymmetricKey': oldestRelevantSymmetricKey,
-          'isActive': isActive,
-          'additionalKeys': additionalKeys
-        }
-      : {
+  Map<String, dynamic> toJson() =>  {
           // Without derivation (skip rolling key params)
           'id': id,
           'colorComponents': colorComponents,
@@ -101,7 +81,6 @@ class AccessoryDTO {
           'privateKey': privateKey,
           'icon': icon,
           'colorSpaceName': colorSpaceName,
-          'usesDerivation': usesDerivation,
           'isActive': isActive,
           'additionalKeys': additionalKeys
         };

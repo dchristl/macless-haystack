@@ -24,10 +24,8 @@ TEMPLATE = Template('{'
                     '\"name\": \"$name\",'
                     '\"privateKey\": \"$privateKey\",'
                     '\"icon\": \"\",'
-                    '\"isDeployed\": true,'
                     '\"colorSpaceName\": \"kCGColorSpaceExtendedSRGB\",'
-                    '\"usesDerivation\": false,'
-                    '\"isActive\": false,'
+                    '\"isActive\": true,'
                     '\"additionalKeys\": [$additionalKeys]'
                     '}')
 

@@ -132,7 +132,6 @@ class ItemExportMenu extends StatelessWidget {
           privateKey: privateKey,
           icon: accessory.rawIcon,
           colorSpaceName: 'kCGColorSpaceSRGB',
-          usesDerivation: accessory.usesDerivation,
           oldestRelevantSymmetricKey: accessory.oldestRelevantSymmetricKey,
           isActive: accessory.isActive,
           additionalKeys: additionalPrivateKeys));
