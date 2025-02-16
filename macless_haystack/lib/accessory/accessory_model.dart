@@ -72,10 +72,6 @@ class Accessory {
   /// If the accessory is active.
   bool isActive;
 
-  /// If the accessory is already deployed
-  /// (and could therefore send locations).
-  bool isDeployed;
-
   /// The timestamp of the last known location
   /// (null if no location known).
   DateTime? datePublished;
@@ -103,8 +99,7 @@ class Accessory {
       required this.name,
       required this.hashedPublicKey,
       required this.datePublished,
-      this.isActive = false,
-      this.isDeployed = false,
+      this.isActive = true,
       LatLng? lastLocation,
       String icon = 'mappin',
       this.color = Colors.grey,
@@ -136,7 +131,6 @@ class Accessory {
         color: color,
         icon: _icon,
         isActive: isActive,
-        isDeployed: isDeployed,
         lastLocation: lastLocation,
         usesDerivation: usesDerivation,
         symmetricKey: symmetricKey,
@@ -155,7 +149,6 @@ class Accessory {
     color = newAccessory.color;
     _icon = newAccessory._icon;
     isActive = newAccessory.isActive;
-    isDeployed = newAccessory.isDeployed;
     lastLocation = newAccessory.lastLocation;
     additionalKeys = newAccessory.additionalKeys;
   }
@@ -208,8 +201,8 @@ class Accessory {
         _lastLocation = json['latitude'] != null && json['longitude'] != null
             ? LatLng(json['latitude'].toDouble(), json['longitude'].toDouble())
             : null,
-        isActive = json['isActive'],
-        isDeployed = json['isDeployed'],
+        /*isDeployed is only for migration an can be removed in the future*/
+        isActive = json['isDeployed'] ?? json['isActive'],
         _icon = json['icon'],
         color = Color(int.parse(json['color'].substring(0, 8), radix: 16)),
         usesDerivation = json['usesDerivation'] ?? false,
@@ -245,7 +238,6 @@ class Accessory {
         'latitude': _lastLocation?.latitude,
         'longitude': _lastLocation?.longitude,
         'isActive': isActive,
-        'isDeployed': isDeployed,
         'icon': _icon,
         'color': color.value.toRadixString(16).padLeft(8, '0'),
         'usesDerivation': usesDerivation,

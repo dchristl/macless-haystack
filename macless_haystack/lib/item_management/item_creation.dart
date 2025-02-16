@@ -104,15 +104,6 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
                   });
                 },
               ),
-              SwitchListTile(
-                value: newAccessory.isDeployed,
-                title: const Text('Is Deployed'),
-                onChanged: (checked) {
-                  setState(() {
-                    newAccessory.isDeployed = checked;
-                  });
-                },
-              ),
               ListTile(
                 title: OutlinedButton(
                   child: const Text('Create only'),

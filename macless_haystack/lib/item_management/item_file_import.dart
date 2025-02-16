@@ -150,7 +150,6 @@ class _ItemFileImportState extends State<ItemFileImport> {
         color: color,
         icon: icon,
         isActive: accessoryDTO.isActive,
-        isDeployed: accessoryDTO.isDeployed,
         lastLocation: null,
         lastDerivationTimestamp: accessoryDTO.lastDerivationTimestamp,
         symmetricKey: accessoryDTO.symmetricKey,
@@ -232,8 +231,6 @@ class _ItemFileImportState extends State<ItemFileImport> {
                                   )),
                               _buildProperty(
                                   'isActive', accessory.isActive.toString()),
-                              _buildProperty('isDeployed',
-                                  accessory.isDeployed.toString()),
                               _buildProperty('usesDerivation',
                                   accessory.usesDerivation.toString()),
                               _buildProperty(

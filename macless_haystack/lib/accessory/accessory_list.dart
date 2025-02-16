@@ -83,11 +83,11 @@ class _AccessoryListState extends State<AccessoryList> {
                     endActionPane: ActionPane(
                       motion: const DrawerMotion(),
                       children: [
-                        if (accessory.isDeployed)
+                        if (accessory.isActive)
                           SlidableAction(
                             onPressed: (context) async {
                               if (accessory.lastLocation != null &&
-                                  accessory.isDeployed) {
+                                  accessory.isActive) {
                                 var loc = accessory.lastLocation!;
                                 await MapsLauncher.launchCoordinates(
                                     loc.latitude,
@@ -99,7 +99,7 @@ class _AccessoryListState extends State<AccessoryList> {
                             icon: Icons.directions,
                             label: 'Navigate',
                           ),
-                        if (accessory.isDeployed)
+                        if (accessory.isActive)
                           SlidableAction(
                             onPressed: (context) {
                               Navigator.push(
@@ -114,21 +114,21 @@ class _AccessoryListState extends State<AccessoryList> {
                             icon: Icons.history,
                             label: 'History',
                           ),
-                        if (!accessory.isDeployed)
+                        if (!accessory.isActive)
                           SlidableAction(
                             onPressed: (context) {
                               var accessoryRegistry =
                                   Provider.of<AccessoryRegistry>(context,
                                       listen: false);
                               var newAccessory = accessory.clone();
-                              newAccessory.isDeployed = true;
+                              newAccessory.isActive = true;
                               accessoryRegistry.editAccessory(
                                   accessory, newAccessory);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
-                            icon: Icons.upload_file,
-                            label: 'Deploy',
+                            icon: Icons.toggle_on_outlined,
+                            label: 'Activate',
                           ),
                       ],
                     ),

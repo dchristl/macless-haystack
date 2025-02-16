@@ -123,15 +123,6 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                   });
                 },
               ),
-              SwitchListTile(
-                value: newAccessory.isDeployed,
-                title: const Text('Is Deployed'),
-                onChanged: (checked) {
-                  setState(() {
-                    newAccessory.isDeployed = checked;
-                  });
-                },
-              ),
               ListTile(
                 title: OutlinedButton(
                   onPressed: _formKey.currentState == null ||
