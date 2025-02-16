@@ -80,7 +80,7 @@ class AccessoryRegistry extends ChangeNotifier {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
 
     // request location updates for all accessories simultaneously
-    List<Accessory> currentAccessories = accessories;
+    Iterable<Accessory> currentAccessories = accessories.where((a) => a.isActive);
     String? url = Settings.getValue<String>(endpointUrl);
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
