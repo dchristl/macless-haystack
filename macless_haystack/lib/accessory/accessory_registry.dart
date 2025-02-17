@@ -80,7 +80,8 @@ class AccessoryRegistry extends ChangeNotifier {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
 
     // request location updates for all accessories simultaneously
-    Iterable<Accessory> currentAccessories = accessories.where((a) => a.isActive);
+    Iterable<Accessory> currentAccessories =
+        accessories.where((a) => a.isActive);
     String? url = Settings.getValue<String>(endpointUrl);
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
@@ -123,7 +124,7 @@ class AccessoryRegistry extends ChangeNotifier {
               LatLng(lastReport.latitude!, lastReport.longitude!);
 
           // Update last battery status
-          accessory.lastBatteryStatus = lastReport.batteryStatus!;
+          accessory.lastBatteryStatus = lastReport.batteryStatus;
         }
       }
       historyEntries[accessory] = fillLocationHistory(reports, accessory);
@@ -232,16 +233,16 @@ class AccessoryRegistry extends ChangeNotifier {
     if (decryptedReports.isNotEmpty) {
       var lastReport = decryptedReports[decryptedReports.length - 1];
       var oldTs = accessory.datePublished;
-      var latestReportTS = lastReport.timestamp ?? lastReport.published ?? DateTime(1971);
-      if (oldTs == null || oldTs.isBefore(latestReportTS) ) {
+      var latestReportTS =
+          lastReport.timestamp ?? lastReport.published ?? DateTime(1971);
+      if (oldTs == null || oldTs.isBefore(latestReportTS)) {
         //only an actualization if oldTS is not set or is older than the latest of the new ones
         accessory.lastLocation =
             LatLng(lastReport.latitude!, lastReport.longitude!);
         accessory.datePublished = latestReportTS;
-        //If battery status exists, update last battery status
-        if (lastReport.batteryStatus != null) {
-          accessory.lastBatteryStatus = lastReport.batteryStatus;
-        }
+
+        accessory.lastBatteryStatus = lastReport.batteryStatus;
+
         notifyListeners(); //redraw the UI, if the timestamp has changed
       }
     }

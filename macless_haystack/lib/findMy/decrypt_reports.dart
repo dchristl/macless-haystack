@@ -16,8 +16,10 @@ class DecryptReports {
     final payloadData = report.payload;
     final ephemeralKeyBytes = payloadData.sublist(
         payloadData.length - 16 - 10 - 57, payloadData.length - 16 - 10);
-    final encData = payloadData.sublist(payloadData.length - 16 - 10, payloadData.length - 16);
-    final tag = payloadData.sublist(payloadData.length - 16, payloadData.length);
+    final encData = payloadData.sublist(
+        payloadData.length - 16 - 10, payloadData.length - 16);
+    final tag =
+        payloadData.sublist(payloadData.length - 16, payloadData.length);
 
     _decodeTimeAndConfidence(payloadData, report);
 
@@ -67,30 +69,39 @@ class DecryptReports {
     final longitude = payload.buffer.asByteData(4, 4).getUint32(0, Endian.big);
     final accuracy = payload.buffer.asByteData(8, 1).getUint8(0);
     final status = payload.buffer.asByteData(9, 1).getUint8(0);
+
     AccessoryBatteryStatus? batteryStatus;
-
-    switch ((status >> 6) & 0x3) { // get highest 2 bits
-      case 0:
-        batteryStatus = AccessoryBatteryStatus.ok;
-        break;
-      case 1:
-        batteryStatus = AccessoryBatteryStatus.medium;
-        break;
-      case 2:
-        batteryStatus = AccessoryBatteryStatus.low;
-        break;
-      case 3:
-        batteryStatus = AccessoryBatteryStatus.criticalLow;
-        break;
-      default:
-        batteryStatus = null;
+    //STATUS_FLAG_BATTERY_UPDATES_SUPPORT is set (macless firmware) or status is not zero (pix firmware)
+    if (status & 00100000 != 0 || status > 0) {
+      switch (status >> 6) {
+        // get highest 2 bits
+        case 0:
+          batteryStatus = AccessoryBatteryStatus.ok;
+          break;
+        case 1:
+          batteryStatus = AccessoryBatteryStatus.medium;
+          break;
+        case 2:
+          batteryStatus = AccessoryBatteryStatus.low;
+          break;
+        case 3:
+          batteryStatus = AccessoryBatteryStatus.criticalLow;
+          break;
+        default:
+          batteryStatus = null;
+      }
     }
-
     final latitudeDec = latitude / 10000000.0;
     final longitudeDec = longitude / 10000000.0;
 
-    return FindMyLocationReport(latitudeDec, longitudeDec, accuracy,
-        report.datePublished, report.timestamp, report.confidence, batteryStatus);
+    return FindMyLocationReport(
+        latitudeDec,
+        longitudeDec,
+        accuracy,
+        report.datePublished,
+        report.timestamp,
+        report.confidence,
+        batteryStatus);
   }
 
   /// Decrypts the given cipher text with the key data using an AES-GCM block cipher.
