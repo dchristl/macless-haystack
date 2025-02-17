@@ -75,11 +75,9 @@ class AccessoryListItem extends StatelessWidget {
               buildIcon(),
             ],
           ),
-          subtitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(locationString + dateString),
-            ],
+          subtitle: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Text(locationString + dateString),
           ),
           trailing: distance,
           dense: true,

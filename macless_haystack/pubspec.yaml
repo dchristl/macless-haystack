@@ -32,7 +32,6 @@ dependencies:
 
   # UI
   flutter_colorpicker: ^1.1.0
-#  flutter_launcher_icons: ^0.13.1
   flutter_slidable: ^4.0.0
 
   # Networking
