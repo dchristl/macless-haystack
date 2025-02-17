@@ -24,6 +24,9 @@ class _AccessoryImportState extends State<AccessoryImport> {
       name: '',
       hashedPublicKey: '',
       datePublished: DateTime.now(),
+      hashesWithTS: {},
+      locationHistory: [],
+      lastBatteryStatus: null,
       additionalKeys: List.empty());
   String privateKey = '';
 

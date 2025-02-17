@@ -150,6 +150,9 @@ class _ItemFileImportState extends State<ItemFileImport> {
         icon: icon,
         isActive: accessoryDTO.isActive,
         lastLocation: null,
+        hashesWithTS: {},
+        locationHistory: [],
+        lastBatteryStatus: null,
         additionalKeys: additionalPublicKeys);
 
     registry.addAccessory(newAccessory);

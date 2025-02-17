@@ -22,6 +22,9 @@ void main() {
       name: '',
       hashedPublicKey: '',
       datePublished: null,
+      hashesWithTS: {},
+      locationHistory: [],
+      lastBatteryStatus: null,
       additionalKeys: List.empty());
   setUp(() {
     when(locationModel.getAddress(any))

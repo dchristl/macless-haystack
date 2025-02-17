@@ -26,6 +26,9 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
       name: '',
       hashedPublicKey: '',
       datePublished: DateTime.now(),
+      hashesWithTS: {},
+      locationHistory: [],
+      lastBatteryStatus: null,
       additionalKeys: List.empty());
 
   /// Stores the advertisement key of the newly created accessory.

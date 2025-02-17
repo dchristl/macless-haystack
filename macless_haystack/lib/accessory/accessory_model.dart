@@ -94,7 +94,10 @@ class Accessory {
       LatLng? lastLocation,
       String icon = 'mappin',
       this.color = Colors.grey,
-      required this.additionalKeys})
+      required this.additionalKeys,
+      required this.hashesWithTS,
+      required this.lastBatteryStatus,
+      required this.locationHistory})
       : _icon = icon,
         _lastLocation = lastLocation,
         super() {
@@ -118,7 +121,10 @@ class Accessory {
         icon: _icon,
         isActive: isActive,
         lastLocation: lastLocation,
-        additionalKeys: additionalKeys);
+        hashesWithTS: hashesWithTS,
+        additionalKeys: additionalKeys,
+        locationHistory: locationHistory,
+        lastBatteryStatus: lastBatteryStatus);
   }
 
   /// Updates the properties of this accessor with the new values of the [newAccessory].
@@ -131,6 +137,9 @@ class Accessory {
     _icon = newAccessory._icon;
     isActive = newAccessory.isActive;
     lastLocation = newAccessory.lastLocation;
+    hashesWithTS = newAccessory.hashesWithTS;
+    locationHistory = newAccessory.locationHistory;
+    lastBatteryStatus = newAccessory.lastBatteryStatus;
     additionalKeys = newAccessory.additionalKeys;
   }
 
