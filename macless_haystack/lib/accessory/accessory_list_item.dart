@@ -60,20 +60,25 @@ class AccessoryListItem extends StatelessWidget {
         return ListTile(
           onTap: onTap,
           onLongPress: onLongPress,
-          title: Text(
-            accessory.name + (accessory.isActive ? '' : ' (inactive)'),
-            style: TextStyle(
-              color: accessory.isActive
-                  ? Theme.of(context).colorScheme.onSurface
-                  : Theme.of(context).disabledColor,
-            ),
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                accessory.name + (accessory.isActive ? '' : ' (inactive)'),
+                style: TextStyle(
+                  color: accessory.isActive
+                      ? Theme.of(context).colorScheme.onSurface
+                      : Theme.of(context).disabledColor,
+                ),
+              ),
+              const SizedBox(width: 5),
+              buildIcon(),
+            ],
           ),
           subtitle: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(locationString + dateString),
-              const SizedBox(width: 5),
-              buildIcon(),
             ],
           ),
           trailing: distance,
