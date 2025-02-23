@@ -95,9 +95,11 @@ class ServerHandler(BaseHTTPRequestHandler):
             {"startDate": 1, "ids": list(body['ids'])}]}
 
         try:
-            r = requests.post("https://gateway.icloud.com/acsnservice/fetch",  auth=getAuth(regenerate=False, second_factor='sms'),
+            with requests.post("https://gateway.icloud.com/acsnservice/fetch",  auth=getAuth(regenerate=False, second_factor='sms'),
                               headers=pypush_gsa_icloud.generate_anisette_headers(),
-                              json=data)
+                              json=data) as r:
+                r.raise_for_status()
+
             logger.debug('Return from fetch service:')
             logger.debug(r.content.decode())
             result = json.loads(r.content.decode())

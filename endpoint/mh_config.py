@@ -2,8 +2,8 @@ import logging
 import os
 import configparser
 import sys
-sys.path.append(os.getcwd())
 
+sys.path.append(os.getcwd())
 
 CONFIG_PATH = "data"
 CONFIG_FILE = "auth.json"
@@ -21,24 +21,15 @@ config.read(getConfigPath() + '/config.ini')
 
 
 def getAnisetteServer():
-    value = config.get('Settings', 'anisette_url')
-    if not value:
-        return 'http://anisette:6969'
-    return value
+    return config.get('Settings', 'anisette_url', fallback='http://anisette:6969')
 
 
 def getPort():
-    value = config.get('Settings', 'port')
-    if not value:
-        return '6176'
-    return int(value)
+    return int(config.get('Settings', 'port', fallback='6176'))
 
 
 def getBindingAddress():
-    value = config.get('Settings', 'binding_address')
-    if not value:
-        return '0.0.0.0'
-    return value
+    return config.get('Settings', 'binding_address', fallback='0.0.0.0')
 
 
 def getUser():
@@ -72,6 +63,7 @@ def getEndpointPass():
 def getLogLevel():
     logLevel = config.get('Settings', 'loglevel', fallback='INFO')
     return logging.getLevelName(logLevel)
+
 
 logging.basicConfig(level=getLogLevel(),
                     format='%(asctime)s - %(levelname)s - %(message)s')

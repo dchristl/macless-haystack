@@ -36,7 +36,7 @@ logger = logging.getLogger()
 
 
 def icloud_login_mobileme(username='', password=''):
-    print("")  #Sometimes no output
+    print("")  # Sometimes no output
     if not username:
         username = input('Apple ID: ')
     if not password:
@@ -61,13 +61,14 @@ def icloud_login_mobileme(username='', password=''):
     headers.update(generate_anisette_headers())
 
     logger.info("Registering device after login")
-    resp = requests.post(
-        "https://setup.icloud.com/setup/iosbuddy/loginDelegates",
-        auth=(username, pet),
-        data=data,
-        headers=headers,
-        verify=False,
-    )
+    with requests.post(
+            "https://setup.icloud.com/setup/iosbuddy/loginDelegates",
+            auth=(username, pet),
+            data=data,
+            headers=headers,
+            verify=False,
+    ) as resp:
+        resp.raise_for_status()
     response = f"HTTP-Code: {resp.status_code}\n{resp.text}"
     logger.debug(response)
     return plist.loads(resp.content)
@@ -146,13 +147,15 @@ def gsa_authenticated_request(parameters):
         "X-MMe-Client-Info": '<MacBookPro18,3> <Mac OS X;13.4.1;22F8> <com.apple.AOSKit/282 (com.apple.dt.Xcode/3594.4.19)>'
     }
 
-    resp = requests.post(
-        "https://gsa.apple.com/grandslam/GsService2",
-        headers=headers,
-        data=plist.dumps(body),
-        verify=False,
-        timeout=5,
-    )
+    with  requests.post(
+            "https://gsa.apple.com/grandslam/GsService2",
+            headers=headers,
+            data=plist.dumps(body),
+            verify=False,
+            timeout=5,
+    ) as resp:
+        resp.raise_for_status()
+
     response = f"HTTP-Code: {resp.status_code}\n{resp.text}"
     logger.debug(response)
 
@@ -174,10 +177,12 @@ def generate_cpd():
 
 
 def generate_anisette_headers():
-    h = json.loads(requests.get(mh_config.getAnisetteServer(), timeout=5).text)
-    a = {"X-Apple-I-MD": h["X-Apple-I-MD"],
-         "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
-    a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))
+    with requests.get(mh_config.getAnisetteServer(), timeout=5) as response:
+        response.raise_for_status()  # Hebt Fehler hervor (z. B. 404 oder 500)
+        jsonResponse = response.json()
+        a = {"X-Apple-I-MD": jsonResponse["X-Apple-I-MD"],
+             "X-Apple-I-MD-M": jsonResponse["X-Apple-I-MD-M"]}
+        a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))
     return a
 
 
@@ -244,29 +249,30 @@ def sms_second_factor(dsid, idms_token):
 
     # Extract the "boot_args" from the auth page to get the id of the trusted phone number
     pattern = r'<script.*class="boot_args">\s*(.*?)\s*</script>'
-    auth = requests.get("https://gsa.apple.com/auth", headers=headers, verify=False)
-    sms_id = 1
-    match = re.search(pattern, auth.text, re.DOTALL)
-    if match:
-        boot_args = json.loads(match.group(1).strip())
-        try:
-            sms_id = boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]
-        except KeyError as e:
-            logger.debug(match.group(1).strip())
-            logger.error("Key for sms id not found. Using the first phone number")
-    else:
-        logger.debug(auth.text)
-        logger.error("Script for sms id not found. Using the first phone number")
+    with requests.get("https://gsa.apple.com/auth", headers=headers, verify=False) as auth:
+        auth.raise_for_status()
+        sms_id = 1
+        match = re.search(pattern, auth.text, re.DOTALL)
+        if match:
+            boot_args = json.loads(match.group(1).strip())
+            try:
+                sms_id = boot_args["direct"]["phoneNumberVerification"]["trustedPhoneNumber"]["id"]
+            except KeyError as e:
+                logger.debug(match.group(1).strip())
+                logger.error("Key for sms id not found. Using the first phone number")
+        else:
+            logger.debug(auth.text)
+            logger.error("Script for sms id not found. Using the first phone number")
 
-    logger.info(f"Using phone with id {sms_id} for SMS2FA")
-    body = {"phoneNumber": {"id": sms_id}, "mode": "sms"}
-    for handler in logger.handlers:
-        handler.flush()
-    # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
-    start_time = time.perf_counter()
-    code = input(
-        f"Enter SMS 2FA code (If you do not receive a code, wait {WAITING_TIME}s and press Enter. An attempt will be made to request the SMS in another way.): ")
-    end_time = time.perf_counter()
+        logger.info(f"Using phone with id {sms_id} for SMS2FA")
+        body = {"phoneNumber": {"id": sms_id}, "mode": "sms"}
+        for handler in logger.handlers:
+            handler.flush()
+        # Prompt for the 2FA code. It's just a string like '123456', no dashes or spaces
+        start_time = time.perf_counter()
+        code = input(
+            f"Enter SMS 2FA code (If you do not receive a code, wait {WAITING_TIME}s and press Enter. An attempt will be made to request the SMS in another way.): ")
+        end_time = time.perf_counter()
 
     if code == "":
         elapsed_time = int(end_time - start_time)
@@ -285,13 +291,15 @@ def sms_second_factor(dsid, idms_token):
     body['securityCode'] = {'code': code}
 
     # Send the 2FA code to Apple
-    resp = requests.post(
-        "https://gsa.apple.com/auth/verify/phone/securitycode",
-        json=body,
-        headers=headers,
-        verify=False,
-        timeout=5,
-    )
+    with  requests.post(
+            "https://gsa.apple.com/auth/verify/phone/securitycode",
+            json=body,
+            headers=headers,
+            verify=False,
+            timeout=5,
+    ) as resp:
+        resp.raise_for_status()
+
     response = f"HTTP-Code: {resp.status_code} with {len(resp.text)} bytes"
     logger.debug(response)
     header_string = "Headers:\n"
@@ -311,12 +319,13 @@ def request_code(headers):
     # We don't care about the response, it's just some HTML with a form for entering the code
     # Easier to just use a text prompt
     body = {"phoneNumber": {"id": 1}, "mode": "sms"}
-    requests.put(
-        "https://gsa.apple.com/auth/verify/phone/",
-        json=body,
-        headers=headers,
-        verify=False,
-        timeout=5
-    )
+    with requests.put(
+            "https://gsa.apple.com/auth/verify/phone/",
+            json=body,
+            headers=headers,
+            verify=False,
+            timeout=5
+    ) as req:
+        req.raise_for_status()
     code = input(f"Enter SMS 2FA code:")
-    return  code
+    return code
