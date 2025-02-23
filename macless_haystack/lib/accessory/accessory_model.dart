@@ -84,6 +84,8 @@ class Accessory {
 
   LocationModel locationModel = LocationModel();
 
+  bool hasChangedFlag = false;
+
   /// Creates an accessory with the given properties.
   Accessory(
       {required this.id,

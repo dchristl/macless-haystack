@@ -125,6 +125,7 @@ class AccessoryRegistry extends ChangeNotifier {
 
           // Update last battery status
           accessory.lastBatteryStatus = lastReport.batteryStatus;
+          accessory.hasChangedFlag = true;
         }
       }
       historyEntries[accessory] = fillLocationHistory(reports, accessory);
@@ -235,6 +236,7 @@ class AccessoryRegistry extends ChangeNotifier {
       var oldTs = accessory.datePublished;
       var latestReportTS =
           lastReport.timestamp ?? lastReport.published ?? DateTime(1971);
+
       if (oldTs == null || oldTs.isBefore(latestReportTS)) {
         //only an actualization if oldTS is not set or is older than the latest of the new ones
         accessory.lastLocation =
@@ -245,6 +247,7 @@ class AccessoryRegistry extends ChangeNotifier {
         if (lastReport.batteryStatus != null) {
           accessory.lastBatteryStatus = lastReport.batteryStatus;
         }
+        accessory.hasChangedFlag = true;
 
         notifyListeners(); //redraw the UI, if the timestamp has changed
       }
@@ -298,5 +301,4 @@ class AccessoryRegistry extends ChangeNotifier {
     accessory.locationHistory.clear();
     notifyListeners();
   }
-
 }
