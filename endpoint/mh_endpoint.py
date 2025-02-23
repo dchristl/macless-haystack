@@ -88,7 +88,7 @@ class ServerHandler(BaseHTTPRequestHandler):
         unixEpoch = int(datetime.now().strftime('%s'))
         startdate = unixEpoch - (60 * 60 * 24 * days)
 
-        dt_object = datetime.fromtimestamp(startdate)
+        datetime.fromtimestamp(startdate)
 
         # Date is always 1, because it has no effect
         data = {"search": [
