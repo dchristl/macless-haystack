@@ -153,8 +153,8 @@ class FindMyController {
           ECKeyGeneratorParameters(ecCurve), secureRandom));
 
     final newKeyPair = keyGen.generateKeyPair();
-    final ECPublicKey publicKey = newKeyPair.publicKey as ECPublicKey;
-    final ECPrivateKey privateKey = newKeyPair.privateKey as ECPrivateKey;
+    final ECPublicKey publicKey = newKeyPair.publicKey;
+    final ECPrivateKey privateKey = newKeyPair.privateKey;
     final hashedKey = getHashedPublicKey(publicKey: publicKey);
     final keyPair =
         FindMyKeyPair(publicKey, hashedKey, privateKey, DateTime.now(), -1);

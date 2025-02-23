@@ -9,6 +9,7 @@ import 'package:macless_haystack/history/location_popup.dart';
 
 import 'dart:math';
 
+
 class AccessoryHistory extends StatefulWidget {
   final Accessory accessory;
 
@@ -167,7 +168,9 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                                 },
                                 child: Icon(
                                   Icons.circle,
-                                  size: isPointLayerVisible ? calculateSize(entry) : 0,
+                                  size: isPointLayerVisible
+                                      ? calculateSize(entry)
+                                      : 0,
                                   color: entry == popupEntry
                                       ? Colors.red
                                       : Theme.of(context).indicatorColor,

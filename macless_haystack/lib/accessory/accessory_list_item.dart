@@ -55,7 +55,7 @@ class AccessoryListItem extends StatelessWidget {
         // Format published date in a human readable way
         String? dateString = accessory.datePublished != null &&
                 accessory.datePublished != DateTime(1970)
-            ? ' · ${DateFormat.yMMMd(Platform.localeName).format(accessory.datePublished!)} ${DateFormat.jm(Platform.localeName).format(accessory.datePublished!)}'
+            ? '\n${DateFormat.yMMMd(Platform.localeName).format(accessory.datePublished!)} ${DateFormat.jm(Platform.localeName).format(accessory.datePublished!)}'
             : '';
         return ListTile(
           onTap: onTap,

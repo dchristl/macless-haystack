@@ -24,8 +24,8 @@ class AccessoryDetail extends StatefulWidget {
     return _AccessoryDetailState();
   }
 
-  // @override
-  // _AccessoryDetailState createState() => _AccessoryDetailState();
+// @override
+// _AccessoryDetailState createState() => _AccessoryDetailState();
 }
 
 class _AccessoryDetailState extends State<AccessoryDetail> {
@@ -84,7 +84,7 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                                 setState(() {
                                   newAccessory.setIcon(selectedIcon);
                                 });
-                                if (mounted) {
+                                if (context.mounted) {
                                   // Show color selection only when icon is selected
                                   Color? selectedColor =
                                       await AccessoryColorSelector
@@ -145,6 +145,26 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                           }
                         },
                   child: const Text('Save'),
+                ),
+              ),
+              ListTile(
+                title: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  onPressed: () {
+                    // Update accessory with changed values
+                    var accessoryRegistry =
+                        Provider.of<AccessoryRegistry>(context, listen: false);
+                    accessoryRegistry.deleteData(widget.accessory);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('All current and historical data deleted'),
+                      ),
+                    );
+                  },
+                  child: const Text('Reset Accessory'),
                 ),
               ),
               ListTile(
