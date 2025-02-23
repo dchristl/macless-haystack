@@ -9,7 +9,6 @@ import 'package:macless_haystack/history/location_popup.dart';
 
 import 'dart:math';
 
-
 class AccessoryHistory extends StatefulWidget {
   final Accessory accessory;
 
@@ -79,8 +78,11 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
     var visibility = [isLineLayerVisible, isPointLayerVisible];
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text("${widget.accessory.name} ($historyLength history reports)"),
+        title: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "${widget.accessory.name} ($historyLength history reports)",
+            )),
       ),
       body: SafeArea(
         child: Column(
