@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
@@ -12,9 +13,12 @@ import 'package:macless_haystack/accessory/accessory_registry.dart';
 import 'package:macless_haystack/accessory/no_accessories.dart';
 import 'package:macless_haystack/history/accessory_history.dart';
 import 'package:macless_haystack/location/location_model.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class AccessoryList extends StatefulWidget {
-  final AsyncCallback loadLocationUpdates;
+  // final AsyncCallback loadLocationUpdates;
+  final AsyncCallback loadVisibleItemsLocationUpdates;
+  final AsyncValueSetter<Accessory> loadOneLocationUpdates;
   final void Function(LatLng point)? centerOnPoint;
 
   /// Display a location overview all accessories in a concise list form.
@@ -23,7 +27,9 @@ class AccessoryList extends StatefulWidget {
   /// Uses the accessories in the [AccessoryRegistry].
   const AccessoryList({
     super.key,
-    required this.loadLocationUpdates,
+    // required this.loadLocationUpdates,
+    required this.loadVisibleItemsLocationUpdates,
+    required this.loadOneLocationUpdates,
     this.centerOnPoint,
   });
 
@@ -65,7 +71,8 @@ class _AccessoryListState extends State<AccessoryList> {
         // Use pull to refresh method
         return SlidableAutoCloseBehavior(
           child: RefreshIndicator(
-            onRefresh: widget.loadLocationUpdates,
+            // onRefresh: widget.loadLocationUpdates,
+            onRefresh: widget.loadVisibleItemsLocationUpdates,
             child: Scrollbar(
               child: ListView(
                 children: accessories.map((accessory) {
@@ -133,7 +140,39 @@ class _AccessoryListState extends State<AccessoryList> {
                       ],
                     ),
                     child: Builder(builder: (context) {
-                      return AccessoryListItem(
+                      return VisibilityDetector(
+                        key: Key('item_${accessory.id}'),
+                        onVisibilityChanged: (visibilityInfo) {
+                          final visiblePercentage =
+                              visibilityInfo.visibleFraction;
+                          if (visiblePercentage > 0) {
+                            accessoryRegistry.visibleAccessories.add(accessory);
+                          } else {
+                            accessoryRegistry.visibleAccessories.remove(accessory);
+                          }
+                          if (accessory.isActive &&
+                              visiblePercentage > 0 &&
+                              mounted &&
+                              !accessoryRegistry.loadedAccessoryIds.contains(accessory.id)) {
+                            accessoryRegistry.loadedAccessoryIds.add(accessory.id);
+                            widget.loadOneLocationUpdates(accessory);
+                          }
+                        },
+                        child: AccessoryListItem(
+                          accessory: accessory,
+                          distance: trailing,
+                          herePlace: locationModel.herePlace,
+                          onTap: () {
+                            var lastLocation = accessory.lastLocation;
+                            if (lastLocation != null) {
+                              widget.centerOnPoint?.call(lastLocation);
+                            }
+                          },
+                          onLongPress: Slidable.of(context)?.openEndActionPane,
+                        ),
+                      );
+
+                      /* return AccessoryListItem(
                         accessory: accessory,
                         distance: trailing,
                         herePlace: locationModel.herePlace,
@@ -144,7 +183,7 @@ class _AccessoryListState extends State<AccessoryList> {
                           }
                         },
                         onLongPress: Slidable.of(context)?.openEndActionPane,
-                      );
+                      ); */
                     }),
                   );
                 }).toList(),

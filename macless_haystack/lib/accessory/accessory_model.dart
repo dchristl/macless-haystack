@@ -81,6 +81,8 @@ class Accessory {
 
   /// Stores address information about the current location.
   Future<Placemark?> place = Future.value(null);
+  
+  bool isLoadingReports = false;
 
   LocationModel locationModel = LocationModel();
 

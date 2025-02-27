@@ -20,6 +20,9 @@ class AccessoryRegistry extends ChangeNotifier {
   List<Accessory> _accessories = [];
   bool loading = false;
   bool initialLoadFinished = false;
+  
+  Set<String> loadedAccessoryIds = {};
+  Set<Accessory> visibleAccessories = {};
 
   var logger = Logger(
     printer: PrettyPrinter(methodCount: 0),
@@ -73,6 +76,53 @@ class AccessoryRegistry extends ChangeNotifier {
         }
       }
     }
+  }
+
+  /// Fetches new location reports for one accessory.
+  Future<int> loadOneLocationReports(Accessory accessory) async {
+    // request location updates for all accessories simultaneously
+    String? url = Settings.getValue<String>(endpointUrl);
+    var keyPair = await FindMyController.getKeyPair(accessory.hashedPublicKey);
+
+    List<FindMyKeyPair> hashedPublicKeys =
+        await Stream.fromIterable(accessory.additionalKeys)
+            .asyncMap((hashedPublicKey) =>
+                FindMyController.getKeyPair(hashedPublicKey))
+            .toList();
+
+    hashedPublicKeys.add(keyPair);
+
+    var reports = await FindMyController.computeResults(hashedPublicKeys, url);
+
+    logger.i(
+        '${reports.length} reports fetched for ${accessory.hashedPublicKey} in total');
+
+    if (reports.where((element) => !element.isEncrypted()).isNotEmpty) {
+      var lastReport = reports.where((element) => !element.isEncrypted()).first;
+      var reportDate = (lastReport.timestamp ?? lastReport.published) ??
+          DateTime.fromMicrosecondsSinceEpoch(0);
+      if (accessory.datePublished !=
+              null /* &&
+            reportDate.isAfter(accessory.datePublished!)*/
+          ) {
+        accessory.datePublished = reportDate;
+        accessory.lastLocation =
+            LatLng(lastReport.latitude!, lastReport.longitude!);
+
+        // Update last battery status
+        accessory.lastBatteryStatus = lastReport.batteryStatus!;
+      }
+    }
+    await fillLocationHistory(reports, accessory);
+
+    // Store updated lastLocation and datePublished for accessories
+    _storeAccessories();
+
+    _storeHistories();
+
+    notifyListeners();
+
+    return Future.value(reports.length);
   }
 
   /// Fetches new location reports and matches them to their accessory.
@@ -136,6 +186,26 @@ class AccessoryRegistry extends ChangeNotifier {
     initialLoadFinished = true;
     notifyListeners();
     return Future.value(out);
+  }
+
+  Future<void> _storeHistories() async {
+    Map<String, List<Pair<dynamic, dynamic>>> historyEntriesAsJson = {};
+    for (var acc in _accessories) {
+      List<Pair<dynamic, dynamic>> result = acc.locationHistory;
+      var nowMinusDays = DateTime.now().subtract(const Duration(days: 7));
+      var upperDayLimit =
+          DateTime(nowMinusDays.year, nowMinusDays.month, nowMinusDays.day);
+      var filtered = result
+          .where((element) => element.end.isAfter(upperDayLimit))
+          .toList();
+      if (filtered.length != result.length) {
+        logger.i(
+            '${result.length - filtered.length} history elements have been filtered out and will be deleted due to age.');
+      }
+      historyEntriesAsJson[acc.id] = filtered;
+    }
+    var historyJson = jsonEncode(historyEntriesAsJson);
+    _storage.write(key: historyStorageKey, value: historyJson);
   }
 
   Future<void> _storeHistory(

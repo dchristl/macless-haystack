@@ -52,6 +52,7 @@ dependencies:
   flutter_map_cancellable_tile_provider: ^3.1.0
   location: ^8.0.0
   geocoding: ^3.0.0
+  visibility_detector: ^0.4.0+2
 
   # Storage
   shared_preferences: ^2.5.2

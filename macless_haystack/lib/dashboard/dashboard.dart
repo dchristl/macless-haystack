@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:macless_haystack/accessory/accessory_model.dart';
 import 'package:macless_haystack/item_management/refresh_action.dart';
 import 'package:provider/provider.dart';
 import 'package:macless_haystack/accessory/accessory_registry.dart';
@@ -30,12 +31,15 @@ class _DashboardState extends State<Dashboard> {
     {
       'title': 'My Accessories',
       'body': (ctx) => AccessoryMapListVertical(
-            loadLocationUpdates: loadLocationUpdates,
+            // loadLocationUpdates: loadLocationUpdates,
+            loadVisibleItemsLocationUpdates: loadVisibleItemsLocationUpdates,
+            loadOneLocationUpdates: loadOneLocationUpdates,
           ),
       'icon': Icons.place,
       'label': 'Map',
       'actionButton': (ctx) => RefreshAction(
-            callback: loadLocationUpdates,
+            // callback: loadLocationUpdates,
+            callback: loadVisibleItemsLocationUpdates,
           ),
     },
     {
@@ -62,8 +66,50 @@ class _DashboardState extends State<Dashboard> {
     }
 
     // Load new location reports on app start
-    loadLocationUpdates();
+    // loadLocationUpdates();
   }
+
+  /// Fetch location updates for visible accessories.
+  Future<void> loadVisibleItemsLocationUpdates() async {
+    var accessoryRegistry =
+        Provider.of<AccessoryRegistry>(context, listen: false);
+    accessoryRegistry.loadedAccessoryIds.clear();
+    for (var item in accessoryRegistry.visibleAccessories) {
+      accessoryRegistry.loadedAccessoryIds.add(item.id);
+      loadOneLocationUpdates(item);
+    }
+  }
+  
+  /// Fetch location updates for one accessory.
+  Future<void> loadOneLocationUpdates(Accessory accessory) async {
+    var accessoryRegistry =
+        Provider.of<AccessoryRegistry>(context, listen: false);
+
+    var logger = Logger(
+      printer: PrettyPrinter(),
+    );
+
+    try {
+      accessory.isLoadingReports = true;
+      await accessoryRegistry.loadOneLocationReports(accessory);
+    } catch (e, stacktrace) {
+      logger.e('Error on fetching', error: e, stackTrace: stacktrace);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            'Could not find location reports. Try again later. Error: ${e.toString()}',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onError,
+            ),
+          ),
+        ),
+      );
+    } finally {
+      accessory.isLoadingReports = false;
+    }
+  }
+
 
   /// Fetch location updates for all accessories.
   Future<void> loadLocationUpdates() async {
