@@ -57,6 +57,9 @@ class AccessoryListItem extends StatelessWidget {
                 accessory.datePublished != DateTime(1970)
             ? ' · ${DateFormat.yMMMd(Platform.localeName).format(accessory.datePublished!)} ${DateFormat.jm(Platform.localeName).format(accessory.datePublished!)}'
             : '';
+
+        double iconSize = 24;
+
         return ListTile(
           onTap: onTap,
           onLongPress: onLongPress,
