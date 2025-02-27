@@ -78,10 +78,20 @@ class AccessoryListItem extends StatelessWidget {
           ),
           trailing: distance,
           dense: true,
-          leading: AccessoryIcon(
-            icon: accessory.icon,
-            color: accessory.color,
-          ),
+          leading: accessory.isLoadingReports
+              ? Padding(
+                  padding: EdgeInsets.all(iconSize / 4),
+                  child: SizedBox(
+                    width: iconSize,
+                    height: iconSize,
+                    child: CircularProgressIndicator(
+                      strokeWidth: iconSize / 6,
+                    ),
+                  ))
+              : AccessoryIcon(
+                  icon: accessory.icon,
+                  color: accessory.color,
+                ),
         );
       },
     );
