@@ -295,10 +295,10 @@ class AccessoryRegistry extends ChangeNotifier {
     accessory.lastBatteryStatus = null;
     accessory.lastLocation = null;
     accessory.hashesWithTS.clear();
-    accessory.isActive = true;
     accessory.datePublished = DateTime(1970);
     accessory.place = Future.value(null);
     accessory.locationHistory.clear();
+    _storeAccessories();
     notifyListeners();
   }
 }
