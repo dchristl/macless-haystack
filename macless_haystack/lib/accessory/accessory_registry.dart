@@ -13,8 +13,6 @@ import 'package:macless_haystack/preferences/user_preferences_model.dart';
 const accessoryStorageKey = 'ACCESSORIES';
 const historyStorageKey = 'HISTORY';
 
-const int DEFAULT_MIN_ACCURACY = 50;
-
 class AccessoryRegistry extends ChangeNotifier {
   var _storage = const FlutterSecureStorage();
   List<Accessory> _accessories = [];
@@ -255,9 +253,7 @@ class AccessoryRegistry extends ChangeNotifier {
 //add to history in correct order
     for (var i = 0; i < decryptedReports.length; i++) {
       FindMyLocationReport report = decryptedReports[i];
-      if (report.accuracy! >= DEFAULT_MIN_ACCURACY &&
-          report.longitude!.abs() <= 180 &&
-          report.latitude!.abs() <= 90) {
+      if (report.longitude!.abs() <= 180 && report.latitude!.abs() <= 90) {
         accessory.addLocationHistoryEntry(report);
       } else {
         logger.d(
