@@ -243,10 +243,9 @@ class AccessoryRegistry extends ChangeNotifier {
             LatLng(lastReport.latitude!, lastReport.longitude!);
         accessory.datePublished = latestReportTS;
 
-        //If battery status exists, update last battery status
-        if (lastReport.batteryStatus != null) {
-          accessory.lastBatteryStatus = lastReport.batteryStatus;
-        }
+        //Update alway battery status
+        accessory.lastBatteryStatus = lastReport.batteryStatus;
+
         accessory.hasChangedFlag = true;
 
         notifyListeners(); //redraw the UI, if the timestamp has changed
