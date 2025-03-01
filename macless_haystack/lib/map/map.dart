@@ -75,6 +75,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
     }
 
     List<LatLng> accessoryPoints = accessories
+        .where((accessory) => accessory.isActive)
         .where((accessory) => accessory.lastLocation != null)
         .map((accessory) => accessory.lastLocation!)
         .toList();
@@ -148,6 +149,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
           MarkerLayer(
             markers: [
               ...accessories
+                  .where((accessory) => accessory.isActive)
                   .where((accessory) => accessory.lastLocation != null)
                   .map((accessory) => Marker(
                         rotate: true,
