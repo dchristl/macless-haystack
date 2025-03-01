@@ -131,17 +131,14 @@ class Accessory {
 
   /// Updates the properties of this accessor with the new values of the [newAccessory].
   void update(Accessory newAccessory) {
-    datePublished = newAccessory.datePublished;
     id = newAccessory.id;
     name = newAccessory.name;
     hashedPublicKey = newAccessory.hashedPublicKey;
     color = newAccessory.color;
     _icon = newAccessory._icon;
     isActive = newAccessory.isActive;
-    lastLocation = newAccessory.lastLocation;
     hashesWithTS = newAccessory.hashesWithTS;
     locationHistory = newAccessory.locationHistory;
-    lastBatteryStatus = newAccessory.lastBatteryStatus;
     additionalKeys = newAccessory.additionalKeys;
   }
 
