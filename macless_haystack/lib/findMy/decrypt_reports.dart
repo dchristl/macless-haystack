@@ -12,14 +12,17 @@ class DecryptReports {
   static Future<FindMyLocationReport> decryptReport(
       FindMyReport report, Uint8List key) async {
     final curveDomainParam = ECCurve_secp224r1();
+    var payloadData = report.payload;
+    if (payloadData.length > 88) {
+      final modifiedData = Uint8List(payloadData.length - 1);
+      modifiedData.setRange(0, 4, payloadData);
+      modifiedData.setRange(4, modifiedData.length, payloadData, 5);
+      payloadData = modifiedData;
+    }
 
-    final payloadData = report.payload;
-    final ephemeralKeyBytes = payloadData.sublist(
-        payloadData.length - 16 - 10 - 57, payloadData.length - 16 - 10);
-    final encData = payloadData.sublist(
-        payloadData.length - 16 - 10, payloadData.length - 16);
-    final tag =
-        payloadData.sublist(payloadData.length - 16, payloadData.length);
+    final ephemeralKeyBytes = payloadData.sublist(5, 62);
+    final encData = payloadData.sublist(62, 72);
+    final tag = payloadData.sublist(72, payloadData.length);
 
     _decodeTimeAndConfidence(payloadData, report);
 
@@ -55,10 +58,14 @@ class DecryptReports {
   static Uint8List _ecdh(
       ECPublicKey ephemeralPublicKey, ECPrivateKey privateKey) {
     final sharedKey = ephemeralPublicKey.Q! * privateKey.d;
-    final sharedKeyBytes =
-        pc_utils.encodeBigIntAsUnsigned(sharedKey!.x!.toBigInteger()!);
 
-    return sharedKeyBytes;
+    final bytes = sharedKey!.x!
+        .toBigInteger()!
+        .toUnsigned(28 * 8)
+        .toRadixString(16)
+        .padLeft(28 * 2, '0');
+    return Uint8List.fromList(List.generate(
+        28, (i) => int.parse(bytes.substring(i * 2, i * 2 + 2), radix: 16)));
   }
 
   /// Decodes the raw decrypted payload and constructs and returns

@@ -81,7 +81,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
         title: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              "${widget.accessory.name} ($historyLength history reports)",
+              "${widget.accessory.name} (${filteredEntries.length} history reports)",
             )),
       ),
       body: SafeArea(
