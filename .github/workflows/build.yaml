@@ -168,4 +168,3 @@ jobs:
             firmware/ESP32/.pio/build/esp32dev/esp32-firmware.zip
             firmware/nrf5x/compiled/*.bin
             ./macless_haystack/build/app/outputs/flutter-apk/android-application.apk
-            ./macless_haystack/build/webapplication/webapplication.zip

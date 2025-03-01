@@ -61,7 +61,7 @@ The data must, of course, also be entered into the configuration of the frontend
 You shouldn't do that because there's no reason for it. It's better to use the web frontend on [Github](https://dchristl.github.io/macless-haystack/).
 The frontend is always up to date and runs stable. Security concerns regarding data are also not an issue here because GitHub only delivers the empty page. All data such as location, keys, request frequency, etc., are not transmitted to GitHub. All communication then occurs only between your system (browser) and the endpoint. Theoretically, after the page has been loaded, GitHub could be blocked in the firewall, and the application would still work.
 
-The frontend is still offered for download in the releases (webapplication.zip) and can be self-hosted.
+The front end can be downloaded separately from the [build artefacts](https://github.com/dchristl/macless-haystack/actions/workflows/build.yaml). However, I do not provide any support for this, as it does not run without adjustments (at least the base-href probably needs to be adjusted) and every setup is different.
 
 #### How do I update the Docker container
 
