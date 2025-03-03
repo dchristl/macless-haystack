@@ -83,6 +83,24 @@ class _AccessoryListState extends State<AccessoryList> {
                   }
                   // Get human readable location
                   return Slidable(
+                    key: ValueKey(accessory),
+                    startActionPane: !accessory.isActive
+                        ? null
+                        : ActionPane(
+                            key: ValueKey(accessory),
+                            motion: const ScrollMotion(),
+                            dragDismissible: false,
+                            children: [
+                                SlidableAction(
+                                  onPressed: (context) async {
+                                    await widget.loadLocationUpdates(accessory);
+                                  },
+                                  foregroundColor:
+                                      Theme.of(context).primaryColor,
+                                  icon: Icons.refresh,
+                                  label: 'Refresh',
+                                ),
+                              ]),
                     endActionPane: ActionPane(
                       motion: const DrawerMotion(),
                       children: [
