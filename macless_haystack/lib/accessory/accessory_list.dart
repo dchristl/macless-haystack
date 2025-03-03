@@ -141,14 +141,18 @@ class _AccessoryListState extends State<AccessoryList> {
                         distance: trailing,
                         herePlace: locationModel.herePlace,
                         onTap: () {
-                          var lastLocation = accessory.lastLocation;
-                          if (lastLocation != null) {
-                            widget.centerOnPoint?.call(lastLocation);
+                          if (accessory.isActive) {
+                            var lastLocation = accessory.lastLocation;
+                            if (lastLocation != null) {
+                              widget.centerOnPoint?.call(lastLocation);
+                            }
                           }
                         },
-                        onLongPress: () async {
-                          await widget.loadLocationUpdates(accessory);
-                        },
+                        onLongPress: !accessory.isActive
+                            ? null
+                            : () async {
+                                await widget.loadLocationUpdates(accessory);
+                              },
                       );
                     }),
                   );
