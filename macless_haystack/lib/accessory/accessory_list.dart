@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +12,10 @@ import 'package:macless_haystack/accessory/no_accessories.dart';
 import 'package:macless_haystack/history/accessory_history.dart';
 import 'package:macless_haystack/location/location_model.dart';
 
+import '../callbacks.dart';
+
 class AccessoryList extends StatefulWidget {
-  final AsyncCallback loadLocationUpdates;
+  final LoadLocationUpdatesCallback loadLocationUpdates;
   final void Function(LatLng point)? centerOnPoint;
 
   /// Display a location overview all accessories in a concise list form.
@@ -65,7 +66,9 @@ class _AccessoryListState extends State<AccessoryList> {
         // Use pull to refresh method
         return SlidableAutoCloseBehavior(
           child: RefreshIndicator(
-            onRefresh: widget.loadLocationUpdates,
+            onRefresh: () async {
+              await widget.loadLocationUpdates(null);
+            },
             child: Scrollbar(
               child: ListView(
                 children: accessories.map((accessory) {
@@ -143,7 +146,9 @@ class _AccessoryListState extends State<AccessoryList> {
                             widget.centerOnPoint?.call(lastLocation);
                           }
                         },
-                        onLongPress: Slidable.of(context)?.openEndActionPane,
+                        onLongPress: () async {
+                          await widget.loadLocationUpdates(accessory);
+                        },
                       );
                     }),
                   );

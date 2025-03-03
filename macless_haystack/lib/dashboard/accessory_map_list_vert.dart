@@ -9,8 +9,13 @@ import 'package:macless_haystack/location/location_model.dart';
 import 'package:macless_haystack/map/map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../callbacks.dart';
+
+
+
 class AccessoryMapListVertical extends StatefulWidget {
-  final AsyncCallback loadLocationUpdates;
+
+  final LoadLocationUpdatesCallback loadLocationUpdates;
 
   /// Displays a map view and the accessory list in a vertical alignment.
   const AccessoryMapListVertical({

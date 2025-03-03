@@ -74,12 +74,10 @@ class AccessoryRegistry extends ChangeNotifier {
   }
 
   /// Fetches new location reports and matches them to their accessory.
-  Future<int> loadLocationReports() async {
+  Future<int> loadLocationReports(Iterable<Accessory> currentAccessories) async {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
 
     // request location updates for all accessories simultaneously
-    Iterable<Accessory> currentAccessories =
-        accessories.where((a) => a.isActive);
     String? url = Settings.getValue<String>(endpointUrl);
     for (var i = 0; i < currentAccessories.length; i++) {
       var accessory = currentAccessories.elementAt(i);
