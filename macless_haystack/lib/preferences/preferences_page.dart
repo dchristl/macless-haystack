@@ -25,6 +25,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
         child: Column(
           children: <Widget>[
             getLocationTile(),
+            getFetchOnStartupTile(),
             getUrlTile(),
             getUserTile(),
             getPassTile(),
@@ -85,6 +86,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
       },
     );
   }
+
   getUserTile() {
     return const TextInputSettingsTile(
       initialValue: '',
@@ -101,7 +103,6 @@ class _PreferencesPageState extends State<PreferencesPage> {
       title: 'Password for endpoint',
     );
   }
-
 
   getAbout() {
     return TextButton(
@@ -122,5 +123,13 @@ class _PreferencesPageState extends State<PreferencesPage> {
         onPressed: () => showAboutDialog(
               context: context,
             ));
+  }
+
+  getFetchOnStartupTile() {
+    return SwitchSettingsTile(
+      settingKey: fetchLocationOnStartupKey,
+      defaultValue: true,
+      title: 'Fetch locations on startup',
+    );
   }
 }

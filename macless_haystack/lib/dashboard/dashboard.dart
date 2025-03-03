@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:logger/logger.dart';
 import 'package:macless_haystack/item_management/refresh_action.dart';
 import 'package:provider/provider.dart';
@@ -60,9 +61,11 @@ class _DashboardState extends State<Dashboard> {
     if (!locationPreferenceKnown || locationAccessWanted) {
       locationModel.requestLocationUpdates();
     }
-
     // Load new location reports on app start
-    loadLocationUpdates();
+    if (Settings.getValue<bool>(fetchLocationOnStartupKey,
+        defaultValue: true)!) {
+      loadLocationUpdates();
+    }
   }
 
   /// Fetch location updates for all accessories.
