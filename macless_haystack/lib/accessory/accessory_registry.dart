@@ -74,7 +74,8 @@ class AccessoryRegistry extends ChangeNotifier {
   }
 
   /// Fetches new location reports and matches them to their accessory.
-  Future<int> loadLocationReports(Iterable<Accessory> currentAccessories) async {
+  Future<int> loadLocationReports(
+      Iterable<Accessory> currentAccessories) async {
     List<Future<List<FindMyLocationReport>>> runningLocationRequests = [];
 
     // request location updates for all accessories simultaneously
@@ -156,6 +157,13 @@ class AccessoryRegistry extends ChangeNotifier {
       }
       historyEntriesAsJson[key.id] = filtered;
     }
+    //find all accessories not in list (inactive or single item refresh)
+    accessories
+        .where((a) => !historyEntriesAsJson.keys.toList().contains(a.id))
+        .forEach((a) {
+      historyEntriesAsJson[a.id] = a.locationHistory;
+    });
+
     var historyJson = jsonEncode(historyEntriesAsJson);
     _storage.write(key: historyStorageKey, value: historyJson);
   }
