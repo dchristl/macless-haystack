@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:logger/logger.dart';
@@ -34,6 +36,7 @@ class _DashboardState extends State<Dashboard> {
       'title': 'My Accessories',
       'body': (ctx) => AccessoryMapListVertical(
             loadLocationUpdates: loadLocationUpdates,
+            saveOrderUpdatesCallback: saveAccessories,
           ),
       'icon': Icons.place,
       'label': 'Map',
@@ -165,5 +168,12 @@ class _DashboardState extends State<Dashboard> {
       floatingActionButton:
           _tabs[_selectedIndex]['actionButton']?.call(context),
     );
+  }
+
+  Future<void> saveAccessories(
+      List<Accessory> accessories) async {
+    var accessoryRegistry =
+        Provider.of<AccessoryRegistry>(context, listen: false);
+    accessoryRegistry.saveOrderUpdates(accessories);
   }
 }

@@ -62,44 +62,45 @@ class AccessoryListItemState extends State<AccessoryListItem> {
         }
         // Format published date in a human readable way
         String? dateString = widget.accessory.datePublished != null &&
-            widget.accessory.datePublished != DateTime(1970)
+                widget.accessory.datePublished != DateTime(1970)
             ? '\n${DateFormat.yMMMd(Platform.localeName).format(widget.accessory.datePublished!)} ${DateFormat.jm(Platform.localeName).format(widget.accessory.datePublished!)}'
             : '';
 
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 300), // Sanfter Übergang
-          color: _tileColor,
-          child: ListTile(
-            onTap: widget.onTap,
-            onLongPress: widget.onLongPress,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.accessory.name +
-                      (widget.accessory.isActive ? '' : ' (inactive)'),
-                  style: TextStyle(
-                    color: widget.accessory.isActive
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Theme.of(context).disabledColor,
+            duration: const Duration(milliseconds: 300), // Sanfter Übergang
+            color: _tileColor,
+            child: ListTile(
+              onTap: widget.onTap,
+              title: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.accessory.name +
+                        (widget.accessory.isActive ? '' : ' (inactive)'),
+                    style: TextStyle(
+                      color: widget.accessory.isActive
+                          ? Theme.of(context).colorScheme.onSurface
+                          : Theme.of(context).disabledColor,
+                    ),
                   ),
+                  const SizedBox(width: 5),
+                  _buildIcon(),
+                ],
+              ),
+              subtitle: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Text(locationString + dateString),
+              ),
+              trailing: widget.distance,
+              dense: true,
+              leading: GestureDetector(
+                onLongPress: widget.onLongPress,
+                child: AccessoryIcon(
+                  icon: widget.accessory.icon,
+                  color: widget.accessory.color,
                 ),
-                const SizedBox(width: 5),
-                _buildIcon(),
-              ],
-            ),
-            subtitle: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Text(locationString + dateString),
-            ),
-            trailing: widget.distance,
-            dense: true,
-            leading: AccessoryIcon(
-              icon: widget.accessory.icon,
-              color: widget.accessory.color,
-            ),
-          ),
-        );
+              ),
+            ));
       },
     );
   }

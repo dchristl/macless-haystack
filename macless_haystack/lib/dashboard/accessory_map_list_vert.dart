@@ -10,16 +10,15 @@ import 'package:latlong2/latlong.dart';
 
 import '../callbacks.dart';
 
-
-
 class AccessoryMapListVertical extends StatefulWidget {
-
   final LoadLocationUpdatesCallback loadLocationUpdates;
+  final SaveOrderUpdatesCallback saveOrderUpdatesCallback;
 
   /// Displays a map view and the accessory list in a vertical alignment.
   const AccessoryMapListVertical({
     super.key,
     required this.loadLocationUpdates,
+    required this.saveOrderUpdatesCallback,
   });
 
   @override
@@ -32,7 +31,7 @@ class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
 
   void _centerPoint(LatLng point) {
     _mapController
-      .fitCamera(CameraFit.bounds(bounds: LatLngBounds.fromPoints([point])));
+        .fitCamera(CameraFit.bounds(bounds: LatLngBounds.fromPoints([point])));
   }
 
   @override
@@ -52,6 +51,7 @@ class _AccessoryMapListVerticalState extends State<AccessoryMapListVertical> {
               fit: FlexFit.tight,
               child: AccessoryList(
                 loadLocationUpdates: widget.loadLocationUpdates,
+                saveOrderUpdatesCallback: widget.saveOrderUpdatesCallback,
                 centerOnPoint: _centerPoint,
               ),
             ),

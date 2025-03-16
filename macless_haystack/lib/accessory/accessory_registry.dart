@@ -40,7 +40,7 @@ class AccessoryRegistry extends ChangeNotifier {
     if (serialized != null) {
       List accessoryJson = json.decode(serialized);
       List<Accessory> loadedAccessories =
-      accessoryJson.map((val) => Accessory.fromJson(val)).toList();
+          accessoryJson.map((val) => Accessory.fromJson(val)).toList();
       _accessories = loadedAccessories;
       clearInvalidAccessories(_accessories);
       if (_accessories.length != loadedAccessories.length) {
@@ -84,18 +84,18 @@ class AccessoryRegistry extends ChangeNotifier {
       var accessory = currentAccessories.elementAt(i);
 
       var keyPair =
-      await FindMyController.getKeyPair(accessory.hashedPublicKey);
+          await FindMyController.getKeyPair(accessory.hashedPublicKey);
 
       List<FindMyKeyPair> hashedPublicKeys =
-      await Stream.fromIterable(accessory.additionalKeys)
-          .asyncMap((hashedPublicKey) =>
-          FindMyController.getKeyPair(hashedPublicKey))
-          .toList();
+          await Stream.fromIterable(accessory.additionalKeys)
+              .asyncMap((hashedPublicKey) =>
+                  FindMyController.getKeyPair(hashedPublicKey))
+              .toList();
 
       hashedPublicKeys.add(keyPair);
 
       var locationRequest =
-      FindMyController.computeResults(hashedPublicKeys, url);
+          FindMyController.computeResults(hashedPublicKeys, url);
       runningLocationRequests.add(locationRequest);
     }
 
@@ -107,16 +107,11 @@ class AccessoryRegistry extends ChangeNotifier {
       var reports = reportsForAccessories.elementAt(i);
       out += reports.length;
       logger.i(
-          '${reports.length} reports fetched for ${accessory
-              .hashedPublicKey} in total');
+          '${reports.length} reports fetched for ${accessory.hashedPublicKey} in total');
 
-      if (reports
-          .where((element) => !element.isEncrypted())
-          .isNotEmpty) {
+      if (reports.where((element) => !element.isEncrypted()).isNotEmpty) {
         var lastReport =
-            reports
-                .where((element) => !element.isEncrypted())
-                .first;
+            reports.where((element) => !element.isEncrypted()).first;
         var reportDate = (lastReport.timestamp ?? lastReport.published) ??
             DateTime.fromMicrosecondsSinceEpoch(0);
         if (accessory.datePublished != null &&
@@ -144,7 +139,7 @@ class AccessoryRegistry extends ChangeNotifier {
 
   Future<void> _storeHistory(
       Map<Accessory, Future<List<Pair<dynamic, dynamic>>>>
-      historyEntries) async {
+          historyEntries) async {
     Map<String, List<Pair<dynamic, dynamic>>> historyEntriesAsJson = {};
     for (var entry in historyEntries.entries) {
       Accessory key = entry.key;
@@ -152,14 +147,13 @@ class AccessoryRegistry extends ChangeNotifier {
       List<Pair<dynamic, dynamic>> result = await future;
       var nowMinusDays = DateTime.now().subtract(const Duration(days: 7));
       var upperDayLimit =
-      DateTime(nowMinusDays.year, nowMinusDays.month, nowMinusDays.day);
+          DateTime(nowMinusDays.year, nowMinusDays.month, nowMinusDays.day);
       var filtered = result
           .where((element) => element.end.isAfter(upperDayLimit))
           .toList();
       if (filtered.length != result.length) {
         logger.i(
-            '${result.length - filtered
-                .length} history elements have been filtered out and will be deleted due to age.');
+            '${result.length - filtered.length} history elements have been filtered out and will be deleted due to age.');
       }
       historyEntriesAsJson[key.id] = filtered;
     }
@@ -230,8 +224,7 @@ class AccessoryRegistry extends ChangeNotifier {
       hashes.add(currHash!);
     }
     logger.d(
-        '${reports.length -
-            count} reports decrypted. Decryption of $count reports skipped, because they are already fetched and decrypted.');
+        '${reports.length - count} reports decrypted. Decryption of $count reports skipped, because they are already fetched and decrypted.');
     //All hashes, that are not in the reports anymore can be deleted, because they are out of time
     accessory.removeOldHashes();
     //Sort by date
@@ -270,9 +263,7 @@ class AccessoryRegistry extends ChangeNotifier {
         accessory.addLocationHistoryEntry(report);
       } else {
         logger.d(
-            'Report skipped, because of anomaly data (lat: ${report
-                .latitude}, lon: ${report.longitude}, acc: ${report
-                .accuracy})');
+            'Report skipped, because of anomaly data (lat: ${report.latitude}, lon: ${report.longitude}, acc: ${report.accuracy})');
       }
     }
     _storeAccessories();
@@ -290,7 +281,7 @@ class AccessoryRegistry extends ChangeNotifier {
     List<int> indicesToRemove = [];
     for (int i = 0; i < accessories.length; i++) {
       bool containsKey =
-      await _storage.containsKey(key: accessories[i].hashedPublicKey);
+          await _storage.containsKey(key: accessories[i].hashedPublicKey);
       if (!containsKey) {
         // Invalid Element should be removed
         indicesToRemove.add(i);
@@ -323,5 +314,13 @@ class AccessoryRegistry extends ChangeNotifier {
     historyMap.remove(accessoryToRemove.id);
 
     await _storage.write(key: historyStorageKey, value: jsonEncode(historyMap));
+  }
+
+  void saveOrderUpdates(List<Accessory> newOrder) {
+    final Map<Accessory, int> positionMap = {
+      for (int i = 0; i < newOrder.length; i++) newOrder[i]: i,
+    };
+    _accessories.sort((a, b) => positionMap[a]!.compareTo(positionMap[b]!));
+    _storeAccessories();
   }
 }
