@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'accessory/accessory_model.dart';
 

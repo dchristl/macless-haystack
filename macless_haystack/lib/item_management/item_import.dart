@@ -41,17 +41,19 @@ class _AccessoryImportState extends State<AccessoryImport> {
           var keyPair = await FindMyController.importKeyPair(privateKey);
           newAccessory.hashedPublicKey = keyPair.hashedPublicKey;
         } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content:
-                  Text('Key import failed. Check if private key is correct.'),
-            ),
-          );
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content:
+                    Text('Key import failed. Check if private key is correct.'),
+              ),
+            );
+          }
         }
         var keyPair = await FindMyController.importKeyPair(privateKey);
         newAccessory.hashedPublicKey = keyPair.hashedPublicKey;
 
-        if (mounted) {
+        if (context.mounted) {
           AccessoryRegistry accessoryRegistry =
               Provider.of<AccessoryRegistry>(context, listen: false);
           accessoryRegistry.addAccessory(newAccessory);

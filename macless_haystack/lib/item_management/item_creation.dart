@@ -45,7 +45,7 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
         var keyPair = await FindMyController.generateKeyPair();
         advertisementKey = keyPair.getBase64AdvertisementKey();
         newAccessory.hashedPublicKey = keyPair.hashedPublicKey;
-        if (mounted) {
+        if (context.mounted) {
           AccessoryRegistry accessoryRegistry =
               Provider.of<AccessoryRegistry>(context, listen: false);
           accessoryRegistry.addAccessory(newAccessory);
@@ -112,7 +112,7 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
                   child: const Text('Create only'),
                   onPressed: () async {
                     var created = await createAccessory(context);
-                    if (created && mounted) {
+                    if (created && context.mounted) {
                       Navigator.pop(context);
                     }
                   },
@@ -123,7 +123,7 @@ class _AccessoryGenerationState extends State<AccessoryGeneration> {
                   child: const Text('Create and Deploy'),
                   onPressed: () async {
                     var created = await createAccessory(context);
-                    if (created && mounted) {
+                    if (created && context.mounted) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
