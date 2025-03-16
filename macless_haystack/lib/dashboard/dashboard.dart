@@ -138,40 +138,39 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Accessories'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const PreferencesPage()),
-              );
-            },
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-      ),
-      body: _tabs[_selectedIndex]['body'](context),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _tabs
-            .map((tab) => BottomNavigationBarItem(
-                  icon: Icon(tab['icon']),
-                  label: tab['label'],
-                ))
-            .toList(),
-        currentIndex: _selectedIndex,
-        unselectedItemColor: Theme.of(context).secondaryHeaderColor,
-        onTap: _onItemTapped,
-      ),
-      floatingActionButton:
-          _tabs[_selectedIndex]['actionButton']?.call(context),
-    );
+        appBar: AppBar(
+          title: const Text('My Accessories'),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PreferencesPage()),
+                );
+              },
+              icon: const Icon(Icons.settings),
+            ),
+          ],
+        ),
+        body: _tabs[_selectedIndex]['body'](context),
+        bottomNavigationBar: BottomNavigationBar(
+          items: _tabs
+              .map((tab) => BottomNavigationBarItem(
+                    icon: Icon(tab['icon']),
+                    label: tab['label'],
+                  ))
+              .toList(),
+          currentIndex: _selectedIndex,
+          unselectedItemColor: Theme.of(context).secondaryHeaderColor,
+          onTap: _onItemTapped,
+        ),
+        floatingActionButton:
+            _tabs[_selectedIndex]['actionButton']?.call(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked);
   }
 
-  Future<void> saveAccessories(
-      List<Accessory> accessories) async {
+  Future<void> saveAccessories(List<Accessory> accessories) async {
     var accessoryRegistry =
         Provider.of<AccessoryRegistry>(context, listen: false);
     accessoryRegistry.saveOrderUpdates(accessories);
