@@ -21,6 +21,15 @@ esptool.py write_flash 0x1000  bootloader.bin \
                 0x110000 PREFIX_keyfile
 ```
 
+if you are using an ESP32-S3, the bootloader offset is `0x0`, so:
+
+```bash
+esptool.py write_flash 0x0000  bootloader.bin \
+                0x8000  partitions.bin \
+                0x10000 firmware.bin \
+                0x110000 PREFIX_keyfile
+```
+
 If any problem occurs, erase flash manually before flashing:
 
 ```bash
