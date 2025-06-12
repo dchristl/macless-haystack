@@ -2,7 +2,16 @@
 # This script applies modifications made with menuconfig to sdkconfig.defaults
 # It runs menuconfig, but also respects changes already made with menuconfig
 
-ENV=esp32dev
+# Parse command line arguments
+ENV=""
+# mandatory -e <environment> argument
+while getopts "e:" opt; do
+  ENV="$OPTARG"
+done
+if [ -z "$ENV" ]; then
+  echo "Error: Environment not specified. Use -e <environment>."
+  exit 1
+fi
 
 # create a backup of the current sdkconfig
 mv sdkconfig.defaults sdkconfig.defaults.old
