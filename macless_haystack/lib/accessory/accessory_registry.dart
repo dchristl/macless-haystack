@@ -36,7 +36,14 @@ class AccessoryRegistry extends ChangeNotifier {
   Future<void> loadAccessories() async {
     loading = true;
 
-    String? serialized = await _storage.read(key: accessoryStorageKey);
+    String? serialized;
+
+    try {
+      serialized = await _storage.read(key: accessoryStorageKey);
+    } catch (e) {
+      serialized = null;
+    }
+    
     if (serialized != null) {
       List accessoryJson = json.decode(serialized);
       List<Accessory> loadedAccessories =
