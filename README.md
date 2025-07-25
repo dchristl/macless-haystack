@@ -146,7 +146,7 @@ Included projects are (Credits goes to them for the hard work):
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. Please fork from dev-branch. For major changes, please open an issue first to discuss what you would like to change.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
