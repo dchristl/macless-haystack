@@ -98,7 +98,10 @@ class _AccessoryDetailState extends State<AccessoryDetail> {
                                 }
                               }
                             },
-                            icon: const Icon(Icons.edit),
+                            icon: Icon(
+                              Icons.edit,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ),
                       ),

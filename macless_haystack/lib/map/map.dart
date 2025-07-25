@@ -145,6 +145,7 @@ class _AccessoryMapState extends State<AccessoryMap> {
                   : child;
             },
             urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            userAgentPackageName: 'de.dchristl.headlesshaystack',
           ),
           MarkerLayer(
             markers: [

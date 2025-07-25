@@ -121,6 +121,7 @@ class _AccessoryHistoryState extends State<AccessoryHistory> {
                       tileProvider: CancellableNetworkTileProvider(),
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'de.dchristl.headlesshaystack',
                       tileBuilder: (context, child, tile) {
                         var isDark =
                             (Theme.of(context).brightness == Brightness.dark);
