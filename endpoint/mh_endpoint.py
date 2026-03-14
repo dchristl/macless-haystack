@@ -111,6 +111,9 @@ class ServerHandler(BaseHTTPRequestHandler):
                 data = base64.b64decode(entry['payload'])
                 timestamp = int.from_bytes(data[0:4], 'big') + 978307200
                 if (timestamp > startdate):
+                    # Only add datePublished if Apple does not return the key
+                    if not entry.get("datePublished"):
+                        entry["datePublished"] = timestamp
                     newResults[timestamp] = entry
 
             sorted_map = OrderedDict(sorted(newResults.items(), reverse=True))
