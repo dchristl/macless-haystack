@@ -61,6 +61,39 @@ If you have problems with not receiving an SMS code, you can log in to
 your [Apple account](https://account.apple.com/account/manage/section/devices) and remove all unnecessary devices (a new
 device is created each time you try to log in). If there are too many devices here, the login will no longer work.
 
+If you encounter the following error, try logging in to iCloud first; just wait on the screen where a 2FA code is requested, then try attaching to the macless-haystack container and logging in again.
+```
+2025-12-29 05:48:32,618 - INFO - Sending SMS via id 1
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 289, in sms_second_factor
+    code = request_code(headers,sms_id)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 331, in request_code
+    req.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://idmsa.apple.com/appleauth/auth/verify/phone
+```
+
+```bash
+docker attach macless-haystack
+```
+
+
 As a further alternative to logging in via macless haystack, you can also try logging in via [FindMy](https://github.com/biemster/FindMy). This also generates
 an auth.json that is compatible with macless-haystack. You can then place this in the [Docker folder](#where-and-what-data-is-stored-on-the-host) and restart
 macless-haystack. If everything has worked, the registration will be skipped.

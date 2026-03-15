@@ -292,7 +292,7 @@ def sms_second_factor(dsid, idms_token):
 
     # Send the 2FA code to Apple
     with  requests.post(
-            "https://gsa.apple.com/auth/verify/phone/securitycode",
+            "https://idmsa.apple.com/appleauth/auth/verify/phone/securitycode",
             json=body,
             headers=headers,
             verify=False,
