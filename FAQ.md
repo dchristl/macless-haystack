@@ -2,14 +2,14 @@
 
 #### Where and what data is stored on the host?
 
-During the installation, a Docker volume (*mh_data*) is created, which is located in the default folder. This is
+During the installation, a Docker volume (_mh_data_) is created, which is located in the default folder. This is
 normally under `/var/lib/docker/volumes/mh_data/_data`, but you can check, if your location is different, with:
 
 ```bash
 docker inspect macless-haystack | grep mh_data
 ```
 
-Check out the *Source*-key. The folder is typically protected and can only be accessed and modified by the root user.
+Check out the _Source_-key. The folder is typically protected and can only be accessed and modified by the root user.
 
 In the folder you'll find the configuration (config.ini), the authentication (auth.json), if it has already been
 executed. Additionally, the self-signed certificate used for SSL is also located here.
@@ -171,6 +171,20 @@ container. If there is a file alongside certificate.pem (public key) called priv
 used. The two files will be linked like that (Check out the folder and file-names)
 
 ```bash
-sudo ln -s <path_to_private_key> /var/lib/docker/volumes/mh_data/_data/privkey.pem 
+sudo ln -s <path_to_private_key> /var/lib/docker/volumes/mh_data/_data/privkey.pem
 sudo ln -s <path_to_public_key> /var/lib/docker/volumes/mh_data/_data/certificate.pem
 ```
+
+### I get an error "Account limit reached" or "A server problem is blocking Apple ID sign in"
+
+If you created a brand new Apple ID specifically for this project, the setup will fail during the iCloud initialization step. Apple's security policies require a new account to be initialized on a physical Apple device equipped with a Secure Enclave (Mac, iPhone, or iPad) before it can be used.
+
+To resolve this:
+
+1. Log into a physical Apple device with your new Apple ID.
+2. Open the "Find My" application.
+3. Accept the Terms and Conditions to properly initialize the iCloud storage.
+4. Log out of the physical device.
+5. Restart the macless-haystack setup.
+
+Note: Activating the account via the Apple ID website or iTunes on Windows is not sufficient to bypass this restriction.
