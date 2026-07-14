@@ -49,7 +49,18 @@ class _AccessoryMapState extends State<AccessoryMap> {
     locationModel.addListener(listener);
     cancelLocationUpdates = () => locationModel.removeListener(listener);
 
-    // Fit map if accessories change?
+    // Fit map once when the first accessory locations are loaded
+    void accessoryListener() {
+      if (accessoryRegistry.accessories
+          .any((accessory) => accessory.lastLocation != null)) {
+        cancelAccessoryUpdates?.call();
+        fitToContent(accessoryRegistry.accessories, locationModel.here);
+      }
+    }
+
+    accessoryRegistry.addListener(accessoryListener);
+    cancelAccessoryUpdates =
+        () => accessoryRegistry.removeListener(accessoryListener);
   }
 
   @override
@@ -60,9 +71,12 @@ class _AccessoryMapState extends State<AccessoryMap> {
     cancelAccessoryUpdates?.call();
   }
 
-  void fitToContent(List<Accessory> accessories, LatLng? hereLocation) async {
-    // Delay to prevent race conditions
-    await Future.delayed(const Duration(milliseconds: 500));
+  void fitToContent(List<Accessory> accessories, LatLng? hereLocation,
+      {bool delayed = true}) async {
+    if (delayed) {
+      // Delay to prevent race conditions
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
 
     List<LatLng> points = [];
     if (hereLocation != null) {
@@ -89,11 +103,9 @@ class _AccessoryMapState extends State<AccessoryMap> {
     return Consumer2<AccessoryRegistry, LocationModel>(builder:
         (BuildContext context, AccessoryRegistry accessoryRegistry,
             LocationModel locationModel, Widget? child) {
-      // Zoom map to fit all accessories on first accessory update
       var accessories = accessoryRegistry.accessories;
-      fitToContent(accessories, locationModel.here);
 
-      return FlutterMap(
+      final map = FlutterMap(
         mapController: _mapController,
         options: MapOptions(
             initialCenter: locationModel.here ?? const LatLng(51.1657, 10.4515),
@@ -188,6 +200,24 @@ class _AccessoryMapState extends State<AccessoryMap> {
                 ),
               ),
           ]),
+        ],
+      );
+
+      return Stack(
+        children: [
+          map,
+          Positioned(
+            right: 12,
+            bottom: 12,
+            child: FloatingActionButton.small(
+              heroTag: null,
+              tooltip: 'Fit all accessories',
+              onPressed: () => fitToContent(
+                  accessories, locationModel.here,
+                  delayed: false),
+              child: const Icon(Icons.zoom_out_map),
+            ),
+          ),
         ],
       );
     });
