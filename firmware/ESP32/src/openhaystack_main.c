@@ -17,11 +17,13 @@
 #include "esp_log.h"
 #include "esp_sleep.h"
 #include "esp_random.h"
+#include "soc/soc_caps.h"
 
 /* Delay between advertisement. Advertisment will only be transmitted for a short period of time (20ms) and the device will go to sleep.
 Higher delay = less power consumption, but more inaccurate tracking
  */
 #define DELAY_IN_S 60
+
 /* Define how often (long) a key will be reused after switching to the next one
 This is for using less keys after all. The interval for one key is (DELAY_IN_S * REUSE_CYCLES => 60s * 30 cycles = changes key every 30 min)
 Smaller number of cycles = key changes more often, but more keys needed.
@@ -167,7 +169,9 @@ void app_main(void)
     // vTaskDelay(pdMS_TO_TICKS(2000));
 
     ESP_ERROR_CHECK(nvs_flash_init());
+#if SOC_BT_CLASSIC_SUPPORTED
     ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT));
+#endif
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     esp_bt_controller_init(&bt_cfg);
     esp_bt_controller_enable(ESP_BT_MODE_BLE);

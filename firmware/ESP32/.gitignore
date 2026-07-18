@@ -2,3 +2,4 @@ build/**
 venv/**
 .vscode/**
 **/*.code-workspace
+sdkconfig.esp32-s3-devkitc-1
