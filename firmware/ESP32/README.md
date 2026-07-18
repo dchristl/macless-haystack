@@ -1,6 +1,6 @@
 ## Macless Haystack Firmware for ESP32
 
-This project contains a battery-optimzed PoC firmware for Espressif ESP32 chips (like ESP32-WROOM or ESP32-WROVER, but _not_ ESP32-S2).
+This project contains a battery-optimzed PoC firmware for Espressif ESP32 chips with BLE support (like ESP32-WROOM, ESP32-WROVER, or ESP32-S3, but _not_ ESP32-S2).
 After flashing our firmware, the device sends out Bluetooth Low Energy advertisements such that it can be found by [Apple's Find My network](https://developer.apple.com/find-my/).
 This firmware consumes slightly more power when more than 1 key is used. The controller wakes up every 30 minutes and switches the key.
 
@@ -13,6 +13,11 @@ This firmware consumes slightly more power when more than 1 key is used. The con
 
 - Download and unpack the firmware
 - Copy your previously generated PREFIX_keyfile in the same folder 
+- For ESP32-S3 builds with PlatformIO, use the `esp32-s3-devkitc-1` environment:
+
+```bash
+pio run -e esp32-s3-devkitc-1
+```
 
 ```bash
 esptool.py write_flash 0x1000  bootloader.bin \
